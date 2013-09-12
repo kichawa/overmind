@@ -2,7 +2,7 @@
 
 virtualenv -p /usr/bin/python3 --no-site-packages env
 source env/bin/activate
-pip install -r app/requirements-dev.txt
+pip install -r requirements-dev.txt
 cat > overmind/overmind/settings_local.py <<EOF
 DEBUG = True
 ALLOWED_HOSTS = (
@@ -15,4 +15,4 @@ DATABASES = {
     }
 }
 EOF
-python overmind/manager.py syncdb
+python overmind/manage.py syncdb
