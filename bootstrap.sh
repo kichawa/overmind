@@ -6,6 +6,10 @@ fi
 source env/bin/activate
 pip install -r requirements-dev.txt
 cat > overmind/overmind/settings_local.py <<EOF
+import os
+
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+
 DEBUG = True
 ALLOWED_HOSTS = (
     '127.0.0.1',
