@@ -1,0 +1,28 @@
+{% extends "forum/base.html" %}
+
+
+{% block forum_content %}
+    {% for topic in topics %}
+        <div>
+            <a href="{{ topic.get_absolute_url }}">
+                {{ topic.subject }} by {{ topic.author.username }}
+            </a>
+        </div>
+    {% empty %}
+        No topics
+    {% endfor %}
+
+    <div>
+        {% if topics.has_previous %}
+            <a href="?page={{ topics.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ topics.number }} of {{ topics.paginator.num_pages }}.
+        </span>
+
+        {% if topics.has_next %}
+            <a href="?page={{ topics.next_page_number }}">next</a>
+        {% endif %}
+    </div>
+{% endblock %}

@@ -1,11 +1,3 @@
-#!/bin/bash
-
-if [ ! -d "env" ]; then
-    virtualenv -p /usr/bin/python3 --no-site-packages env
-fi
-source env/bin/activate
-pip install -r requirements-dev.txt
-cat > overmind/overmind/settings/local.py <<EOF
 from .base import *
 
 DEBUG = True
@@ -29,5 +21,3 @@ MIDDLEWARE_CLASSES += (
 INSTALLED_APPS += (
     'debug_toolbar',
 )
-EOF
-python overmind/manage.py syncdb --noinput

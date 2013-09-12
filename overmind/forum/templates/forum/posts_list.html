@@ -1,0 +1,30 @@
+{% extends "forum/base.html" %}
+
+
+{% block forum_content %}
+    </h1>{{ topic.subject }}</h1>
+
+    {% for post in posts %}
+        <div>
+            <p>{{ post.content }}</p>
+            by {{ post.author.username }}
+                <img src="{{ post.author.avatar_url }}">
+        </div>
+    {% empty %}
+        No posts
+    {% endfor %}
+
+    <div>
+        {% if posts.has_previous %}
+            <a href="?page={{ posts.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ posts.number }} of {{ posts.paginator.num_pages }}.
+        </span>
+
+        {% if posts.has_next %}
+            <a href="?page={{ posts.next_page_number }}">next</a>
+        {% endif %}
+    </div>
+{% endblock %}

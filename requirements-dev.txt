@@ -1,4 +1,3 @@
 https://www.djangoproject.com/download/1.6b3/tarball/
-django-pipeline
-#django-debug-toolbar - does not work with python3 yet
-
+-e git+http://github.com/elvard/django-debug-toolbar#egg=django_debug_toolbar
+ipdb

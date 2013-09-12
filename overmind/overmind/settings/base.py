@@ -1,5 +1,5 @@
 import os
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 
 SECRET_KEY = 'h)7ir0!6d0!r2d8+xm2+mpiw7z_#=1yk6==c4avbt@#-g#t4jg'
 DEBUG = False
@@ -16,6 +16,8 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'forum',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -60,8 +62,3 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/dev/howto/static-files/
 
 STATIC_URL = '/static/'
-
-
-if os.path.isfile(os.path.join(BASE_DIR, 'overmind/settings_local.py')):
-    print("Loading local settings")
-    from overmind import settings_local
