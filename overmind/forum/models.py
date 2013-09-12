@@ -10,7 +10,7 @@ class ForumUser(get_user_model()):
 
     @property
     def avatar_url(self):
-        return 'http://robohash.org/{}.png'.format(self.username)
+        return 'http://robohash.org/bgset_bg3/{}.png?size=80x80'.format(self.username)
 
 
 class Topic(models.Model):
