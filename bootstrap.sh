@@ -1,6 +1,8 @@
 #!/bin/bash
 
-virtualenv -p /usr/bin/python3 --no-site-packages env
+if [ ! -d "env" ]; then
+    virtualenv -p /usr/bin/python3 --no-site-packages env
+fi
 source env/bin/activate
 pip install -r requirements-dev.txt
 cat > overmind/overmind/settings_local.py <<EOF
@@ -15,4 +17,4 @@ DATABASES = {
     }
 }
 EOF
-python overmind/manage.py syncdb
+python overmind/manage.py syncdb --noinput
