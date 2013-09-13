@@ -4,6 +4,7 @@ if [ ! -d "env" ]; then
     virtualenv -p /usr/bin/python3 --no-site-packages env
 fi
 source env/bin/activate
+pip install -r requirements.txt
 pip install -r requirements-dev.txt
 cat > overmind/overmind/settings/local.py <<EOF
 from .base import *

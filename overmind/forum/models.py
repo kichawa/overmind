@@ -3,10 +3,12 @@ from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
 from django.utils.text import slugify
 
+from jsonfield import JSONField
+
 
 class ForumUser(get_user_model()):
-    class Meta:
-        proxy = True
+    last_seen_all = models.DateTimeField(auto_now_add=True)
+    seen_topics = JSONField(default='{}')
 
     @property
     def avatar_url(self):
