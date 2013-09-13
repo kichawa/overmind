@@ -1,11 +1,12 @@
 import datetime
 import json
 
+from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.core.serializers.json import DjangoJSONEncoder
+from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.contrib.auth.decorators import login_required
-from django.core.serializers.json import DjangoJSONEncoder
 
 from forum.models import Topic, Post
 from forum.forms import TopicForm, PostForm
@@ -91,3 +92,10 @@ def api_user_profile(request):
     }
     return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder),
                         content_type='application/json')
+
+
+@login_required
+def mark_all_topics_read(request):
+    request.forum_profile.last_seen_all = datetime.datetime.now()
+    request.forum_profile.save()
+    return redirect(request.META.get('HTTP_REFERER', reverse('forum:topics-list')))

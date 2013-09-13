@@ -17,6 +17,12 @@
 {% endblock %}
 
 
+{% block forum_header %}
+    {{ block.super }}
+    | <a href="{% url "forum:mark-all-topics-read" %}">mark topics as read</a>
+{% endblock %}
+
+
 {% block forum_content %}
     {% for topic in topics %}
         <div>
