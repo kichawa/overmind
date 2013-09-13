@@ -8,13 +8,15 @@
 
 
 {% block forum_content %}
-    </h1>{{ topic.subject }}</h1>
+    <h1>{{ topic.subject }}</h1>
+    <p>{% for tag in topic.tags.all %}{{ tag }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+    <hr>
 
     {% for post in posts %}
         <div>
+            <img src="{{ post.author.avatar_url }}">
             <p>{{ post.content }}</p>
-            by {{ post.author.username }}
-                <img src="{{ post.author.avatar_url }}">
+            by {{ post.author.username }}, {{ post.created }}
         </div>
     {% empty %}
         No posts

@@ -18,11 +18,18 @@ class User(get_user_model()):
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
     last_seen_all = models.DateTimeField()
-    seen_topics = JSONField(default='{}')
+    seen_topics = JSONField(default=dict)
 
     @property
     def avatar_url(self):
         return 'http://robohash.org/bgset_bg3/{}.png?size=80x80'.format(self.username)
+
+
+class Tag(models.Model):
+    label = models.CharField(max_length=32, unique=True)
+
+    def __str__(self):
+        return self.label
 
 
 class Topic(models.Model):
@@ -30,6 +37,7 @@ class Topic(models.Model):
     author = models.ForeignKey(User)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now_add=True)
+    tags = models.ManyToManyField(Tag)
 
     def get_absolute_url(self):
         slug = slugify('{}-{}'.format(self.created.date(), self.subject))

@@ -27,9 +27,10 @@
     {% for topic in topics %}
         <div>
             <span class="topic-unread" data-topic-id="{{ topic.id }}" data-topic-updated="{{ topic.updated.isoformat }}"></span>
-            <a href="{{ topic.get_absolute_url }}">
-                {{ topic.subject }} by {{ topic.author.username }}
-            </a>
+            <a href="{{ topic.get_absolute_url }}">{{ topic.subject }}</a>
+            by {{ topic.author.username }}
+            <small>{% for tag in topic.tags.all %}{{ tag }}{% if not forloop.last %}, {% endif %}{% endfor %}</small>
+            <small title="{{ topic.updated }}">, created {{ topic.updated|timesince }} ago</small>
         </div>
     {% empty %}
         No topics

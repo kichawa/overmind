@@ -13,7 +13,8 @@ from forum.forms import TopicForm, PostForm
 
 
 def topics_list(request):
-    topics = Topic.objects.select_related().order_by('-updated')
+    topics = Topic.objects.select_related().prefetch_related('tags')\
+            .order_by('-updated')
     paginator = Paginator(topics, 50)
     try:
         page = paginator.page(request.GET.get('page', 1))
@@ -58,10 +59,10 @@ def posts_list(request, topic_pk):
 @login_required
 def topic_create(request):
     if request.method == 'POST':
-        form = TopicForm(request.POST)
+        topic = Topic(author=request.forum_profile.user)
+        form = TopicForm(request.POST, instance=topic)
         if form.is_valid():
-            topic = Topic(author=request.forum_profile.user)
-            topic = form.save(instance=topic)
+            topic = form.save()
             return redirect(topic.get_absolute_url())
     else:
         form = TopicForm()
