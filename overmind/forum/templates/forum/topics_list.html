@@ -11,7 +11,7 @@
     <script src="{% static "forum/js/unseen.js" %}" type="text/javascript"></script>
     <script type="text/javascript" charset="utf-8">
         $(function () {
-            $('.topic-unread').markUnseenTopics({apiUrl: '{% url "forum:api-user-profile" %}'});
+            $('.topic-unread').markUnseen({apiUrl: '{% url "forum:api-user-profile" %}'});
         });
     </script>
 {% endblock %}

@@ -1,16 +1,16 @@
 (function ($) {
 
-  $.fn.markUnseenTopics = function (options) {
-    var o = $.extend({}, $.fn.markUnseenTopics.defaults, options);
+  $.fn.markUnseen = function (options) {
+    var o = $.extend({}, $.fn.markUnseen.defaults, options);
 
     var dfd = $.getJSON(options.apiUrl);
 
     return this.each(function () {
       var $el = $(this),
-          tid = parseInt($el.attr(o.idAttr), 10),
-          updated = new Date(Date.parse($el.attr(o.updatedAttr)));
+          tid = o.id.call($el),
+          updated = o.updated.call($el);
 
-      $el.html(o.pendingHTML);
+      o.whenPending.call($el, tid, updated, o);
       dfd.done(function (data) {
         data.last_seen_all = new Date(Date.parse(data.last_seen_all));
         var lastSeen = data.last_seen_all;
@@ -21,21 +21,27 @@
           }
         }
         if (lastSeen < updated) {
-          $el.html(o.unseenHTML);
+          o.whenUnseen.call($el, tid, updated, o);
         } else {
-          $el.html(o.seenHTML);
+          o.whenSeen.call($el, tid, updated, o);
         }
       });
     });
   };
 
-  $.fn.markUnseenTopics.defaults = {
+  $.fn.markUnseen.defaults = {
     apiUrl: null,
-    idAttr: 'data-topic-id',
-    updatedAttr: 'data-topic-updated',
-    pendingHTML: '...',
-    seenHTML: 'old',
-    unseenHTML: 'new'
+    id: function () {
+      return parseInt($(this).attr('data-topic-id'), 10);
+    },
+    updated: function () {
+      return new Date(Date.parse($(this).attr('data-topic-updated')));
+    },
+    whenPending: $.noop,
+    whenSeen: $.noop,
+    whenUnseen: function () {
+      $(this).prepend('*');
+    }
   };
 
 }(jQuery));
