@@ -97,5 +97,6 @@ def api_user_profile(request):
 @login_required
 def mark_all_topics_read(request):
     request.forum_profile.last_seen_all = datetime.datetime.now()
+    request.forum_profile.seen_topics = {}
     request.forum_profile.save()
     return redirect(request.META.get('HTTP_REFERER', reverse('forum:topics-list')))
