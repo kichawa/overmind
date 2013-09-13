@@ -21,7 +21,7 @@ class Topic(models.Model):
 
     def get_absolute_url(self):
         slug = slugify('{}-{}'.format(self.created.date(), self.subject))
-        return reverse('forum-posts-list', args=(self.pk, slug))
+        return reverse('forum:posts-list', args=(self.pk, slug))
 
     def __str__(self):
         return self.subject
@@ -35,3 +35,6 @@ class Post(models.Model):
 
     def __str__(self):
         return self.content[:120]
+
+    def get_absolute_url(self):
+        return self.topic.get_absolute_url()

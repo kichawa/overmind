@@ -1,10 +1,17 @@
 <!DOCTYPE HTML>
 <html>
 <head>
+    {% load staticfiles %}
     <meta charset=utf-8">
     <title>Forum 4.0</title>
+    <link rel="stylesheet" href="{% static "forum/css/base.css" %}" type="text/css">
 </head>
 <body>
+    {% block forum_header %}
+        <a href="{% url "forum:topics-list" %}">topics list</a>
+        | <a href="{% url "forum:topic-create" %}">create topic</a>
+    {% endblock %}
+    <hr>
     {% block forum_content %}
     {% endblock %}
 </body>

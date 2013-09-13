@@ -1,6 +1,12 @@
 {% extends "forum/base.html" %}
 
 
+{% block forum_header %}
+    {{ block.super }}
+    | <a href="{% url "forum:post-create" topic_pk=topic.pk %}">crate post</a>
+{% endblock %}
+
+
 {% block forum_content %}
     </h1>{{ topic.subject }}</h1>
 
@@ -14,6 +20,7 @@
         No posts
     {% endfor %}
 
+    <hr>
     <div>
         {% if posts.has_previous %}
             <a href="?page={{ posts.previous_page_number }}">previous</a>
@@ -27,4 +34,10 @@
             <a href="?page={{ posts.next_page_number }}">next</a>
         {% endif %}
     </div>
+
+    <form action="{% url "forum:post-create" topic_pk=topic.pk %}" method="POST">
+        {{ post_form.as_p }}
+        {% csrf_token %}
+        <button type="submit">create</button>
+    </form>
 {% endblock %}
