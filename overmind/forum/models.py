@@ -1,13 +1,23 @@
-from django.db import models
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
+from django.db import models
 from django.utils.text import slugify
 
 from jsonfield import JSONField
 
 
-class ForumUser(get_user_model()):
-    last_seen_all = models.DateTimeField(auto_now_add=True)
+class User(get_user_model()):
+    class Meta:
+        proxy = True
+
+    @property
+    def avatar_url(self):
+        return 'http://robohash.org/bgset_bg3/{}.png?size=80x80'.format(self.username)
+
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User)
+    last_seen_all = models.DateTimeField()
     seen_topics = JSONField(default='{}')
 
     @property
@@ -17,7 +27,7 @@ class ForumUser(get_user_model()):
 
 class Topic(models.Model):
     subject = models.CharField(max_length=256)
-    author = models.ForeignKey(ForumUser)
+    author = models.ForeignKey(User)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now_add=True)
 
@@ -31,7 +41,7 @@ class Topic(models.Model):
 
 class Post(models.Model):
     topic = models.ForeignKey(Topic)
-    author = models.ForeignKey(ForumUser)
+    author = models.ForeignKey(User)
     content = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
 

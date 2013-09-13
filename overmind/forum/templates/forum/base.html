@@ -3,8 +3,10 @@
 <head>
     {% load staticfiles %}
     <meta charset=utf-8">
-    <title>Forum 4.0</title>
-    <link rel="stylesheet" href="{% static "forum/css/base.css" %}" type="text/css">
+    <title>{% block title %}Forum 4.0{% endblock %}</title>
+    {% block css %}
+        <link rel="stylesheet" href="{% static "forum/css/base.css" %}" type="text/css">
+    {% endblock %}
 </head>
 <body>
     {% block forum_header %}
@@ -14,5 +16,6 @@
     <hr>
     {% block forum_content %}
     {% endblock %}
+    {% block javascript %}{% endblock %}
 </body>
 </html>

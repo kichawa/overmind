@@ -1,8 +1,13 @@
+import datetime
+import json
+
+from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.contrib.auth.decorators import login_required
+from django.core.serializers.json import DjangoJSONEncoder
 
-from forum.models import Topic, Post, ForumUser
+from forum.models import Topic, Post
 from forum.forms import TopicForm, PostForm
 
 
@@ -32,6 +37,15 @@ def posts_list(request, topic_pk):
         page = paginator.page(1)
     except EmptyPage:
         page = paginator.page(paginator.num_pages)
+
+    # manage "new" topics
+    last_post = page.object_list[len(page.object_list) - 1]
+    if last_post.created > request.forum_profile.last_seen_all:
+        topic_last_seen = request.forum_profile.seen_topics.get(topic.id)
+        if not topic_last_seen or topic_last_seen < last_post.created:
+            request.forum_profile.seen_topics[topic.id] = datetime.datetime.now()
+            request.forum_profile.save()
+
     ctx = {
         'topic': topic,
         'posts': page,
@@ -45,8 +59,7 @@ def topic_create(request):
     if request.method == 'POST':
         form = TopicForm(request.POST)
         if form.is_valid():
-            forum_user = ForumUser.objects.get(id=request.user.id)
-            topic = Topic(author=forum_user)
+            topic = Topic(author=request.forum_profile.user)
             topic = form.save(instance=topic)
             return redirect(topic.get_absolute_url())
     else:
@@ -59,8 +72,7 @@ def topic_create(request):
 def post_create(request, topic_pk):
     topic = get_object_or_404(Topic, pk=topic_pk)
     if request.method == 'POST':
-        forum_user = ForumUser.objects.get(id=request.user.id)
-        post = Post(topic=topic, author=forum_user)
+        post = Post(topic=topic, author=request.forum_profile.user)
         form = PostForm(request.POST, instance=post)
         if form.is_valid():
             post = form.save()
@@ -69,3 +81,13 @@ def post_create(request, topic_pk):
         form = PostForm()
     ctx = {'topic': topic, 'form': form}
     return render(request, 'forum/post_create.html', ctx)
+
+
+@login_required
+def api_user_profile(request):
+    resp = {
+        'last_seen_all': request.forum_profile.last_seen_all,
+        'seen_topics': request.forum_profile.seen_topics,
+    }
+    return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder),
+                        content_type='application/json')
