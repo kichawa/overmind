@@ -57,6 +57,15 @@ USE_L10N = True
 
 USE_TZ = True
 
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': '/tmp/overmind_cache/',
+    }
+}
+
 
 STATICFILES_DIRS = (
     "static",
