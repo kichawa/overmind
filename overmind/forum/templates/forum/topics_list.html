@@ -25,6 +25,7 @@
 
 {% block forum_content %}
     <form action="{% url "forum:topics-list" %}" method="GET">
+        <input type="search" name="q" value="{{ request.GET.q }}">
         {% for tag in tags %}
             <label>
                 <input type="checkbox" name="tag" value="{{ tag.label }}" {% if tag.checked %}checked{% endif %}> {{ tag.label }}

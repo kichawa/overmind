@@ -6,6 +6,7 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core.urlresolvers import reverse
 from django.db import transaction
+from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.timezone import utc
@@ -34,6 +35,13 @@ def topics_list(request):
     if 'tag' in request.GET:
         labels = request.GET.getlist('tag')
         topics = topics.filter(tags__label__in=labels).distinct()
+
+    if 'q' in request.GET:
+        q = request.GET['q']
+        # this is spartaaa!
+        full_text_filter = Q(subject__icontains=q) | Q(posts__content__icontains=q)
+        topics = topics.filter(full_text_filter).distinct()
+
 
     paginator = Paginator(topics, 50)
     try:
