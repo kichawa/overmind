@@ -30,6 +30,11 @@ def mark_topic_read(request, topic, last_post):
 def topics_list(request):
     topics = Topic.objects.select_related().prefetch_related('tags')\
             .order_by('-updated')
+
+    if 'tag' in request.GET:
+        labels = request.GET.getlist('tag')
+        topics = topics.filter(tags__label__in=labels).distinct()
+
     paginator = Paginator(topics, 50)
     try:
         page = paginator.page(request.GET.get('page', 1))
