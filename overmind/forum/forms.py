@@ -13,7 +13,7 @@ class TopicForm(forms.Form):
                               widget=forms.Textarea())
     tags = forms.ModelMultipleChoiceField(queryset=Tag.objects.all())
 
-    def __init__(self, data, instance=None):
+    def __init__(self, data=None, instance=None):
         self.instance = instance
         super(TopicForm, self).__init__(data)
 
