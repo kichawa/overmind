@@ -1,5 +1,11 @@
 (function ($) {
 
+  var prepareDate = function (date) {
+    var dt = new Date(Date.parse(date));
+    dt.setMilliseconds(0);
+    return dt;
+  };
+
   $.fn.markUnseen = function (options) {
     var o = $.extend({}, $.fn.markUnseen.defaults, options);
 
@@ -8,14 +14,14 @@
     return this.each(function () {
       var $el = $(this),
           tid = o.id.call($el),
-          updated = o.updated.call($el);
+          updated = prepareDate(o.updated.call($el));
 
       o.whenPending.call($el, tid, updated, o);
       dfd.done(function (data) {
-        data.last_seen_all = new Date(Date.parse(data.last_seen_all));
+        data.last_seen_all = prepareDate(data.last_seen_all);
         var lastSeen = data.last_seen_all;
         if (data.seen_topics[tid]) {
-          var seenDate = new Date(Date.parse(data.seen_topics[tid]));
+          var seenDate = prepareDate(data.seen_topics[tid]);
           if (seenDate > lastSeen) {
             lastSeen = seenDate;
           }
