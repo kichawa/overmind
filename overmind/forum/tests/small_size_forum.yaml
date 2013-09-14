@@ -28,8 +28,8 @@
   fields:
     author: 1
     subject: "first topic"
-    created: ! '2013-09-12 07:15:40.051310+00:00'
-    updated: ! '2013-09-14 07:15:40.051310+00:00'
+    created: '2013-09-12 07:15:40.051310+00:00'
+    updated: '2013-09-14 07:15:40.051310+00:00'
     tags: [1, 2]
     response_count: 0
 - model: forum.topic
@@ -37,8 +37,8 @@
   fields:
     author: 2
     subject: "second topic"
-    created: ! '2013-09-02 07:15:40.051310+00:00'
-    updated: ! '2013-09-14 07:15:40.051310+00:00'
+    created: '2013-09-02 07:15:40.051310+00:00'
+    updated: '2013-09-14 07:15:40.051310+00:00'
     tags: [2, 3]
     response_count: 1
 
@@ -48,19 +48,19 @@
   fields:
     author: 1
     content: "first topic first post"
-    created: ! '2013-09-12 07:15:40.051310+00:00'
+    created: '2013-09-12 07:15:40.051310+00:00'
     topic: 1
 - model: forum.post
   pk: 2
   fields:
     author: 2
     content: "second topic second post"
-    created: ! '2013-09-02 07:15:40.051310+00:00'
+    created: '2013-09-02 07:15:40.051310+00:00'
     topic: 2
 - model: forum.post
   pk: 3
   fields:
     author: 1
     content: "first response in second post"
-    created: ! '2013-09-14 07:15:40.051310+00:00'
+    created: '2013-09-14 07:15:40.051310+00:00'
     topic: 2

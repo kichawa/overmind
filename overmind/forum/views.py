@@ -8,19 +8,22 @@ from django.core.urlresolvers import reverse
 from django.db import transaction
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
+from django.utils.timezone import utc
 
 from forum.models import Topic, Post
 from forum.forms import TopicForm, PostForm
 
 
 def mark_topic_read(request, topic, last_post):
+    # iso format is not precise enough, so we need to drop that precision too
+    last_post_created = last_post.created.replace(microsecond=0)
     if not request.forum_profile:
         return
-    if last_post.created < request.forum_profile.last_seen_all:
+    if last_post_created < request.forum_profile.last_seen_all:
         return
-    topic_last_seen = request.forum_profile.seen_topics.get(topic.id)
-    if not topic_last_seen or topic_last_seen < last_post.created:
-        request.forum_profile.seen_topics[topic.id] = last_post.created
+    topic_last_seen = request.forum_profile.seen_topics.get(str(topic.id))
+    if not topic_last_seen or topic_last_seen < last_post_created:
+        request.forum_profile.seen_topics[topic.id] = last_post_created
         request.forum_profile.save()
 
 
@@ -109,7 +112,8 @@ def api_user_profile(request):
 
 @login_required
 def mark_all_topics_read(request):
-    request.forum_profile.last_seen_all = datetime.datetime.now()
+    now = datetime.datetime.now().replace(tzinfo=utc)
+    request.forum_profile.last_seen_all = now
     request.forum_profile.seen_topics = {}
     request.forum_profile.save()
     return redirect(request.META.get('HTTP_REFERER', reverse('forum:topics-list')))

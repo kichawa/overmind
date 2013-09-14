@@ -1,6 +1,7 @@
 import datetime
 
 from django.utils.functional import SimpleLazyObject
+from django.utils.timezone import utc
 
 from forum.models import UserProfile, User
 
@@ -14,8 +15,9 @@ class UserProfileMiddleware(object):
                 else:
                     # we can do this, because both models have the same id
                     user = User(pk=request.user.id)
+                    old_date = datetime.datetime(2000, 1, 1).replace(tzinfo=utc)
                     profile, _ = UserProfile.objects.get_or_create(user=user,
-                            defaults={'last_seen_all': datetime.datetime(2000, 1, 1)})
+                            defaults={'last_seen_all': old_date})
                     request._cached_forum_profile = profile
             return request._cached_forum_profile
 
