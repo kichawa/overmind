@@ -28,3 +28,4 @@ class PostCreationTest(TransactionTestCase):
         self.assertEqual(resp.status_code, 302)
         self.assertEqual(topic.response_count, 2)
         self.assertEqual(topic.response_count, topic.posts.count() - 1)
+        self.assertEqual(topic.updated, post.created)

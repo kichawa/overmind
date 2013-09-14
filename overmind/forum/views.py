@@ -92,6 +92,7 @@ def post_create(request, topic_pk):
             if form.is_valid():
                 post = form.save()
                 topic.response_count = topic.posts.count() - 1
+                topic.updated = post.created
                 topic.save()
                 return redirect(post.get_absolute_url())
     else:
