@@ -3,7 +3,7 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.text import slugify
 
-from jsonfield import JSONField
+from json_field import JSONField
 
 
 class User(get_user_model()):
@@ -18,7 +18,7 @@ class User(get_user_model()):
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
     last_seen_all = models.DateTimeField()
-    seen_topics = JSONField(default=dict)
+    seen_topics = JSONField(default=dict, blank=True)
 
     @property
     def avatar_url(self):

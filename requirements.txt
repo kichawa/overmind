@@ -1,2 +1,2 @@
 https://www.djangoproject.com/download/1.6b3/tarball/
--e git+https://github.com/bradjasper/django-jsonfield@ebbf03027f0fd8b36047b68b1d43a18c22c521a9#egg=jsonfield-origin
+django-json-field

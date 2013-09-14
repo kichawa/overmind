@@ -1,3 +1,5 @@
 -e git+http://github.com/elvard/django-debug-toolbar#egg=django_debug_toolbar
 ipdb
 psycopg2
+Werkzeug
+django-extensions
