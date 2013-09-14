@@ -8,22 +8,36 @@
 
 
 {% block forum_content %}
-    <h1>{{ topic.subject }}</h1>
-    <p>{% for tag in topic.tags.all %}{{ tag }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
-    <hr>
+    <div class="box box-shadow">
+        <h1>{{ topic.subject }}</h1>
+        <p>{% for tag in topic.tags.all %}{{ tag }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+    </div>
 
-    {% for post in posts %}
-        <div>
-            <img src="{{ post.author.avatar_url }}">
-            <p>{{ post.content }}</p>
-            by {{ post.author.username }}, {{ post.created }}
-        </div>
-    {% empty %}
-        No posts
-    {% endfor %}
+    <div class="box">
+        {% for post in posts %}
+            <div class="row-fluid box">
+                <div class="span1">
+                    <img src="{{ post.author.avatar_url }}?size=80x80">
+                </div>
+                <div class="span11 box-shadow">
+                    <p>{{ post.content }}</p>
+                    by {{ post.author.username }}, {{ post.created }}
+                </div>
+            </div>
+        {% empty %}
+            No posts
+        {% endfor %}
+    </div>
 
-    <hr>
-    <div>
+    <div class="box box-shadow">
+        <form action="{% url "forum:post-create" topic_pk=topic.pk %}" method="POST">
+            {{ post_form.as_p }}
+            {% csrf_token %}
+            <button type="submit">create</button>
+        </form>
+    </div>
+
+    <div class="box box-shadow text-center">
         {% if posts.has_previous %}
             <a href="?page={{ posts.previous_page_number }}">previous</a>
         {% endif %}
@@ -36,10 +50,4 @@
             <a href="?page={{ posts.next_page_number }}">next</a>
         {% endif %}
     </div>
-
-    <form action="{% url "forum:post-create" topic_pk=topic.pk %}" method="POST">
-        {{ post_form.as_p }}
-        {% csrf_token %}
-        <button type="submit">create</button>
-    </form>
 {% endblock %}

@@ -24,32 +24,45 @@
 
 
 {% block forum_content %}
-    <form action="{% url "forum:topics-list" %}" method="GET">
-        <input type="search" name="q" value="{{ request.GET.q }}">
-        {% for tag in tags %}
-            <label>
-                <input type="checkbox" name="tag" value="{{ tag.label }}" {% if tag.checked %}checked{% endif %}> {{ tag.label }}
-            </label>
+    <div class="box box-shadow text-center">
+        <form action="{% url "forum:topics-list" %}" method="GET">
+            <input type="search" name="q" value="{{ request.GET.q }}">
+            {% for tag in tags %}
+                <label>
+                    <input type="checkbox" name="tag" value="{{ tag.label }}" {% if tag.checked %}checked{% endif %}> {{ tag.label }}
+                </label>
+            {% endfor %}
+            <button class="btn" type="submit">Filter</button>
+        </form>
+    </div>
+
+    <div class="box box-shadow content">
+        {% for topic in topics %}
+            <div class="topic row-fluid">
+                <div class="span1">
+                    <img src="{{ topic.author.avatar_url }}?size=24x24" style="width:24px;height24px">
+                    <span class="topic-unread" data-topic-id="{{ topic.id }}" data-topic-updated="{{ topic.updated.isoformat }}"></span>
+                </div>
+                <div class="span6">
+                    <a href="{{ topic.get_absolute_url }}">{{ topic.subject }}</a>
+                    <small>by {{ topic.author.username }}</small>
+                </div>
+                <div class="span1">
+                    <span>{{ topic.response_count }}</span>
+                </div>
+                <div class="span3">
+                    <small>{% for tag in topic.tags.all %}{{ tag }}{% if not forloop.last %}, {% endif %}{% endfor %}</small>
+                </div>
+                <div class="span1">
+                    <small title="{{ topic.updated }}">{{ topic.updated|timesince }} ago</small>
+                </div>
+            </div>
+        {% empty %}
+            No topics
         {% endfor %}
-        <button type="submit">Filter</button>
-    </form>
-    <hr>
+    </div>
 
-    {% for topic in topics %}
-        <div>
-            <span class="topic-unread" data-topic-id="{{ topic.id }}" data-topic-updated="{{ topic.updated.isoformat }}"></span>
-            <a href="{{ topic.get_absolute_url }}">{{ topic.subject }}</a>
-            by {{ topic.author.username }}
-            <small>{% for tag in topic.tags.all %}{{ tag }}{% if not forloop.last %}, {% endif %}{% endfor %}</small>
-            <small title="{{ topic.updated }}">, created {{ topic.updated|timesince }} ago</small>
-            <span>{{ topic.response_count }}</span>
-        </div>
-    {% empty %}
-        No topics
-    {% endfor %}
-
-    <hr>
-    <div>
+    <div class="box box-shadow text-center">
         {% if topics.has_previous %}
         <a href="?{% urlquery_set request page=topics.previous_page_number %}">previous</a>
         {% endif %}

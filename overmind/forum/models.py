@@ -12,17 +12,13 @@ class User(get_user_model()):
 
     @property
     def avatar_url(self):
-        return 'http://robohash.org/bgset_bg3/{}.png?size=80x80'.format(self.username)
+        return 'http://robohash.org/bgset_bg3/{}.png'.format(self.username)
 
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
     last_seen_all = models.DateTimeField()
     seen_topics = JSONField(default=dict, blank=True)
-
-    @property
-    def avatar_url(self):
-        return 'http://robohash.org/bgset_bg3/{}.png?size=80x80'.format(self.username)
 
 
 class Tag(models.Model):

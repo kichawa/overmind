@@ -5,17 +5,20 @@
     <meta charset=utf-8">
     <title>{% block title %}Forum 4.0{% endblock %}</title>
     {% block css %}
+        <link rel="stylesheet" href="{% static "core/css/bootstrap.min.css" %}" type="text/css">
         <link rel="stylesheet" href="{% static "forum/css/base.css" %}" type="text/css">
     {% endblock %}
 </head>
 <body>
-    {% block forum_header %}
-        <a href="{% url "forum:topics-list" %}">topics list</a>
-        | <a href="{% url "forum:topic-create" %}">create topic</a>
-    {% endblock %}
-    <hr>
-    {% block forum_content %}
-    {% endblock %}
+    <div class="box box-shadow text-center">
+        {% block forum_header %}
+            <a href="{% url "forum:topics-list" %}">topics list</a>
+            | <a href="{% url "forum:topic-create" %}">create topic</a>
+        {% endblock %}
+    </div>
+    <span id="page-top"></span>
+    {% block forum_content %}{% endblock %}
+    <span id="page-bottom"></span>
     {% block javascript %}{% endblock %}
 </body>
 </html>

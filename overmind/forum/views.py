@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core.urlresolvers import reverse
+from django.conf import settings
 from django.db import transaction
 from django.db.models import Q
 from django.http import HttpResponse
@@ -13,6 +14,9 @@ from django.utils.timezone import utc
 
 from forum.models import Topic, Post, Tag
 from forum.forms import TopicForm, PostForm
+
+TOPICS_PER_PAGE = getattr(settings, 'FORUM_TOPICS_PER_PAGE', 50)
+POSTS_PER_PAGE = getattr(settings, 'FORUM_POSTS_PER_PAGE', 100)
 
 
 def mark_topic_read(request, topic, last_post):
@@ -43,7 +47,7 @@ def topics_list(request):
         topics = topics.filter(full_text_filter).distinct()
 
 
-    paginator = Paginator(topics, 50)
+    paginator = Paginator(topics, TOPICS_PER_PAGE)
     try:
         page = paginator.page(request.GET.get('page', 1))
     except PageNotAnInteger:
@@ -69,7 +73,7 @@ def posts_list(request, topic_pk):
     topic = get_object_or_404(Topic, pk=topic_pk)
     posts = Post.objects.filter(topic=topic)\
             .select_related('author').order_by('created')
-    paginator = Paginator(posts, 50)
+    paginator = Paginator(posts, POSTS_PER_PAGE)
     try:
         page = paginator.page(request.GET.get('page', 1))
     except PageNotAnInteger:
