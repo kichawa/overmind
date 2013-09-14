@@ -12,6 +12,17 @@ from forum.models import Topic, Post
 from forum.forms import TopicForm, PostForm
 
 
+def mark_topic_read(request, topic, last_post):
+    if not request.forum_profile:
+        return
+    if last_post.created < request.forum_profile.last_seen_all:
+        return
+    topic_last_seen = request.forum_profile.seen_topics.get(topic.id)
+    if not topic_last_seen or topic_last_seen < last_post.created:
+        request.forum_profile.seen_topics[topic.id] = datetime.datetime.now()
+        request.forum_profile.save()
+
+
 def topics_list(request):
     topics = Topic.objects.select_related().prefetch_related('tags')\
             .order_by('-updated')
@@ -41,12 +52,9 @@ def posts_list(request, topic_pk):
         page = paginator.page(paginator.num_pages)
 
     # manage "new" topics
-    last_post = page.object_list[len(page.object_list) - 1]
-    if last_post.created > request.forum_profile.last_seen_all:
-        topic_last_seen = request.forum_profile.seen_topics.get(topic.id)
-        if not topic_last_seen or topic_last_seen < last_post.created:
-            request.forum_profile.seen_topics[topic.id] = datetime.datetime.now()
-            request.forum_profile.save()
+    if request.forum_profile:
+        last_post = page.object_list[len(page.object_list) - 1]
+        mark_topic_read(request, topic, last_post)
 
     ctx = {
         'topic': topic,
