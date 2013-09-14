@@ -23,7 +23,7 @@ def mark_topic_read(request, topic, last_post):
         return
     topic_last_seen = request.forum_profile.seen_topics.get(str(topic.id))
     if not topic_last_seen or topic_last_seen < last_post_created:
-        request.forum_profile.seen_topics[topic.id] = last_post_created
+        request.forum_profile.seen_topics[str(topic.id)] = last_post_created
         request.forum_profile.save()
 
 
