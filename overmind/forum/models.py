@@ -38,6 +38,7 @@ class Topic(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now_add=True)
     tags = models.ManyToManyField(Tag)
+    response_count = models.PositiveIntegerField(default=0)
 
     def get_absolute_url(self):
         slug = slugify('{}-{}'.format(self.created.date(), self.subject))
@@ -48,7 +49,7 @@ class Topic(models.Model):
 
 
 class Post(models.Model):
-    topic = models.ForeignKey(Topic)
+    topic = models.ForeignKey(Topic, related_name='posts')
     author = models.ForeignKey(User)
     content = models.TextField()
     created = models.DateTimeField(auto_now_add=True)

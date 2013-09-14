@@ -31,6 +31,7 @@
             by {{ topic.author.username }}
             <small>{% for tag in topic.tags.all %}{{ tag }}{% if not forloop.last %}, {% endif %}{% endfor %}</small>
             <small title="{{ topic.updated }}">, created {{ topic.updated|timesince }} ago</small>
+            <span>{{ topic.response_count }}</span>
         </div>
     {% empty %}
         No topics

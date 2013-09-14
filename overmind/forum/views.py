@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core.urlresolvers import reverse
+from django.db import transaction
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 
@@ -82,11 +83,14 @@ def topic_create(request):
 def post_create(request, topic_pk):
     topic = get_object_or_404(Topic, pk=topic_pk)
     if request.method == 'POST':
-        post = Post(topic=topic, author=request.forum_profile.user)
-        form = PostForm(request.POST, instance=post)
-        if form.is_valid():
-            post = form.save()
-            return redirect(post.get_absolute_url())
+        with transaction.autocommit():
+            post = Post(topic=topic, author=request.forum_profile.user)
+            form = PostForm(request.POST, instance=post)
+            if form.is_valid():
+                post = form.save()
+                topic.response_count = topic.posts.count() - 1
+                topic.save()
+                return redirect(post.get_absolute_url())
     else:
         form = PostForm()
     ctx = {'topic': topic, 'form': form}
