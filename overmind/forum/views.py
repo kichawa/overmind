@@ -10,7 +10,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.timezone import utc
 
-from forum.models import Topic, Post
+from forum.models import Topic, Post, Tag
 from forum.forms import TopicForm, PostForm
 
 
@@ -37,8 +37,17 @@ def topics_list(request):
         page = paginator.page(1)
     except EmptyPage:
         page = paginator.page(paginator.num_pages)
+
+    tags = []
+    for tag in Tag.objects.all():
+        tags.append({
+            'label': tag.label,
+            'checked': tag.label in request.GET.getlist('tag'),
+        })
+
     ctx = {
         'topics': page,
+        'tags': tags,
     }
     return render(request, 'forum/topics_list.html', ctx)
 

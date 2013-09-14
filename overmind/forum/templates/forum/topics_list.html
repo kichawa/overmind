@@ -1,7 +1,7 @@
 {% extends "forum/base.html" %}
 
 
-{% load staticfiles %}
+{% load staticfiles urlquery %}
 
 
 {% block javascript %}
@@ -24,6 +24,16 @@
 
 
 {% block forum_content %}
+    <form action="{% url "forum:topics-list" %}" method="GET">
+        {% for tag in tags %}
+            <label>
+                <input type="checkbox" name="tag" value="{{ tag.label }}" {% if tag.checked %}checked{% endif %}> {{ tag.label }}
+            </label>
+        {% endfor %}
+        <button type="submit">Filter</button>
+    </form>
+    <hr>
+
     {% for topic in topics %}
         <div>
             <span class="topic-unread" data-topic-id="{{ topic.id }}" data-topic-updated="{{ topic.updated.isoformat }}"></span>
@@ -40,7 +50,7 @@
     <hr>
     <div>
         {% if topics.has_previous %}
-            <a href="?page={{ topics.previous_page_number }}">previous</a>
+        <a href="?{% urlquery_set request page=topics.previous_page_number %}">previous</a>
         {% endif %}
 
         <span class="current">
@@ -48,7 +58,7 @@
         </span>
 
         {% if topics.has_next %}
-            <a href="?page={{ topics.next_page_number }}">next</a>
+            <a href="?{% urlquery_set request page=topics.next_page_number %}">next</a>
         {% endif %}
     </div>
 {% endblock %}
