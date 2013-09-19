@@ -7,8 +7,6 @@ import psycopg2
 
 
 
-sqlt_db_path = sys.argv[1]
-
 TAGS = [
     'howto',
     'beginner',
@@ -99,14 +97,20 @@ def copy_posts(pg_connection):
 
 
 def main():
+    if len(sys.argv) != 2:
+        sys.exit("""
+Usage:
+    python3 {} <path to sqlite3 database file>
+
+Important: database has to be initialized but empty.
+        """.format(sys.argv[0]))
+    sqlt_db_path = sys.argv[1]
+
     pg_conn = psycopg2.connect(
             dbname="pg_5908", user="pg_5908u", host='archlinux.megiteam.pl',
             port=5435, password=getpass.getpass('archlinux database password:'))
-    print("Copy users")
     copy_users(pg_conn)
-    print("Copy topics")
     copy_topics(pg_conn)
-    print("Copy posts")
     copy_posts(pg_conn)
     pg_conn.close()
 
