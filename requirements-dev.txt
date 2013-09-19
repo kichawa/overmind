@@ -3,3 +3,4 @@ ipdb
 psycopg2
 Werkzeug
 django-extensions
+flake8
