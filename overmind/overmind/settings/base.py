@@ -21,6 +21,7 @@ INSTALLED_APPS = (
 
     'core',
     'forum',
+    'simpleauth',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -85,3 +86,7 @@ STATICFILES_DIRS = (
     "static",
 )
 STATIC_URL = '/static/'
+
+LOGIN_REDIRECT_URL = "/"
+LOGIN_URL = "/auth/login/"
+LOGOUT_URL = "/auth/logout/"
