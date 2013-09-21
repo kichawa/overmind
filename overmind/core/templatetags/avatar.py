@@ -12,8 +12,8 @@ register = template.Library()
 def gravatar(email, width=32, height=None):
     if not height:
         height = width
-    enc_email = str(hashlib.md5(email.lower()).hexdigest())
-    default = "http://robohash.org/set_set3/bgset_bg1/{}?size={}x{}".format(
+    enc_email = str(hashlib.md5(email.lower().encode('utf8')).hexdigest())
+    default = "http://robohash.org/bgset_bg3/{}.png?size={}x{}".format(
             enc_email, width, height)
     params = urllib.parse.urlencode({
         'd': default,
