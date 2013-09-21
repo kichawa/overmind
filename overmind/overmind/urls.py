@@ -4,11 +4,14 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.views.generic import RedirectView
 
+
 admin.autodiscover()
+
 
 urlpatterns = patterns('',
     url(r'^$', RedirectView.as_view(url='forum/')),
     url(r'^forum/', include('forum.urls', 'forum')),
+    url(r'^auth/', include('userauth.urls', 'userauth')),
     url(r'^_/admin/', include(admin.site.urls)),
 )
 

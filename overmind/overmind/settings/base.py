@@ -21,6 +21,7 @@ INSTALLED_APPS = (
 
     'core',
     'forum',
+    'userauth',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (

@@ -1,0 +1,16 @@
+<form action="." method="POST">
+    {% csrf_token %}
+    <label>
+        <input type="radio" name="url" value="https://www.google.com/accounts/o8/id">
+        Google
+    </label>
+    <label>
+        <input type="radio" name="url" value="https://me.yahoo.com">
+        Yahoo!
+    </label>
+    <label>
+        <input type="radio" name="url" value="https://www.myopenid.com/">
+        MyOpenId
+    </label>
+    <button type="submit">Auth</button>
+</form>

@@ -14,6 +14,11 @@
         {% block forum_header %}
             <a href="{% url "forum:topics-list" %}">topics list</a>
             | <a href="{% url "forum:topic-create" %}">create topic</a>
+            {% if user.is_authenticated %}
+                | logged as {{ user.username }}
+            {% else %}
+                | <a href="{% url "userauth:openid-begin" %}">login</a>
+            {% endif %}
         {% endblock %}
     </div>
     <span id="page-top"></span>
