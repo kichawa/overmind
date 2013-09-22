@@ -8,10 +8,24 @@ class Cache:
         self.cache = cache
 
     def increment(self, *keys, value=1):
-        return {key: self.cache.incr(key, value) for key in keys}
+        res = {}
+        for key in keys:
+            try:
+                res[key] = self.cache.incr(key, value)
+            except ValueError:
+                self.cache.set_many({key: value})
+                res[key] = value
+        return res
 
     def decrement(self, *keys, value=1):
-        return {key: self.cache.decr(key, value) for key in keys}
+        res = {}
+        for key in keys:
+            try:
+                res[key] = self.cache.decr(key, value)
+            except ValueError:
+                self.cache.set_many({key: -value})
+                res[key] = -value
+        return res
 
     def delete(self, *keys):
         self.cache.delete_many(keys)

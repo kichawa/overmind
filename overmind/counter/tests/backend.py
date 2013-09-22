@@ -9,19 +9,13 @@ class Memcache:
         self._mem = {}
 
     def incr(self, key, value=1):
-        try:
-            val = int(self._mem.get(key, 0))
-        except (ValueError, TypeError):
-            val = 0
+        val = int(self._mem.get(key, 0))
         val += value
         self._mem[key] = val
         return val
 
     def decr(self, key, value=1):
-        try:
-            val = int(self._mem.get(key, 0))
-        except (ValueError, TypeError):
-            val = 0
+        val = int(self._mem.get(key, 0))
         val -= value
         self._mem[key] = val
         return val

@@ -9,9 +9,11 @@
     <script src="{% static "core/js/iso8601.js" %}" type="text/javascript"></script>
     <script src="{% static "core/js/jquery.js" %}" type="text/javascript"></script>
     <script src="{% static "forum/js/unseen.js" %}" type="text/javascript"></script>
+    <script src="{% static "forum/js/viewcount.js" %}" type="text/javascript"></script>
     <script type="text/javascript" charset="utf-8">
         $(function () {
             $('.topic-unread').markUnseen({apiUrl: '{% url "forum:api-user-profile" %}'});
+            $('.topic-view-counter').viewCount({apiUrl: '{% url "counter:main" %}'});
         });
     </script>
 {% endblock %}
@@ -48,7 +50,7 @@
                     <div class="author">by {{ topic.author.username }}</div>
                 </div>
                 <div class="span1">
-                    <span>{{ topic.response_count }}</span>
+                    <span>{{ topic.response_count }}</span>/<span class="topic-view-counter" data-topic-id="{{ topic.id }}"></span>
                 </div>
                 <div class="span3">
                     <small>{% for tag in topic.tags.all %}{{ tag }}{% if not forloop.last %}, {% endif %}{% endfor %}</small>

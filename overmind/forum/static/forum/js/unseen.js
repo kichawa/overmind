@@ -39,7 +39,6 @@
   };
 
   $.fn.markUnseen.defaults = {
-    apiUrl: null,
     id: function () {
       return parseInt($(this).attr('data-topic-id'), 10);
     },

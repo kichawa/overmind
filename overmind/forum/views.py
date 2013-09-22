@@ -14,6 +14,8 @@ from django.utils.timezone import utc
 
 from forum.models import Topic, Post, Tag
 from forum.forms import TopicForm, PostForm
+from counter import backend
+
 
 TOPICS_PER_PAGE = getattr(settings, 'FORUM_TOPICS_PER_PAGE', 50)
 POSTS_PER_PAGE = getattr(settings, 'FORUM_POSTS_PER_PAGE', 100)
@@ -85,6 +87,9 @@ def posts_list(request, topic_pk):
     if request.forum_profile:
         last_post = page.object_list[len(page.object_list) - 1]
         mark_topic_read(request, topic, last_post)
+
+    counter = backend.default()
+    counter.increment('topic:view:{}'.format(topic.pk))
 
     ctx = {
         'topic': topic,
