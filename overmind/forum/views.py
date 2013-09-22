@@ -127,12 +127,17 @@ def post_create(request, topic_pk):
     return render(request, 'forum/post_create.html', ctx)
 
 
-@login_required
 def api_user_profile(request):
-    resp = {
-        'last_seen_all': request.forum_profile.last_seen_all,
-        'seen_topics': request.forum_profile.seen_topics,
-    }
+    if request.user.is_anonymous():
+        resp = {
+            'is_authenticated': False,
+        }
+    else:
+        resp = {
+            'is_authenticated': True,
+            'last_seen_all': request.forum_profile.last_seen_all,
+            'seen_topics': request.forum_profile.seen_topics,
+        }
     return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder),
                         content_type='application/json')
 

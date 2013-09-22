@@ -18,6 +18,9 @@
 
       o.whenPending.call($el, tid, updated, o);
       dfd.done(function (data) {
+        if (!data.is_authenticated) {
+          return;
+        }
         data.last_seen_all = prepareDate(data.last_seen_all);
         var lastSeen = data.last_seen_all;
         if (data.seen_topics[tid]) {
