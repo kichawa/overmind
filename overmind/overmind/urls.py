@@ -13,6 +13,8 @@ urlpatterns = patterns('',
         include('forum.urls', 'forum')),
     url(r'^auth/',
         include('simpleauth.urls', 'simpleauth')),
+    url(r'^counter/',
+        include('counter.urls', 'counter')),
     url(r'^_/admin/',
         include(admin.site.urls)),
 )

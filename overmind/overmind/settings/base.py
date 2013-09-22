@@ -22,6 +22,7 @@ INSTALLED_APPS = (
     'core',
     'forum',
     'simpleauth',
+    'counter',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -90,3 +91,5 @@ STATIC_URL = '/static/'
 LOGIN_REDIRECT_URL = "/"
 LOGIN_URL = "/auth/login/"
 LOGOUT_URL = "/auth/logout/"
+
+COUNTER_STORAGE_BACKEND = 'counter.backend.DjangoCache'
