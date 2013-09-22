@@ -1,7 +1,7 @@
 {% extends "forum/base.html" %}
 
 
-{% load staticfiles urlquery %}
+{% load staticfiles urlquery avatar %}
 
 
 {% block javascript %}
@@ -40,7 +40,7 @@
         {% for topic in topics %}
             <div class="topic row-fluid">
                 <div class="span1">
-                    <img src="{{ topic.author.avatar_url }}?size=24x24" style="width:24px;height24px">
+                    {% gravatar_tag topic.author.avatar_url 24 %}
                     <span class="topic-unread" data-topic-id="{{ topic.id }}" data-topic-updated="{{ topic.updated.isoformat }}"></span>
                 </div>
                 <div class="span6">
