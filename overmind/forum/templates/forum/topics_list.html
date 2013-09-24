@@ -13,7 +13,7 @@
     <script type="text/javascript" charset="utf-8">
         $(function () {
             $('.topic-unread').markUnseen({apiUrl: '{% url "forum:api-user-profile" %}'});
-            $('.topic-view-counter').viewCount({apiUrl: '{% url "counter:main" %}'});
+            $('.topic-view-counter').viewCount({apiUrl: '{% url "counter:get" %}'});
         });
     </script>
 {% endblock %}
