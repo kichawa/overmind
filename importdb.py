@@ -6,6 +6,7 @@ import sqlite3
 import psycopg2
 
 
+sqlt_db_path = sys.argv[1]
 
 TAGS = [
     'howto',
@@ -104,7 +105,6 @@ Usage:
 
 Important: database has to be initialized but empty.
         """.format(sys.argv[0]))
-    sqlt_db_path = sys.argv[1]
 
     pg_conn = psycopg2.connect(
             dbname="pg_5908", user="pg_5908u", host='archlinux.megiteam.pl',
