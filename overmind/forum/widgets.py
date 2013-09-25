@@ -1,53 +1,10 @@
-import collections
-import json
-import re
-
-from django.http import HttpResponse
-
 from forum.models import Topic
 from counter import backend
 
-
-_widgets = []
-
-
-def register_widget(rx):
-    def decorator(view):
-        _widgets.append((re.compile(rx), view))
-        return view
-
-    return decorator
+from dynamicwidget.decorators import widget_handler
 
 
-def widget(request):
-    wids = request.GET.getlist('wid')
-    handlers = collections.defaultdict(list)
-    for wid in wids:
-        for rx, view in _widgets:
-            res = rx.match(wid)
-            if res:
-                handlers[view].append({'wid': wid, 'params': res.groupdict()})
-                break
-        else:
-            handlers[not_found_handler].append({'wid': wid})
-
-    result = {}
-    for handler, args in handlers.items():
-        result.update(handler(request, args))
-    content = json.dumps(result)
-    return HttpResponse(content, content_type='application/json')
-
-
-def not_found_handler(request, widgets):
-    res = {}
-    for widget in widgets:
-        res[widget['wid']] = {
-            'error': 'No handler for widget "{}"'.format(widget['wid']),
-        }
-    return res
-
-
-@register_widget("^topic-view-count:(?P<tid>\d+)$")
+@widget_handler("^topic-view-count:(?P<tid>\d+)$")
 def topic_view_count(request, widgets):
     key_tmpl = "topic:view:{}"
     counter = backend.default()
@@ -62,7 +19,7 @@ def topic_view_count(request, widgets):
     return res
 
 
-@register_widget("^topic-is-new:(?P<tid>\d+)$")
+@widget_handler("^topic-is-new:(?P<tid>\d+)$")
 def topic_is_new(request, widgets):
     if request.user.is_anonymous():
         return {w['wid']: {'html': ''} for w in widgets}
@@ -78,7 +35,7 @@ def topic_is_new(request, widgets):
         last_seen = seen_topics.get(str(topic_id),
                                     request.forum_profile.last_seen_all)
         updated = topics.get(topic_id)
-        if updated < last_seen:
+        if updated.replace(microsecond=0) <= last_seen:
             html = ''
         else:
             html = '*'
@@ -86,7 +43,7 @@ def topic_is_new(request, widgets):
     return res
 
 
-@register_widget("login-logout")
+@widget_handler("login-logout")
 def login_logout(request, widgets):
     if request.user.is_authenticated():
         html = '<a href="/auth/logout/">Logout</a>'

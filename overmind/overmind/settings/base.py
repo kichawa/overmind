@@ -22,6 +22,7 @@ INSTALLED_APPS = (
     'core',
     'forum',
     'simpleauth',
+    'dynamicwidget',
     'counter',
 )
 
