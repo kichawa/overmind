@@ -6,16 +6,8 @@
 
 {% block javascript %}
     {{ block.super }}
-    <script src="{% static "core/js/iso8601.js" %}" type="text/javascript"></script>
     <script src="{% static "core/js/jquery.js" %}" type="text/javascript"></script>
-    <script src="{% static "forum/js/unseen.js" %}" type="text/javascript"></script>
-    <script src="{% static "forum/js/viewcount.js" %}" type="text/javascript"></script>
-    <script type="text/javascript" charset="utf-8">
-        $(function () {
-            $('.topic-unread').markUnseen({apiUrl: '{% url "forum:api-user-profile" %}'});
-            $('.topic-view-counter').viewCount({apiUrl: '{% url "counter:get" %}'});
-        });
-    </script>
+    <script src="{% static "core/js/dynamic_widget.js" %}" type="text/javascript"></script>
 {% endblock %}
 
 
@@ -43,14 +35,14 @@
             <div class="topic row-fluid">
                 <div class="span1">
                     {% gravatar_tag topic.author.avatar_url 24 %}
-                    <span class="topic-unread" data-topic-id="{{ topic.id }}" data-topic-updated="{{ topic.updated.isoformat }}"></span>
+                    <span data-dynamic-widget="topic-is-new:{{ topic.id }}"></span>
                 </div>
                 <div class="span6">
                     <a href="{{ topic.get_absolute_url }}">{{ topic.subject }}</a>
                     <div class="author">by {{ topic.author.username }}</div>
                 </div>
                 <div class="span1">
-                    <span>{{ topic.response_count }}</span>/<span class="topic-view-counter" data-topic-id="{{ topic.id }}"></span>
+                    <span>{{ topic.response_count }}</span>/<span data-dynamic-widget="topic-view-count:{{ topic.id }}"></span>
                 </div>
                 <div class="span3">
                     <small>{% for tag in topic.tags.all %}{{ tag }}{% if not forloop.last %}, {% endif %}{% endfor %}</small>
