@@ -1,0 +1,5 @@
+<form action="{% url "forum:post-create" topic_pk=topic_id %}" method="POST">
+    {{ form.as_p }}
+    {% csrf_token %}
+    <button type="submit">create</button>
+</form>

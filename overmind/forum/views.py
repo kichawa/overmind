@@ -20,8 +20,10 @@ POSTS_PER_PAGE = getattr(settings, 'FORUM_POSTS_PER_PAGE', 100)
 
 
 
-def latest_topics_update_condition(request):
-    if 'q' in request.GET:
+def _latest_topics_update(request):
+    if request.GET.get('q'):
+        return None
+    if request.GET.get('page', '1') != '1':
         return None
     topics = Topic.objects.select_related().order_by('-updated')
     tag_labels = request.GET.getlist('tag')
@@ -33,21 +35,21 @@ def latest_topics_update_condition(request):
         return None
 
 
-@condition(last_modified_func=latest_topics_update_condition)
+@condition(last_modified_func=_latest_topics_update)
 def topics_list(request):
     topics = Topic.objects.select_related().prefetch_related('tags')\
             .order_by('-updated')
 
-    if 'tag' in request.GET:
-        labels = request.GET.getlist('tag')
-        topics = topics.filter(tags__label__in=labels).distinct()
+    tag_labels = request.GET.getlist('tag')
+    if tag_labels:
+        topics = topics.filter(tags__label__in=tag_labels).distinct()
 
-    if 'q' in request.GET:
-        q = request.GET['q']
+    text_search = request.GET.get('q')
+    if text_search:
         # this is spartaaa!
-        full_text_filter = Q(subject__icontains=q) | Q(posts__content__icontains=q)
+        full_text_filter = Q(subject__icontains=text_search) \
+                         | Q(posts__content__icontains=text_search)
         topics = topics.filter(full_text_filter).distinct()
-
 
     paginator = Paginator(topics, TOPICS_PER_PAGE)
     try:
@@ -71,48 +73,12 @@ def topics_list(request):
     return render(request, 'forum/topics_list.html', ctx)
 
 
-def latest_topic_update_condition(request, topic_pk):
+def _latest_topic_update(request, topic_pk):
     topic = get_object_or_404(Topic, pk=topic_pk)
-    result = topic.updated
-
-    # not sure if this is the best place for this, probably not and this
-    # should be done with the javascript
-    #
-    # manage the "new" topics (this should be never affected by the cache)
-    if request.forum_profile:
-        if topic.updated <= request.forum_profile.last_seen_all:
-            return result
-        topic_last_seen = request.forum_profile.seen_topics.get(str(topic.id))
-        if topic_last_seen \
-                and topic_last_seen <= topic.updated.replace(microsecond=0):
-            return result
-
-        # at this point, the only thing we can do is to apply pagination and
-        # update the profile data
-        posts = Post.objects.filter(topic=topic)\
-                .select_related('author').order_by('created')
-        paginator = Paginator(posts, POSTS_PER_PAGE)
-        try:
-            page = paginator.page(request.GET.get('page', 1))
-        except PageNotAnInteger:
-            page = paginator.page(1)
-        except EmptyPage:
-            page = paginator.page(paginator.num_pages)
-        last_post = page.object_list[len(page.object_list) - 1]
-        # iso format is not precise enough, so we need to drop that precision too
-        last_post_created = last_post.created.replace(microsecond=0)
-        if not request.forum_profile:
-            return result
-        if last_post_created < request.forum_profile.last_seen_all:
-            return result
-        if not topic_last_seen or topic_last_seen < last_post_created:
-            request.forum_profile.seen_topics[str(topic.id)] = last_post_created
-            request.forum_profile.save()
-
-    return result
+    return topic.updated
 
 
-@condition(last_modified_func=latest_topic_update_condition)
+@condition(last_modified_func=_latest_topic_update)
 def posts_list(request, topic_pk):
     topic = get_object_or_404(Topic, pk=topic_pk)
     posts = Post.objects.filter(topic=topic)\
@@ -134,7 +100,6 @@ def posts_list(request, topic_pk):
     ctx = {
         'topic': topic,
         'posts': page,
-        'post_form': PostForm(),
     }
     return render(request, 'forum/posts_list.html', ctx)
 

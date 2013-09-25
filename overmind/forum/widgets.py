@@ -1,10 +1,13 @@
-from forum.models import Topic
-from counter import backend
+from django.template import RequestContext
+from django.template.loader import render_to_string
 
+from forum.forms import PostForm
+from forum.models import Topic, Post
+from counter import backend
 from dynamicwidget.decorators import widget_handler
 
 
-@widget_handler("^topic-view-count:(?P<tid>\d+)$")
+@widget_handler(r"^topic-view-count:(?P<tid>\d+)$")
 def topic_view_count(request, widgets):
     key_tmpl = "topic:view:{}"
     counter = backend.default()
@@ -19,7 +22,7 @@ def topic_view_count(request, widgets):
     return res
 
 
-@widget_handler("^topic-is-new:(?P<tid>\d+)$")
+@widget_handler(r"^topic-is-new:(?P<tid>\d+)$")
 def topic_is_new(request, widgets):
     if request.user.is_anonymous():
         return {w['wid']: {'html': ''} for w in widgets}
@@ -43,10 +46,70 @@ def topic_is_new(request, widgets):
     return res
 
 
-@widget_handler("login-logout")
+@widget_handler(r"^login-logout$")
 def login_logout(request, widgets):
-    if request.user.is_authenticated():
-        html = '<a href="/auth/logout/">Logout</a>'
-    else:
-        html = '<a href="/auth/">Login</a>'
+    ctx = RequestContext(request)
+    html = render_to_string('forum/widgets/login_logout.html', ctx)
     return {"login-logout": {"html": html}}
+
+
+@widget_handler(r"post-is-new:(?P<pid>\d+)$")
+def post_is_new(request, widgets):
+    profile = request.forum_profile
+    if not profile:
+        return {w['wid']: {'html': ''} for w in widgets}
+
+    query = Post.objects.filter(id__in=[w['params']['pid'] for w in widgets])
+    posts = {}
+    topics = {}
+    newest = {}
+    for pid, created, tid in query.values_list('id', 'created', 'topic_id'):
+        created = created.replace(microsecond=0)
+        posts[pid] = (tid, created)
+
+        # find out, when the topic was last seen
+        if tid not in topics:
+            topic_last_seen = profile.seen_topics.get(str(tid), profile.last_seen_all)
+            topic_last_seen = topic_last_seen.replace(microsecond=0)
+            topics[tid] = topic_last_seen
+
+        # find the newest post creation date for every related topic
+        dt = newest.get(tid)
+        if not dt:
+            newest[tid] = created
+        elif created > dt:
+            newest[tid] = created
+
+    res = {}
+    for widget in widgets:
+        post_id = int(widget['params']['pid'])
+        tid, created = posts[post_id]
+        is_new = created > topics[tid]
+        if is_new:
+            res[widget['wid']] = {'html': 'new'}
+        else:
+            res[widget['wid']] = {'html': ''}
+
+    # make sure, we have all topics marked as "seen" with appropriate, fresh
+    # date from the newest post we ask for
+    for tid, newest_post_dt in newest.items():
+        if newest_post_dt > topics[tid]:
+            request.forum_profile.seen_topics[str(tid)] = newest_post_dt
+            request.forum_profile.save()
+
+    return res
+
+
+@widget_handler(r"^topic-comment-form:(?P<tid>\d+)$")
+def topic_comment_form(request, widgets):
+    if not request.forum_profile:
+        return {w['wid']: {'html': ''} for w in widgets}
+
+    form = PostForm()
+    res = {}
+    ctx = RequestContext(request, {'form': form})
+    for widget in widgets:
+        ctx['topic_id'] = widget['params']['tid']
+        html = render_to_string('forum/widgets/topic_comment_form.html', ctx)
+        res[widget['wid']] = {'html': html}
+    return res

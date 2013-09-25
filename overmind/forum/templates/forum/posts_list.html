@@ -17,6 +17,7 @@
         {% for post in posts %}
             <div class="row-fluid box">
                 <div class="span1">
+                    <span data-dynamic-widget="post-is-new:{{ post.id }}"></span>
                     <img src="{{ post.author.avatar_url }}?size=80x80" style="width:80px;height:80px">
                 </div>
                 <div class="span11 box-shadow">
@@ -29,13 +30,7 @@
         {% endfor %}
     </div>
 
-    <div class="box box-shadow">
-        <form action="{% url "forum:post-create" topic_pk=topic.pk %}" method="POST">
-            {{ post_form.as_p }}
-            {% csrf_token %}
-            <button type="submit">create</button>
-        </form>
-    </div>
+    <div class="box box-shadow" data-dynamic-widget="topic-comment-form:{{ topic.id }}"></div>
 
     <div class="box box-shadow text-center">
         {% if posts.has_previous %}
