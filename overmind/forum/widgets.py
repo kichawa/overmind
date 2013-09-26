@@ -12,12 +12,13 @@ def topic_view_count(request, widgets):
     key_tmpl = "topic:view:{}"
     counter = backend.default()
     keys = [key_tmpl.format(w['params']['tid']) for w in widgets]
-    counters = counter.get(keys)
+    counters = counter.get(*keys)
     res = {}
     for widget in widgets:
         value = counters.get(key_tmpl.format(widget['params']['tid']), 0)
         res[widget['wid']] = {
-            'html': '<span class="counter">{}</span>'.format(value)
+            'html': str(value),
+            'counter': value,
         }
     return res
 

@@ -1,11 +1,16 @@
 import json
+import mock
 
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
 from django.test import TransactionTestCase
 from django.test.utils import override_settings
 
-from forum.models import Post
+from forum.models import Post, Topic
+from counter.tests.backend import Memory
+
+
+WIDGETS_URL = reverse("dynamicwidget:widgets")
 
 
 class LastSeenTest(TransactionTestCase):
@@ -39,18 +44,16 @@ class LastSeenTest(TransactionTestCase):
                          "second post should be also seen now")
 
     def is_post_new(self, post_id):
-        widgets_url = reverse("dynamicwidget:widgets")
         post_isnew_key = "post-is-new:{}".format(post_id)
-        post_isnew_url = "{}?wid={}".format(widgets_url, post_isnew_key)
+        post_isnew_url = "{}?wid={}".format(WIDGETS_URL, post_isnew_key)
         response = self.client.get(post_isnew_url)
         self.assertEqual(response.status_code, 200)
         resp = json.loads(response.content.decode('utf8'))
         return resp[post_isnew_key]['isnew']
 
     def is_topic_new(self, topic_id):
-        widgets_url = reverse("dynamicwidget:widgets")
         topic_isnew_key = "topic-is-new:{}".format(topic_id)
-        topic_isnew_url = "{}?wid={}".format(widgets_url, topic_isnew_key)
+        topic_isnew_url = "{}?wid={}".format(WIDGETS_URL, topic_isnew_key)
         response = self.client.get(topic_isnew_url)
         self.assertEqual(response.status_code, 200)
         resp = json.loads(response.content.decode('utf8'))
@@ -58,3 +61,26 @@ class LastSeenTest(TransactionTestCase):
 
     def tearDown(self):
         self.user.delete()
+
+
+class TopicViewCountTest(TransactionTestCase):
+    fixtures = ['forum/tests/small_size_forum.yaml']
+
+    @mock.patch('counter.backend.default')
+    def test_topic_view_count(self, default_backend):
+        default_backend.return_value = Memory()
+        topic = Topic.objects.get(pk=1)
+        widget_key = 'topic-view-count:{}'.format(topic.id)
+        self.assertEqual(self.counter_value(widget_key), 0)
+        self.client.get(topic.get_absolute_url())
+        self.assertEqual(self.counter_value(widget_key), 1)
+        self.client.get(topic.get_absolute_url())
+        self.assertEqual(self.counter_value(widget_key), 2)
+
+    def counter_value(self, key):
+        response = self.client.get("{}?wid={}".format(WIDGETS_URL, key))
+        self.assertEqual(response.status_code, 200)
+        resp = json.loads(response.content.decode('utf8'))
+        return resp[key]['counter']
+
+
