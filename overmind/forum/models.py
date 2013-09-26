@@ -12,6 +12,11 @@ from django.db import connection
 from json_field import JSONField
 
 
+class Moderator(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL,
+                                related_name='forum_is_moderator')
+
+
 class LastSeen(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL,
                                 related_name='forum_last_seen')

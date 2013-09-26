@@ -26,6 +26,7 @@
                         <span class="flag new" data-dynamic-widget="post-is-new:{{ post.id }}"></span>
                         <span class="meta small"><a href="{% url "forum:user-details" post.author.pk %}">{{ post.author.username }}</a>, {{ post.created }}</span>
                         <p>{{ post.content|markup:"markdown" }}</p>
+                        <div data-dynamic-widget="post-attributes:{{ post.id }}"></div>
                     </div>
                 </div>
             </div>
