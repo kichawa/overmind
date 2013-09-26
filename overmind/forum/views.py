@@ -16,6 +16,8 @@ from counter import backend
 
 
 def _latest_topics_update(request):
+    if not getattr(settings, 'HTTP_CACHE', True):
+        return None
     if request.GET.get('q'):
         return None
     if request.GET.get('page', '1') != '1':
@@ -69,6 +71,8 @@ def topics_list(request):
 
 
 def _latest_topic_update(request, topic_pk):
+    if not getattr(settings, 'HTTP_CACHE', True):
+        return None
     topic = get_object_or_404(Topic, pk=topic_pk)
     return topic.updated
 
