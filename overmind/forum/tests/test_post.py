@@ -26,6 +26,6 @@ class PostCreationTest(TransactionTestCase):
         self.assertEqual(post.content, data['content'])
         self.assertEqual(post.author.username, 'bobross')
         self.assertEqual(resp.status_code, 302)
-        self.assertEqual(topic.response_count, 2)
+        self.assertEqual(topic.response_count, 3)
         self.assertEqual(topic.response_count, topic.posts.count() - 1)
         self.assertEqual(topic.updated, post.created)

@@ -94,3 +94,6 @@ LOGIN_URL = "/auth/login/"
 LOGOUT_URL = "/auth/logout/"
 
 COUNTER_STORAGE_BACKEND = 'counter.backend.DjangoCache'
+
+FORUM_TOPICS_PER_PAGE = 25
+FORUM_POSTS_PER_PAGE = 25

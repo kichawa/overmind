@@ -15,11 +15,6 @@ from forum.forms import TopicForm, PostForm
 from counter import backend
 
 
-TOPICS_PER_PAGE = getattr(settings, 'FORUM_TOPICS_PER_PAGE', 50)
-POSTS_PER_PAGE = getattr(settings, 'FORUM_POSTS_PER_PAGE', 100)
-
-
-
 def _latest_topics_update(request):
     if request.GET.get('q'):
         return None
@@ -51,7 +46,7 @@ def topics_list(request):
                          | Q(posts__content__icontains=text_search)
         topics = topics.filter(full_text_filter).distinct()
 
-    paginator = Paginator(topics, TOPICS_PER_PAGE)
+    paginator = Paginator(topics, settings.FORUM_TOPICS_PER_PAGE)
     try:
         page = paginator.page(request.GET.get('page', 1))
     except PageNotAnInteger:
@@ -83,7 +78,7 @@ def posts_list(request, topic_pk):
     topic = get_object_or_404(Topic, pk=topic_pk)
     posts = Post.objects.filter(topic=topic)\
             .select_related('author').order_by('created')
-    paginator = Paginator(posts, POSTS_PER_PAGE)
+    paginator = Paginator(posts, settings.FORUM_POSTS_PER_PAGE)
     try:
         page = paginator.page(request.GET.get('page', 1))
     except PageNotAnInteger:

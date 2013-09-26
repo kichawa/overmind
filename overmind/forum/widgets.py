@@ -25,7 +25,7 @@ def topic_view_count(request, widgets):
 @widget_handler(r"^topic-is-new:(?P<tid>\d+)$")
 def topic_is_new(request, widgets):
     if request.user.is_anonymous():
-        return {w['wid']: {'html': ''} for w in widgets}
+        return {w['wid']: {'html': '', 'isnew': False} for w in widgets}
 
     topics = {}
     query = Topic.objects.filter(id__in=[w['params']['tid'] for w in widgets])
@@ -39,10 +39,9 @@ def topic_is_new(request, widgets):
                                     request.forum_profile.last_seen_all)
         updated = topics.get(topic_id)
         if updated.replace(microsecond=0) <= last_seen:
-            html = ''
+            res[widget['wid']] = {'html': '', 'isnew': False}
         else:
-            html = '*'
-        res[widget['wid']] = {'html': html}
+            res[widget['wid']] = {'html': '*', 'isnew': True}
     return res
 
 
@@ -57,7 +56,7 @@ def login_logout(request, widgets):
 def post_is_new(request, widgets):
     profile = request.forum_profile
     if not profile:
-        return {w['wid']: {'html': ''} for w in widgets}
+        return {w['wid']: {'html': '', 'isnew': False} for w in widgets}
 
     query = Post.objects.filter(id__in=[w['params']['pid'] for w in widgets])
     posts = {}
@@ -86,9 +85,9 @@ def post_is_new(request, widgets):
         tid, created = posts[post_id]
         is_new = created > topics[tid]
         if is_new:
-            res[widget['wid']] = {'html': 'new'}
+            res[widget['wid']] = {'html': 'new', 'isnew': True}
         else:
-            res[widget['wid']] = {'html': ''}
+            res[widget['wid']] = {'html': '', 'isnew': False}
 
     # make sure, we have all topics marked as "seen" with appropriate, fresh
     # date from the newest post we ask for

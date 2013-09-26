@@ -54,13 +54,20 @@
   pk: 2
   fields:
     author: 2
-    content: "second topic second post"
+    content: "second topic, fist post"
     created: '2013-09-02 07:15:40.051310+00:00'
     topic: 2
 - model: forum.post
   pk: 3
   fields:
     author: 1
-    content: "first response in second post"
+    content: "second topic, second post"
     created: '2013-09-14 07:15:40.051310+00:00'
+    topic: 2
+- model: forum.post
+  pk: 4
+  fields:
+    author: 2
+    content: "second topic, third post (the oldest)"
+    created: '2013-09-19 07:15:40.051310+00:00'
     topic: 2
