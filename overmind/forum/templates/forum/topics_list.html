@@ -27,7 +27,7 @@
         {% for topic in topics %}
             <div class="topic row-fluid">
                 <div class="span1">
-                    {% gravatar_tag topic.author.avatar_url 24 %}
+                    {% avatar_tag topic.author.email 24 %}
                     <span data-dynamic-widget="topic-is-new:{{ topic.id }}"></span>
                 </div>
                 <div class="span6">

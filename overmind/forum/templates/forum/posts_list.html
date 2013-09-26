@@ -1,5 +1,7 @@
 {% extends "forum/base.html" %}
 
+{% load avatar %}
+
 
 {% block forum_header %}
     {{ block.super }}
@@ -18,7 +20,7 @@
             <div class="row-fluid box">
                 <div class="span1">
                     <span data-dynamic-widget="post-is-new:{{ post.id }}"></span>
-                    <img src="{{ post.author.avatar_url }}?size=80x80" style="width:80px;height:80px">
+                    {% avatar_tag topic.author.email 128 %}
                 </div>
                 <div class="span11 box-shadow">
                     <p>{{ post.content }}</p>

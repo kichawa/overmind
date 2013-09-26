@@ -9,13 +9,14 @@ register = template.Library()
 
 
 @register.simple_tag
-def gravatar(email, width=32, height=None, **extra_params):
+def avatar(email, width=32, height=None, **extra_params):
     if not height:
         height = width
     params = extra_params.copy()
     params.update({
         'gravatar': 'hashed',
         'size': '{}x{}'.format(width, height),
+        'bgset': 'bg3',
     })
     query = urllib.parse.urlencode(params)
     enc_email = str(hashlib.md5(email.lower().encode('utf8')).hexdigest())
@@ -23,8 +24,8 @@ def gravatar(email, width=32, height=None, **extra_params):
 
 
 @register.simple_tag
-def gravatar_tag(email, width=32, height=None, **tag_attributes):
-    url = gravatar(email, width, height)
+def avatar_tag(email, width=32, height=None, **tag_attributes):
+    url = avatar(email, width, height)
     attributes = [
         'width="{}px"'.format(width),
         'height="{}px"'.format(height),
