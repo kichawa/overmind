@@ -2,10 +2,12 @@ import collections
 import json
 
 from django.http import HttpResponse
+from django.views.decorators.cache import never_cache
 
 from dynamicwidget import handlers
 
 
+@never_cache
 def widgets(request):
     wids = request.GET.getlist('wid')
     matching_handlers = collections.defaultdict(list)
