@@ -1,0 +1,16 @@
+$fontFamilyMain: arial, sans-serif;
+$fontSizeBase: 13px;
+$fontSizeSmall: 11px;
+$fontSizeBig: 14px;
+
+p, span, div, em {
+  color: $textPrimary;
+
+  &.small {
+    font-size: $fontSizeSmall;
+  }
+}
+
+a {
+  color: $textHighlight;
+}

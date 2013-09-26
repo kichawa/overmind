@@ -7,41 +7,39 @@
 {% block forum_header %}
     {{ block.super }}
     | <a href="{% url "forum:mark-all-topics-read" %}">mark topics as read</a>
-{% endblock %}
-
-
-{% block forum_content %}
-    <div class="box box-shadow text-center">
-        <form action="{% url "forum:topics-list" %}" method="GET">
-            <input type="search" name="q" value="{{ request.GET.q }}">
+    <form action="{% url "forum:topics-list" %}" method="GET">
+        <input type="search" name="q" value="{{ request.GET.q }}">
+        <div class="subheader">
             {% for tag in tags %}
                 <label>
                     <input type="checkbox" name="tag" value="{{ tag.label }}" {% if tag.checked %}checked{% endif %}> {{ tag.label }}
                 </label>
             {% endfor %}
             <button class="btn" type="submit">Filter</button>
-        </form>
-    </div>
+        </div>
+    </form>
+{% endblock %}
 
-    <div class="box box-shadow content">
+
+{% block forum_content %}
+
+    <div class="table expand topic-list">
         {% for topic in topics %}
-            <div class="topic row-fluid">
-                <div class="span1">
-                    {% avatar_tag topic.author.email 24 %}
+            <div class="row">
+                <div class="col">
+                    {% avatar_tag topic.author.email 36 %}
+                </div>
+                <div class="col">
                     <span data-dynamic-widget="topic-is-new:{{ topic.id }}"></span>
                 </div>
-                <div class="span6">
-                    <a href="{{ topic.get_absolute_url }}">{{ topic.subject }}</a>
-                    <div class="author">by {{ topic.author.username }}</div>
+                <div class="col topic-col">
+                    <a href="{{ topic.get_absolute_url }}">{{ topic.subject }}</a><br/>
+                    {{ topic.response_count }} posts&#160;-&#160;<span data-dynamic-widget="topic-view-count:{{ topic.id }}"></span> views
+                    &#160;{% for tag in topic.tags.all %}<span class="tag">{{ tag }}</span>{% endfor %}
+
                 </div>
-                <div class="span1">
-                    <span>{{ topic.response_count }}</span>/<span data-dynamic-widget="topic-view-count:{{ topic.id }}"></span>
-                </div>
-                <div class="span3">
-                    <small>{% for tag in topic.tags.all %}{{ tag }}{% if not forloop.last %}, {% endif %}{% endfor %}</small>
-                </div>
-                <div class="span1">
-                    <small title="{{ topic.updated }}">{{ topic.updated|timesince }} ago</small>
+                <div class="col">
+                    <span class="small" title="{{ topic.updated }}">{{ topic.updated|timesince }} ago</span>
                 </div>
             </div>
         {% empty %}
@@ -49,7 +47,7 @@
         {% endfor %}
     </div>
 
-    <div class="box box-shadow text-center">
+    <div class="">
         {% if topics.has_previous %}
         <a href="?{% urlquery_set request page=topics.previous_page_number %}">previous</a>
         {% endif %}

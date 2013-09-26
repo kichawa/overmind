@@ -1,0 +1,137 @@
+p, span, div, em {
+  color: #566579; }
+  p.small, span.small, div.small, em.small {
+    font-size: 11px; }
+
+a {
+  color: #0088cc; }
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font: inherit;
+  font-size: 100%;
+  vertical-align: baseline; }
+
+html {
+  line-height: 1; }
+
+ol, ul {
+  list-style: none; }
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0; }
+
+caption, th, td {
+  text-align: left;
+  font-weight: normal;
+  vertical-align: middle; }
+
+q, blockquote {
+  quotes: none; }
+  q:before, q:after, blockquote:before, blockquote:after {
+    content: "";
+    content: none; }
+
+a img {
+  border: none; }
+
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section, summary {
+  display: block; }
+
+.hidden {
+  display: none; }
+
+.table {
+  display: table;
+  border-collapse: collapse; }
+  .table.expand {
+    width: 100%; }
+
+.row {
+  display: table-row;
+  width: 100%; }
+
+.col {
+  display: table-cell;
+  vertical-align: middle; }
+  .col.fluid-1 {
+    width: 8.3%; }
+  .col.fluid-2 {
+    width: 16.7%; }
+  .col.fluid-3 {
+    width: 25%; }
+  .col.fluid-4 {
+    width: 33.3%; }
+  .col.fluid-5 {
+    width: 41.6%; }
+  .col.fluid-6 {
+    width: 50%; }
+  .col.fluid-7 {
+    width: 58.3%; }
+  .col.fluid-8 {
+    width: 66.6%; }
+  .col.fluid-9 {
+    width: 75%; }
+  .col.fluid-10 {
+    width: 83.3%; }
+  .col.fluid-11 {
+    width: 91.6%; }
+  .col.fluid-12 {
+    width: 100%; }
+
+html, body {
+  min-height: 100%;
+  background-color: #f6f9fc; }
+
+.main {
+  max-width: 1024px;
+  margin: 0 auto;
+  font-family: arial, sans-serif;
+  font-size: 13px; }
+
+.content {
+  margin: auto; }
+
+.header {
+  background-color: #ebf1f5;
+  margin: auto;
+  padding: 1%; }
+
+.tag {
+  margin: 0 2px; }
+
+.topic-list {
+  background: white; }
+  .topic-list .row {
+    border-bottom: 1px solid #ebf1f5; }
+  .topic-list .col {
+    padding: 8px;
+    overflow: hidden;
+    max-width: 439px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    line-height: 1.4em; }
+    .topic-list .col:first-child {
+      line-height: 0;
+      width: 36px; }
+    .topic-list .col:last-child {
+      text-align: right; }
+  .topic-list .topic-col a {
+    font-size: 14px;
+    font-weight: bold;
+    text-decoration: none; }

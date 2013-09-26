@@ -1,0 +1,78 @@
+@import "compass/reset";
+
+//Helpers:
+.hidden {
+  display: none;
+}
+
+//Grid:
+.table {
+  display: table;
+  border-collapse: collapse;
+  &.expand {
+    width: 100%;
+  }
+}
+
+.row {
+  display: table-row;
+  width: 100%;
+}
+
+.col {
+  display: table-cell;
+  vertical-align: middle;
+
+  &.fluid-1 {
+    width: 8.3%
+  }
+  &.fluid-2 {
+    width: 16.7%
+  }
+  &.fluid-3 {
+    width: 25%
+  }
+  &.fluid-4 {
+    width: 33.3%;
+  }
+  &.fluid-5 {
+    width: 41.6%;
+  }
+  &.fluid-6 {
+    width: 50%;
+  }
+  &.fluid-7 {
+    width: 58.3%
+  }
+  &.fluid-8 {
+    width: 66.6%;
+  }
+  &.fluid-9 {
+    width: 75%;
+  }
+  &.fluid-10 {
+    width: 83.3%;
+  }
+  &.fluid-11 {
+    width: 91.6%
+  }
+  &.fluid-12 {
+    width: 100%;
+  }
+}
+
+html, body {
+  min-height: 100%;
+  background-color: $bgLevel2;
+}
+
+.main {
+  max-width: 1024px;
+  margin: 0 auto;
+  font-family: $fontFamilyMain;
+  font-size: $fontSizeBase;
+}
+
+.content {
+  margin: auto;
+}

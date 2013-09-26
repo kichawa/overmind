@@ -1,0 +1,30 @@
+.topic-list {
+  background: $bgLevel1;
+  .row {
+    border-bottom: 1px solid $bgLevel3;
+  }
+  .col {
+    padding: 8px;
+    overflow: hidden;
+    max-width: 439px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    line-height: 1.4em;
+
+    &:first-child {
+      line-height: 0;
+      width: 36px;
+    }
+    &:last-child {
+      text-align: right;
+    }
+  }
+
+  .topic-col {
+    a {
+      font-size: $fontSizeBig;
+      font-weight: bold;
+      text-decoration: none;
+    }
+  }
+}
