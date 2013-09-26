@@ -55,8 +55,8 @@ def copy_topics(pg_connection):
     sqlt_c = sqlt_connection.cursor()
     for tag in TAGS:
         sqlt_c.execute('''
-            INSERT INTO forum_tag(label)
-            VALUES (?)
+            INSERT INTO forum_tag(label, description)
+            VALUES (?, '')
         ''', (tag, ))
     for row in pg_c:
         sqlt_c.execute('''

@@ -10,7 +10,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.timezone import utc
 from django.views.decorators.http import condition
 
-from forum.models import Topic, Post, Tag
+from forum.models import Topic, Post, Tag, LastSeen
 from forum.forms import TopicForm, PostForm
 from counter import backend
 
@@ -102,7 +102,7 @@ def posts_list(request, topic_pk):
 @login_required
 def topic_create(request):
     if request.method == 'POST':
-        topic = Topic(author=request.forum_profile.user)
+        topic = Topic(author=request.user)
         form = TopicForm(request.POST, instance=topic)
         if form.is_valid():
             topic = form.save()
@@ -118,7 +118,7 @@ def post_create(request, topic_pk):
     topic = get_object_or_404(Topic, pk=topic_pk)
     if request.method == 'POST':
         with transaction.autocommit():
-            post = Post(topic=topic, author=request.forum_profile.user)
+            post = Post(topic=topic, author=request.user)
             form = PostForm(request.POST, instance=post)
             if form.is_valid():
                 post = form.save()
@@ -135,7 +135,8 @@ def post_create(request, topic_pk):
 @login_required
 def mark_all_topics_read(request):
     now = datetime.datetime.now().replace(tzinfo=utc)
-    request.forum_profile.last_seen_all = now
-    request.forum_profile.seen_topics = {}
-    request.forum_profile.save()
+    last_seen = LastSeen.obtain_for(request.user)
+    last_seen.last_seen_all = now
+    last_seen.seen_topics = {}
+    last_seen.save()
     return redirect(request.META.get('HTTP_REFERER', reverse('forum:topics-list')))
