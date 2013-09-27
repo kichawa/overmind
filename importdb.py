@@ -84,7 +84,7 @@ def copy_posts(pg_connection):
     pg_c = pg_connection.cursor()
     pg_c.execute('''
     SELECT
-        id, topic_id, user_id, body, created
+        id, topic_id, user_id, body, created, user_ip
     FROM
         djangobb_forum_post
     ''')
@@ -92,7 +92,7 @@ def copy_posts(pg_connection):
     sqlt_connection = sqlite3.connect(sqlt_db_path)
     sqlt_c = sqlt_connection.cursor()
     for row in pg_c:
-        sqlt_c.execute('INSERT INTO forum_post(id, topic_id, author_id, content, created) VALUES (?, ?, ?, ?, ?)', row)
+        sqlt_c.execute('INSERT INTO forum_post(id, topic_id, author_id, content, created, ip) VALUES (?, ?, ?, ?, ?, ?)', row)
     pg_c.close()
     sqlt_connection.commit()
 
