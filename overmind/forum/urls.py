@@ -17,4 +17,7 @@ urlpatterns = patterns('forum.views',
     url(r'^topic/(?P<topic_pk>\d+)/(?:([^/]+)/)?$',
         'posts_list',
         name="posts-list"),
+    url(r'^posts/search/$',
+        'posts_search',
+        name="posts-search"),
 )

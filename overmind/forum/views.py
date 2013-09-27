@@ -6,13 +6,18 @@ from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.db import transaction
 from django.db.models import Q
+from django.http import HttpResponse, Http404
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.timezone import utc
 from django.views.decorators.http import condition
 
 from forum.models import Topic, Post, Tag, LastSeen
-from forum.forms import TopicForm, PostForm
+from forum.forms import TopicForm, PostForm, SearchForm
 from counter import backend
+
+
+TOPICS_PER_PAGE = getattr(settings, 'FORUM_TOPICS_PER_PAGE', 50)
+POSTS_PER_PAGE = getattr(settings, 'FORUM_POSTS_PER_PAGE', 100)
 
 
 def _latest_topics_update(request):
@@ -30,6 +35,47 @@ def _latest_topics_update(request):
         return topics[0].updated
     except IndexError:
         return None
+
+
+def posts_search(request):
+    ctx = {}
+    form = SearchForm()
+    posts = Post.objects.select_related()\
+            .order_by('-created')
+
+    tag_labels = request.GET.getlist('tag')
+    if tag_labels:
+        posts = posts.filter(topic__tags__label__in=tag_labels).distinct()
+
+    if request.method == 'GET' and 'pattern' in request.GET:
+        form = SearchForm(request.GET)
+        if form.is_valid():
+            q = form.cleaned_data.get('pattern')
+            ctx.update({'pattern': q})
+            posts = posts.filter(content__icontains=q)
+        else:
+            posts = Post.objects.none()
+
+    paginator = Paginator(posts, TOPICS_PER_PAGE)
+    try:
+        page = paginator.page(request.GET.get('page', 1))
+    except PageNotAnInteger:
+        page = paginator.page(1)
+    except EmptyPage:
+        page = paginator.page(paginator.num_pages)
+
+    tags = []
+    for tag in Tag.objects.all():
+        tags.append({
+            'label': tag.label,
+            'checked': tag.label in request.GET.getlist('tag'),
+        })
+    ctx.update({
+        'form': form,
+        'posts': page,
+        'tags': tags,
+    })
+    return render(request, 'forum/posts_search.html', ctx)
 
 
 @condition(last_modified_func=_latest_topics_update)

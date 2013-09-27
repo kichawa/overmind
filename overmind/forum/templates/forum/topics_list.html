@@ -6,6 +6,7 @@
 
 {% block forum_header %}
     {{ block.super }}
+    | <a href="{% url "forum:posts-search" %}">search in posts</a>
     | <a href="{% url "forum:mark-all-topics-read" %}">mark topics as read</a>
     <form action="{% url "forum:topics-list" %}" method="GET">
         <input type="search" name="q" value="{{ request.GET.q }}">

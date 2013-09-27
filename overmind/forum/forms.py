@@ -4,6 +4,13 @@ from django.db import transaction
 from forum.models import Topic, Post, Tag
 
 
+class SearchForm(forms.Form):
+    pattern = forms.CharField(
+            min_length=3,
+            #TODO move limit to settings
+            required=True,
+            )
+
 
 class TopicForm(forms.Form):
     subject = forms.CharField(

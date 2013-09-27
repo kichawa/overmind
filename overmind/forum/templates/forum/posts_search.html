@@ -1,0 +1,47 @@
+{% extends "forum/base.html" %}
+{% load search%}
+{% block forum_content %}
+    <div class="box box-shadow text-center">
+    <div class="box box-shadow text-center">
+        <form action="{% url "forum:posts-search" %}" method="GET">
+            {%comment%}<input type="search" name="q" value="{{ request.GET.q }}">{%endcomment%}
+            {%csrf_token %}
+            {{form.as_p}}
+            {% for tag in tags %}
+                <label>
+                    <input type="checkbox" name="tag" value="{{ tag.label }}" {% if tag.checked %}checked{% endif %}> {{ tag.label }}
+                </label>
+            {% endfor %}
+            <button class="btn" type="submit">Search</button>
+        </form>
+    </div>
+
+    <div class="box box-shadow content">
+        {% for post in posts %}
+            <div class="post row-fluid">
+                <div class="span12">
+                    {%mark_pattern post.content pattern%}
+                </div>
+                <div>---------------------<div>
+            </div>
+                </div>
+                <div>---------------------<div>
+            </div>
+        {% empty %}
+            No topics
+        {% endfor %}
+    </div>
+    <div class="box box-shadow text-center">
+        {% if posts.has_previous %}
+            <a href="?page={{ posts.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ posts.number }} of {{ posts.paginator.num_pages }}.
+        </span>
+
+        {% if posts.has_next %}
+            <a href="?page={{ posts.next_page_number }}">next</a>
+        {% endif %}
+    </div>
+{%endblock%}

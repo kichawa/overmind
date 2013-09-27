@@ -40,7 +40,7 @@
     created: '2013-09-02 07:15:40.051310+00:00'
     updated: '2013-09-14 07:15:40.051310+00:00'
     tags: [2, 3]
-    response_count: 1
+    response_count: 3
 
 
 - model: forum.post
@@ -54,20 +54,27 @@
   pk: 2
   fields:
     author: 2
-    content: "second topic, fist post"
+    content: "second topic first post"
     created: '2013-09-02 07:15:40.051310+00:00'
     topic: 2
 - model: forum.post
   pk: 3
   fields:
     author: 1
-    content: "second topic, second post"
+    content: "first response in second topic"
     created: '2013-09-14 07:15:40.051310+00:00'
     topic: 2
 - model: forum.post
   pk: 4
   fields:
-    author: 2
-    content: "second topic, third post (the oldest)"
-    created: '2013-09-19 07:15:40.051310+00:00'
+    author: 1
+    content: "second response in second topic. To ja kichawa, kichawowY"
+    created: '2013-09-14 07:15:40.051310+00:00'
+    topic: 2
+- model: forum.post
+  pk: 5
+  fields:
+    author: 1
+    content: "third response in second topic. Kichawa KiChAwA"
+    created: '2013-09-14 07:15:40.051310+00:00'
     topic: 2

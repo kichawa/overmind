@@ -17,7 +17,7 @@ class PostCreationTest(TransactionTestCase):
 
     def test_post_create(self):
         topic = Topic.objects.get(pk=2)
-        self.assertEqual(topic.response_count, 1)
+        self.assertEqual(topic.response_count, 3)
         url = reverse('forum:post-create', args=(topic.pk, ))
         data = {'content': 'comment by bob'}
         resp = self.client.post(url, data)
@@ -26,6 +26,6 @@ class PostCreationTest(TransactionTestCase):
         self.assertEqual(post.content, data['content'])
         self.assertEqual(post.author.username, 'bobross')
         self.assertEqual(resp.status_code, 302)
-        self.assertEqual(topic.response_count, 3)
+        self.assertEqual(topic.response_count, 4)
         self.assertEqual(topic.response_count, topic.posts.count() - 1)
         self.assertEqual(topic.updated, post.created)
