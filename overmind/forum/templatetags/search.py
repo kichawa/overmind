@@ -1,6 +1,7 @@
-from django import template
-from django.http import HttpRequest
 import re
+
+from django import template
+
 
 register = template.Library()
 
