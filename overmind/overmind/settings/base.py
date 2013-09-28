@@ -19,7 +19,6 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
 
     'json_field',
-    'south',
 
     'core',
     'forum',
