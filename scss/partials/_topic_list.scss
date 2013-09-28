@@ -1,21 +1,26 @@
 .topic-list {
-  background: $bgLevel1;
+  background: $bgLevel2;
+  table-layout: fixed;
   .row {
-    border-bottom: 1px solid $bgLevel3;
+    border-bottom: 1px solid $colorLightBlue;
   }
   .col {
-    padding: 8px;
+    padding: 6px 8px;
     overflow: hidden;
     max-width: 439px;
     white-space: nowrap;
     text-overflow: ellipsis;
-    line-height: 1.4em;
+    line-height: 1.6em;
 
     &:first-child {
       line-height: 0;
       width: 36px;
     }
     &:last-child {
+      text-align: right;
+    }
+
+    &.right-align {
       text-align: right;
     }
   }

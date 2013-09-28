@@ -1,0 +1,10 @@
+.pagination {
+  background: $colorDarkGrey;
+  padding: 8px;
+  text-align: center;
+  border-top: 5px solid $colorShinyBlue;
+
+  span {
+    color: $colorWhite;
+  }
+}

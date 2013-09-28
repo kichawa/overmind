@@ -33,17 +33,23 @@
                 <div class="col">
                     {% avatar_tag topic.author.email 36 %}
                 </div>
-                <div class="col">
-                    <span data-dynamic-widget="topic-is-new:{{ topic.id }}"></span>
+                <div class="col fluid-1">
+                    <span data-dynamic-widget="topic-is-new:{{ topic.id }}">unread</span>
                 </div>
                 <div class="col topic-col">
                     <a href="{{ topic.get_absolute_url }}">{{ topic.subject }}</a><br/>
-                    {{ topic.response_count }} posts&#160;-&#160;<span data-dynamic-widget="topic-view-count:{{ topic.id }}"></span> views
-                    &#160;{% for tag in topic.tags.all %}<span class="tag">{{ tag }}</span>{% endfor %}
-
+                    <span class="tag solved">solved</span>
+                    <span class="tag closed">closed</span>
+                    {% for tag in topic.tags.all %}<span class="tag">{{ tag }}</span>{% endfor %}
                 </div>
-                <div class="col">
-                    <span class="small" title="{{ topic.updated }}">{{ topic.updated|timesince }} ago</span>
+                <div class="col fluid-1 right-align">
+                    {{ topic.response_count }} posts
+                </div>
+                <div class="col fluid-1 right-align">
+                    <span data-dynamic-widget="topic-view-count:{{ topic.id }}"></span> views
+                </div>
+                <div class="col fluid-2 right-align">
+                    <span title="{{ topic.updated }}">{{ topic.updated|timesince }} ago</span>
                 </div>
             </div>
         {% empty %}
@@ -51,7 +57,7 @@
         {% endfor %}
     </div>
 
-    <div class="">
+    <div class="pagination">
         {% if topics.has_previous %}
         <a href="?{% urlquery_set request page=topics.previous_page_number %}">previous</a>
         {% endif %}

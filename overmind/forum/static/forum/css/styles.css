@@ -1,5 +1,5 @@
 p, span, div, em {
-  color: #566579; }
+  color: #222222; }
   p.small, span.small, div.small, em.small {
     font-size: 11px; }
 
@@ -96,42 +96,60 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
 
 html, body {
   min-height: 100%;
-  background-color: #f6f9fc; }
+  background-color: #ebf1f5; }
 
 .main {
   max-width: 1024px;
   margin: 0 auto;
   font-family: arial, sans-serif;
-  font-size: 13px; }
+  font-size: 12px; }
 
 .content {
   margin: auto; }
 
 .header {
-  background-color: #ebf1f5;
+  background-color: white;
   margin: auto;
-  padding: 1%; }
+  padding: 1%;
+  border-bottom: 5px solid #0088cc; }
 
 .tag {
-  margin: 0 2px; }
+  margin: 0 4px; }
+  .tag.solved {
+    background: #bbffbb;
+    padding: 0 4px; }
+  .tag.closed {
+    background: #ffbbbb;
+    padding: 0 4px; }
 
 .topic-list {
-  background: white; }
+  background: white;
+  table-layout: fixed; }
   .topic-list .row {
     border-bottom: 1px solid #ebf1f5; }
   .topic-list .col {
-    padding: 8px;
+    padding: 6px 8px;
     overflow: hidden;
     max-width: 439px;
     white-space: nowrap;
     text-overflow: ellipsis;
-    line-height: 1.4em; }
+    line-height: 1.6em; }
     .topic-list .col:first-child {
       line-height: 0;
       width: 36px; }
     .topic-list .col:last-child {
       text-align: right; }
+    .topic-list .col.right-align {
+      text-align: right; }
   .topic-list .topic-col a {
     font-size: 14px;
     font-weight: bold;
     text-decoration: none; }
+
+.pagination {
+  background: #222222;
+  padding: 8px;
+  text-align: center;
+  border-top: 5px solid #0088cc; }
+  .pagination span {
+    color: white; }

@@ -1,12 +1,25 @@
-$bgLevel1: #fff;
-$bgLevel2: #f6f9fc;
-$bgLevel3: #ebf1f5;
-$bgLevel4: #333;
+$colorWhite: #fff;
 
-$textPrimary: #566579;
-$textHighlight: #08c;
+$colorVeryLightBlue: #f6f9fc;
+$colorLightBlue: #ebf1f5;
+$colorShinyBlue: #08c;
 
-$grey: #ccc;
-$lightGrey: #eee;
+$colorLightRed: #fbb;
 
-$shadowColor: #ccc;
+$colorLightGreen: #bfb;
+
+$colorGrey: #566579;
+$colorDarkGrey: #222;
+
+
+$bgLevel1: $colorLightBlue;
+$bgLevel2: $colorWhite;
+$bgLevel3: $colorVeryLightBlue;
+
+$textPrimary: $colorDarkGrey;
+$textHighlight: $colorShinyBlue;
+
+$tagSolved: $colorLightGreen;
+$tagClosed: $colorLightRed;
+
+

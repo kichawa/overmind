@@ -1,3 +1,13 @@
 .tag {
-  margin: 0 2px;
+  margin: 0 4px;
+
+  &.solved {
+    background: $tagSolved;
+    padding: 0 4px;
+  }
+
+  &.closed {
+    background: $tagClosed;
+    padding: 0 4px;
+  }
 }
