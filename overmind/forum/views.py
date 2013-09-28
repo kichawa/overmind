@@ -5,7 +5,6 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.db import transaction
-from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.timezone import utc
 from django.views.decorators.http import condition
@@ -32,7 +31,6 @@ def posts_search(request):
         posts = posts.filter(content__icontains=pattern)
     else:
         posts = Post.objects.none()
-
 
     paginator = Paginator(posts,
                           getattr(settings, 'FORUM_SEARCH_RESULT_PER_PAGE', 25))
@@ -84,13 +82,6 @@ def topics_list(request):
     tag_labels = request.GET.getlist('tag')
     if tag_labels:
         topics = topics.filter(tags__label__in=tag_labels).distinct()
-
-    text_search = request.GET.get('q')
-    if text_search:
-        # this is spartaaa!
-        full_text_filter = Q(subject__icontains=text_search) \
-                         | Q(posts__content__icontains=text_search)
-        topics = topics.filter(full_text_filter).distinct()
 
     paginator = Paginator(topics, settings.FORUM_TOPICS_PER_PAGE)
     try:

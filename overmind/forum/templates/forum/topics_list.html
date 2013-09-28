@@ -8,15 +8,18 @@
     {{ block.super }}
     | <a href="{% url "forum:posts-search" %}">search in posts</a>
     | <a href="{% url "forum:mark-all-topics-read" %}">mark topics as read</a>
+    <form action="{% url "forum:posts-search" %}" method="GET">
+        <input type="search" name="pattern">
+        <button type="submit">Search posts</button>
+    </form>
     <form action="{% url "forum:topics-list" %}" method="GET">
-        <input type="search" name="q" value="{{ request.GET.q }}">
         <div class="subheader">
             {% for tag in tags %}
                 <label>
                     <input type="checkbox" name="tag" value="{{ tag.label }}" {% if tag.checked %}checked{% endif %}> {{ tag.label }}
                 </label>
             {% endfor %}
-            <button class="btn" type="submit">Filter</button>
+            <button type="submit">Filter topics</button>
         </div>
     </form>
 {% endblock %}
