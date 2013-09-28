@@ -6,7 +6,6 @@ from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.db import transaction
 from django.db.models import Q
-from django.http import HttpResponse, Http404
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.timezone import utc
 from django.views.decorators.http import condition
