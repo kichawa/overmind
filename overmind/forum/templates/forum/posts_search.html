@@ -1,5 +1,9 @@
 {% extends "forum/base.html" %}
-{% load search%}
+
+
+{% load search urlquery %}
+
+
 {% block forum_content %}
     <div class="box box-shadow text-center">
     <div class="box box-shadow text-center">
@@ -30,7 +34,7 @@
 
     <div class="box box-shadow text-center">
         {% if posts.has_previous %}
-            <a href="?page={{ posts.previous_page_number }}">previous</a>
+            <a href="?{% urlquery_set request page=posts.previous_page_number %}">previous</a>
         {% endif %}
 
         <span class="current">
@@ -38,7 +42,7 @@
         </span>
 
         {% if posts.has_next %}
-            <a href="?page={{ posts.next_page_number }}">next</a>
+            <a href="?{% urlquery_set request page=posts.next_page_number %}">next</a>
         {% endif %}
     </div>
 {%endblock%}
