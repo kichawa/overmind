@@ -1,9 +1,7 @@
-from django.test import TransactionTestCase, Client, TestCase
-from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
-from django.template import Template, Context, TemplateSyntaxError
+from django.test import TransactionTestCase, Client, TestCase
 
-from forum.models import Post
+from forum.templatetags import search
 
 
 class PostsSearchTest(TransactionTestCase):
@@ -11,7 +9,6 @@ class PostsSearchTest(TransactionTestCase):
 
     def setUp(self):
         self.client = Client()
-
 
     def test_post_create(self):
         url = reverse('forum:posts-search')
@@ -22,13 +19,16 @@ class PostsSearchTest(TransactionTestCase):
 
 
 class MarkPostTest(TestCase):
-
     def test_mark_post(self):
-        out = Template(
-                "{% load search %}"
-                "{% mark_pattern 'third response in second post. kichawa Kichawa KiChAwA' 'kichawa' %}"
-                ).render(Context({
-                    'pattern': 'kichawa', 
-                    }))
-        proper = 'third response in second post. <span class="marked-pattern">kichawa</span> <span class="marked-pattern">Kichawa</span> <span class="marked-pattern">KiChAwA</span>'
-        self.assertEqual(out, proper)
+        test_data = (
+            ('', '', ''),
+            ('', 'foo', ''),
+            ('foo baz bar', '', 'foo baz bar'),
+            ('foo baz bar foo', 'baz', 'foo [baz] bar foo'),
+            ('foofoofoo', 'foo', '[foo][foo][foo]'),
+            ('foofoofoo', 'oo', 'f[oo]f[oo]f[oo]'),
+        )
+
+        for input_data, pattern, expected in test_data:
+            result = search.mark_pattern(input_data, pattern, fmt='[{}]')
+            self.assertMultiLineEqual(result, expected)
