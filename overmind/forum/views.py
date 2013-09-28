@@ -154,8 +154,10 @@ def topic_create(request):
     if request.method == 'POST':
         topic = Topic(author=request.user)
         form = TopicForm(request.POST, instance=topic)
+        form = TopicForm(request.POST, instance=topic)
         if form.is_valid():
-            topic = form.save()
+            ip = request.META.get('REMOTE_ADDR')
+            topic = form.save(ip)
             return redirect(topic.get_absolute_url())
     else:
         form = TopicForm()
@@ -171,7 +173,9 @@ def post_create(request, topic_pk):
             post = Post(topic=topic, author=request.user)
             form = PostForm(request.POST, instance=post)
             if form.is_valid():
-                post = form.save()
+                post = form.save(commit=False)
+                post.ip = request.META.get('REMOTE_ADDR')
+                post.save()
                 topic.response_count = topic.posts.count() - 1
                 topic.updated = post.created
                 topic.save()
