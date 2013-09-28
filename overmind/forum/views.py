@@ -15,8 +15,48 @@ from forum.forms import TopicForm, PostForm, SearchForm
 from counter import backend
 
 
-TOPICS_PER_PAGE = getattr(settings, 'FORUM_TOPICS_PER_PAGE', 50)
-POSTS_PER_PAGE = getattr(settings, 'FORUM_POSTS_PER_PAGE', 100)
+def posts_search(request):
+    form = SearchForm()
+
+    if request.GET.get('pattern', None):
+        form = SearchForm(request.GET)
+    else:
+        form = SearchForm()
+
+    if form.is_valid():
+        posts = Post.objects.select_related().order_by('-created')
+        tag_labels = request.GET.getlist('tag')
+        if tag_labels:
+            posts = posts.filter(topic__tags__label__in=tag_labels).distinct()
+        pattern = form.cleaned_data.get('pattern')
+        posts = posts.filter(content__icontains=pattern)
+    else:
+        posts = Post.objects.none()
+
+
+    paginator = Paginator(posts,
+                          getattr(settings, 'FORUM_SEARCH_RESULT_PER_PAGE', 25))
+    try:
+        page = paginator.page(request.GET.get('page', 1))
+    except PageNotAnInteger:
+        page = paginator.page(1)
+    except EmptyPage:
+        page = paginator.page(paginator.num_pages)
+
+    tags = []
+    for tag in Tag.objects.all():
+        tags.append({
+            'label': tag.label,
+            'checked': tag.label in request.GET.getlist('tag'),
+        })
+    ctx = {
+        'form': form,
+        'posts': page,
+        'tags': tags,
+        'pattern': form.is_valid() and form.cleaned_data.get('pattern', None),
+    }
+    return render(request, 'forum/posts_search.html', ctx)
+
 
 
 def _latest_topics_update(request):
@@ -34,47 +74,6 @@ def _latest_topics_update(request):
         return topics[0].updated
     except IndexError:
         return None
-
-
-def posts_search(request):
-    ctx = {}
-    form = SearchForm()
-    posts = Post.objects.select_related()\
-            .order_by('-created')
-
-    tag_labels = request.GET.getlist('tag')
-    if tag_labels:
-        posts = posts.filter(topic__tags__label__in=tag_labels).distinct()
-
-    if request.method == 'GET' and 'pattern' in request.GET:
-        form = SearchForm(request.GET)
-        if form.is_valid():
-            q = form.cleaned_data.get('pattern')
-            ctx.update({'pattern': q})
-            posts = posts.filter(content__icontains=q)
-        else:
-            posts = Post.objects.none()
-
-    paginator = Paginator(posts, TOPICS_PER_PAGE)
-    try:
-        page = paginator.page(request.GET.get('page', 1))
-    except PageNotAnInteger:
-        page = paginator.page(1)
-    except EmptyPage:
-        page = paginator.page(paginator.num_pages)
-
-    tags = []
-    for tag in Tag.objects.all():
-        tags.append({
-            'label': tag.label,
-            'checked': tag.label in request.GET.getlist('tag'),
-        })
-    ctx.update({
-        'form': form,
-        'posts': page,
-        'tags': tags,
-    })
-    return render(request, 'forum/posts_search.html', ctx)
 
 
 @condition(last_modified_func=_latest_topics_update)

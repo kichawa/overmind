@@ -5,11 +5,7 @@ from forum.models import Topic, Post, Tag
 
 
 class SearchForm(forms.Form):
-    pattern = forms.CharField(
-            min_length=3,
-            #TODO move limit to settings
-            required=True,
-            )
+    pattern = forms.RegexField(min_length=3, required=True, regex=r'\w{3}')
 
 
 class TopicForm(forms.Form):

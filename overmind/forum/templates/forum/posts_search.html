@@ -4,9 +4,7 @@
     <div class="box box-shadow text-center">
     <div class="box box-shadow text-center">
         <form action="{% url "forum:posts-search" %}" method="GET">
-            {%comment%}<input type="search" name="q" value="{{ request.GET.q }}">{%endcomment%}
-            {%csrf_token %}
-            {{form.as_p}}
+            {{ form.as_p }}
             {% for tag in tags %}
                 <label>
                     <input type="checkbox" name="tag" value="{{ tag.label }}" {% if tag.checked %}checked{% endif %}> {{ tag.label }}
@@ -18,19 +16,18 @@
 
     <div class="box box-shadow content">
         {% for post in posts %}
-            <div class="post row-fluid">
-                <div class="span12">
-                    {%mark_pattern post.content pattern%}
-                </div>
-                <div>---------------------<div>
+            <h2>{{ post.topic.subject }}</h2>
+            <div class="span12">
+                {% mark_pattern post.content pattern %}
             </div>
-                </div>
-                <div>---------------------<div>
-            </div>
+            <hr>
         {% empty %}
-            No topics
+            {% if pattern %}
+                No results
+            {% endif %}
         {% endfor %}
     </div>
+
     <div class="box box-shadow text-center">
         {% if posts.has_previous %}
             <a href="?page={{ posts.previous_page_number }}">previous</a>
