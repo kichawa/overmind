@@ -18,10 +18,7 @@ def topic_view_count(request, widgets):
         value = counters.get(key_tmpl.format(widget['params']['tid']), 0)
         ctx = {'value': value}
         html = render_to_string('forum/widgets/topic_view_count.html', ctx)
-        res[widget['wid']] = {
-            'html': html,
-            'counter': value,
-        }
+        res[widget['wid']] = {'html': html, 'counter': value}
     return res
 
 
@@ -108,7 +105,7 @@ def topic_comment_form(request, widgets):
 
     form = PostForm()
     res = {}
-    ctx = RequestContext(request, {'form': form})
+    ctx = RequestContext(request, {'form': form, 'user': request.user})
     for widget in widgets:
         ctx['topic_id'] = widget['params']['tid']
         html = render_to_string('forum/widgets/topic_comment_form.html', ctx)
