@@ -33,14 +33,18 @@ class TopicForm(forms.Form):
         return tags
 
     @transaction.atomic
-    def save(self):
+    def save(self, ip=None):
         topic = self.instance
         topic.subject = self.cleaned_data['subject']
         topic.save()
         for tag in self.cleaned_data['tags']:
             topic.tags.add(tag)
-        Post.objects.create(author=topic.author, topic=topic,
-                            content=self.cleaned_data['content'])
+        Post.objects.create(
+                author=topic.author,
+                topic=topic,
+                content=self.cleaned_data['content'],
+                ip=ip,
+                )
         return topic
 
 

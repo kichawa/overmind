@@ -59,6 +59,7 @@ class Post(models.Model):
     author = models.ForeignKey(settings.AUTH_USER_MODEL)
     content = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
+    ip = models.IPAddressField(null=True, blank=True)
 
     def __str__(self):
         return self.content[:120]
