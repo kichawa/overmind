@@ -16,8 +16,10 @@ def topic_view_count(request, widgets):
     res = {}
     for widget in widgets:
         value = counters.get(key_tmpl.format(widget['params']['tid']), 0)
+        ctx = {'value': value}
+        html = render_to_string('forum/widgets/topic_view_count.html', ctx)
         res[widget['wid']] = {
-            'html': str(value),
+            'html': html,
             'counter': value,
         }
     return res
@@ -39,10 +41,10 @@ def topic_is_new(request, widgets):
         latest = last_seen.seen_topics.get(
                 str(topic_id), request.user.forum_last_seen.last_seen_all)
         updated = topics.get(topic_id)
-        if updated.replace(microsecond=0) <= latest:
-            res[widget['wid']] = {'html': '', 'isnew': False}
-        else:
-            res[widget['wid']] = {'html': '*', 'isnew': True}
+        is_new = updated.replace(microsecond=0) > latest
+        ctx = {'is_new': is_new}
+        html = render_to_string('forum/widgets/topic_is_new.html', ctx)
+        res[widget['wid']] = {'html': html, 'isnew': is_new}
     return res
 
 
@@ -85,10 +87,9 @@ def post_is_new(request, widgets):
         post_id = int(widget['params']['pid'])
         tid, created = posts[post_id]
         is_new = created > topics[tid]
-        if is_new:
-            res[widget['wid']] = {'html': 'new', 'isnew': True}
-        else:
-            res[widget['wid']] = {'html': '', 'isnew': False}
+        ctx = {'is_new': is_new}
+        html = render_to_string('forum/widgets/post_is_new.html', ctx)
+        res[widget['wid']] = {'html': html, 'isnew': is_new}
 
     # make sure, we have all topics marked as "seen" with appropriate, fresh
     # date from the newest post we ask for
