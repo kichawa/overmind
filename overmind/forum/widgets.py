@@ -1,12 +1,10 @@
-import datetime
-
 from django.template import RequestContext
 from django.template.loader import render_to_string
-from django.utils.timezone import utc
 
 from counter import backend
 from dynamicwidget.decorators import widget_handler
 
+from . import permissions
 from .forms import PostForm
 from .models import LastSeen, Post, Topic
 
@@ -107,38 +105,24 @@ def post_attributes(request, widgets):
     if request.user.is_anonymous():
         return {w['wid']: {'html': ''} for w in widgets}
 
-    is_moderator = Moderator.objects.filter(user=request.user).exists()
     posts = {}
-    if not is_moderator:
-        post_ids = [w['params']['pid'] for w in widgets]
-        query = Post.objects.filter(id__in=post_ids).values('id', 'author',
-                                                            'created')
-        for post in query:
-            posts[post['id']] = post
+    query = Post.objects.filter(id__in=[w['params']['pid'] for w in widgets])
+    for post in query:
+        posts[post.id] = post
+
+    perm_manager = permissions.manager_for(request.user)
 
     res = {}
-    edit_limit_date = datetime.datetime.now().replace(tzinfo=utc) \
-                      - datetime.timedelta(minutes=10)
     for widget in widgets:
-        if is_moderator:
-            ctx = {
-                'post': {'id': widget['params']['pid']},
-                'can_edit': True,
-                'can_close': True,
-            }
-        else:
-            post = posts[int(widget['params']['pid'])]
-            ctx = {
-                'post': post,
-                'can_edit': post['author'] == request.user.id \
-                            and post['created'] > edit_limit_date,
-                'can_close': False,
-            }
-
+        post = posts[int(widget['params']['pid'])]
+        ctx = {
+            'post': post,
+            'can_edit': perm_manager.can_edit_post(post),
+            'can_delete': perm_manager.can_delete_post(post),
+        }
         html = render_to_string('forum/widgets/post_attributes.html',
                                 RequestContext(request, ctx))
         res[widget['wid']] = {'html': html}
-
     return res
 
 
@@ -147,12 +131,23 @@ def topic_comment_form(request, widgets):
     if request.user.is_anonymous():
         return {w['wid']: {'html': ''} for w in widgets}
 
+    perm_manager = permissions.manager_for(request.user)
+
+    topics = {}
+    topic_ids = [w['params']['tid'] for w in widgets]
+    for topic in Topic.objects.filter(id__in=topic_ids):
+        topics[topic.id] = topic
+
     form = PostForm()
     res = {}
     ctx = RequestContext(request, {'form': form, 'user': request.user})
     for widget in widgets:
-        ctx['topic_id'] = widget['params']['tid']
-        html = render_to_string('forum/widgets/topic_comment_form.html', ctx)
+        topic = topics[int(widget['params']['tid'])]
+        if not perm_manager.can_create_post(topic):
+            html = ''
+        else:
+            ctx['topic'] = topic
+            html = render_to_string('forum/widgets/topic_comment_form.html', ctx)
         res[widget['wid']] = {'html': html}
     return res
 

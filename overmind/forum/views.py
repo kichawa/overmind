@@ -6,13 +6,14 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.core.urlresolvers import reverse
 from django.db import transaction
+from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.timezone import utc
 from django.views.decorators.cache import never_cache
 
 from counter import backend
 
-from . import cache
+from . import cache, permissions
 from .models import Topic, Post, Tag, LastSeen
 from .forms import TopicForm, PostForm, SearchForm
 
@@ -126,6 +127,10 @@ def posts_list_last_page(request, topic_pk):
 
 @login_required
 def topic_create(request):
+    perm_manager = permissions.manager_for(request.user)
+    if not perm_manager.can_create_topic():
+        return HttpResponseForbidden()
+
     if request.method == 'POST':
         topic = Topic(author=request.user)
         form = TopicForm(request.POST, instance=topic)
@@ -143,6 +148,11 @@ def topic_create(request):
 @login_required
 def post_create(request, topic_pk):
     topic = get_object_or_404(Topic, pk=topic_pk)
+
+    perm_manager = permissions.manager_for(request.user)
+    if not perm_manager.can_create_post(topic):
+        return HttpResponseForbidden()
+
     if request.method == 'POST':
         with transaction.autocommit():
             post = Post(topic=topic, author=request.user)
