@@ -10,21 +10,23 @@
 
 
 {% block forum_content %}
-    <div class="box box-shadow">
+    <div class="topic-title">
         <h1>{{ topic.subject }}</h1>
-        <p>{% for tag in topic.tags.all %}{{ tag }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+        {% for tag in topic.tags.all %}<span class="tag">{{ tag }}</span>{% endfor %}
     </div>
 
-    <div class="box">
+    <div class="table posts-list">
         {% for post in posts %}
-            <div class="row-fluid box">
-                <div class="span1">
+            <div class="row">
+                <div class="col">
                     <span data-dynamic-widget="post-is-new:{{ post.id }}"></span>
-                    {% avatar_tag post.author.email 128 %}
+                    {% avatar_tag post.author.email 76 %}
                 </div>
-                <div class="span11 box-shadow">
-                    <p>{{ post.content }}</p>
-                    by {{ post.author.username }}, {{ post.created }}
+                <div class="col">
+                    <div class="post">
+                        <span class="meta small"><a href="javascript:alert('to do');">{{ post.author.username }}</a>, {{ post.created }}</span>
+                        <p>{{ post.content }}</p>
+                    </div>
                 </div>
             </div>
         {% empty %}
@@ -32,9 +34,9 @@
         {% endfor %}
     </div>
 
-    <div class="box box-shadow" data-dynamic-widget="topic-comment-form:{{ topic.id }}"></div>
+    <div class="" data-dynamic-widget="topic-comment-form:{{ topic.id }}"></div>
 
-    <div class="box box-shadow text-center">
+    <div class="pagination">
         {% if posts.has_previous %}
             <a href="?page={{ posts.previous_page_number }}">previous</a>
         {% endif %}
