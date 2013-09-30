@@ -16,7 +16,6 @@ def avatar(email, width=32, height=None, **extra_params):
     params.update({
         'gravatar': 'hashed',
         'size': '{}x{}'.format(width, height),
-        'bgset': 'bg3',
     })
     query = urllib.parse.urlencode(params)
     enc_email = str(hashlib.md5(email.lower().encode('utf8')).hexdigest())
