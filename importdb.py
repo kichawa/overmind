@@ -1,8 +1,9 @@
 #!/usr/bin/env python
-import random
 import getpass
-import sys
+import random
+import re
 import sqlite3
+import sys
 
 import psycopg2
 
@@ -17,6 +18,26 @@ TAGS = [
     'qt',
     'programming',
 ]
+
+
+_bbcode_to_markdown = (
+    (re.compile(r'\[b\]((?:.|\n)+?)\[\/b\]'), "**\1**"),
+    (re.compile(r'\[u\]((?:.|\n)+?)\[\/u\]'), "*\1*"),
+    (re.compile(r'\[s\]((?:.|\n)+?)\[\/s\]'), "~~\1~~"),
+    (re.compile(r'\[color\=.+?\]((?:.|\n)+?)\[\/color\]'), "\1"),
+    (re.compile(r'(\n)\[\*\]'), "\1* "),
+    (re.compile(r'\[\/*list\]'), ''),
+    (re.compile(r'\[img\]((?:.|\n)+?)\[\/img\]'), '![](\1)'),
+    (re.compile(r'\[url=(.+?)\]((?:.|\n)+?)\[\/url\]'), '[\2](\1)'),
+    # TODO - [code]
+    # TODO - [quote]
+)
+
+
+def bbcode_to_markdown(text):
+    for rx, repl in _bbcode_to_markdown:
+        text = rx.sub(repl, text)
+    return text
 
 
 def copy_users(pg_connection):
@@ -92,6 +113,8 @@ def copy_posts(pg_connection):
     sqlt_connection = sqlite3.connect(sqlt_db_path)
     sqlt_c = sqlt_connection.cursor()
     for row in pg_c:
+        row = list(row)
+        row[3] = bbcode_to_markdown(row[3])
         sqlt_c.execute('INSERT INTO forum_post(id, topic_id, author_id, content, created, ip) VALUES (?, ?, ?, ?, ?, ?)', row)
     pg_c.close()
     sqlt_connection.commit()
