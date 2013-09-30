@@ -3,7 +3,7 @@ import urllib.parse
 
 from django.test import TestCase
 
-from core.templatetags import avatar
+from forum.templatetags import avatar
 
 
 class Gravatar(TestCase):

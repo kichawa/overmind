@@ -20,7 +20,6 @@ INSTALLED_APPS = (
 
     'json_field',
 
-    'core',
     'forum',
     'simpleauth',
     'dynamicwidget',
