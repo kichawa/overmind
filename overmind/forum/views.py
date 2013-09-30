@@ -1,11 +1,12 @@
 import datetime
 
-from django.contrib.auth.decorators import login_required
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.core.urlresolvers import reverse
 from django.conf import settings
+from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.core.urlresolvers import reverse
 from django.db import transaction
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.timezone import utc
 from django.views.decorators.http import condition
 
@@ -183,3 +184,9 @@ def mark_all_topics_read(request):
     last_seen.seen_topics = {}
     last_seen.save()
     return redirect(request.META.get('HTTP_REFERER', reverse('forum:topics-list')))
+
+
+def user_details(request, user_pk):
+    user = get_object_or_404(get_user_model(), pk=user_pk)
+    ctx = {'user': user}
+    return render(request, 'forum/user_details.html', ctx)

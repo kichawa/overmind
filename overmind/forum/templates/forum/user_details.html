@@ -1,0 +1,9 @@
+{% extends "forum/base.html" %}
+
+{% load avatar %}
+
+
+{% block forum_content %}
+    <h1>{{ user.get_full_name }} - {{ user.username }}</h1>
+    <p>{% avatar_tag user.email 256 %}</p>
+{% endblock %}

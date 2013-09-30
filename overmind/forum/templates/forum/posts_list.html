@@ -24,7 +24,7 @@
                 </div>
                 <div class="col">
                     <div class="post">
-                        <span class="meta small"><a href="javascript:alert('to do');">{{ post.author.username }}</a>, {{ post.created }}</span>
+                        <span class="meta small"><a href="{% url "forum:user-details" post.author.pk %}">{{ post.author.username }}</a>, {{ post.created }}</span>
                         <p>{{ post.content|markup:"markdown" }}</p>
                     </div>
                 </div>

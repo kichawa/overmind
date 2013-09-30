@@ -20,4 +20,7 @@ urlpatterns = patterns('forum.views',
     url(r'search/$',
         'posts_search',
         name="posts-search"),
+    url(r'user/(?P<user_pk>\d+)/$',
+        'user_details',
+        name="user-details"),
 )
