@@ -1,35 +1,58 @@
 .topic-list {
-  background: $bgLevel2;
-  table-layout: fixed;
-  .row {
-    border-bottom: 1px solid $colorLightBlue;
-  }
-  .col {
-    padding: 6px 8px;
-    overflow: hidden;
-    max-width: 439px;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    line-height: 1.6em;
+  width: 80%;
+  margin: auto;
 
-    &:first-child {
-      line-height: 0;
-      width: 36px;
-    }
-    &:last-child {
-      text-align: right;
-    }
-
-    &.right-align {
-      text-align: right;
-    }
+  .topic {
+    table-layout: fixed;
+    background: $bgLevel2;
+    border-bottom: 1px solid $colorLightGrey;
   }
 
-  .topic-col {
+  .avatar {
+    line-height: 0;
+    width: 36px;
+    padding: 0 0 0 8px;
+    display: table-cell;
+    vertical-align: middle;
+  }
+
+  .topic-main {
+    display: table-cell;
+    vertical-align: top;
+    position: relative;
+    padding: 6px 8px 2px 8px;
+    line-height: 1.2em;
+
     a {
-      font-size: $fontSizeBig;
-      font-weight: bold;
+      white-space: nowrap;
+      text-overflow: ellipsis;
       text-decoration: none;
     }
+
+    .new {
+      font-weight: bold;
+    }
+
+    .closed {
+    }
+
+    .solved {
+    }
+
+    .tags {
+      font-size: $fontSizeSmall;
+      position: absolute;
+      right: 4px;
+      bottom: 4px;
+    }
+
+    .topic-meta {
+      font-size: $fontSizeTiny;
+      color: $colorGrey;
+      span {
+        color: $colorGrey;
+      }
+    }
   }
+
 }

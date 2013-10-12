@@ -29,17 +29,17 @@ def topic_is_new(request, widgets):
 
     topics = {}
     query = Topic.objects.filter(id__in=[w['params']['tid'] for w in widgets])
-    for tid, updated in query.values_list('id', 'updated'):
-        topics[tid] = updated
+    for topic in query:
+        topics[topic.id] = topic
     res = {}
     last_seen = LastSeen.obtain_for(request.user)
     for widget in widgets:
         topic_id = int(widget['params']['tid'])
         latest = last_seen.seen_topics.get(
                 str(topic_id), request.user.forum_last_seen.last_seen_all)
-        updated = topics.get(topic_id)
-        is_new = updated.replace(microsecond=0) > latest
-        ctx = {'is_new': is_new}
+        topic = topics.get(topic_id)
+        is_new = topic.updated.replace(microsecond=0) > latest
+        ctx = {'is_new': is_new, 'topic': topic}
         html = render_to_string('forum/widgets/topic_is_new.html', ctx)
         res[widget['wid']] = {'html': html, 'isnew': is_new}
     return res

@@ -27,31 +27,30 @@
 
 {% block forum_content %}
 
-    <div class="table expand topic-list">
+    <div class="topic-list">
         {% for topic in topics %}
-            <div class="row">
-                <div class="col">
-                    {% avatar_tag topic.author.email 36 %}
+            <div class="table expand topic">
+                <div class="avatar">
+                    {% avatar_tag topic.author.email 30 %}
                 </div>
-                <div class="col topic-col">
-                    <a href="{{ topic.get_absolute_url }}">{{ topic.subject }}</a><br/>
-                    <span class="tag" data-dynamic-widget="topic-is-new:{{ topic.id }}"></span>
-                    <span class="tag solved">solved</span>
-                    <span class="tag closed">closed</span>
-                    {% for tag in topic.tags.all %}<span class="tag">{{ tag }}</span>{% endfor %}
-                </div>
-                <div class="col fluid-1 right-align">
-                    {% if topic.response_count %}
-                        {{ topic.response_count }} response{{ topic.response_count|pluralize }}
-                    {% else %}
-                        -
-                    {% endif %}
-                </div>
-                <div class="col fluid-1 right-align">
-                    <span data-dynamic-widget="topic-view-count:{{ topic.id }}"></span>
-                </div>
-                <div class="col fluid-2 right-align">
-                    <span title="{{ topic.updated }}">{{ topic.updated|timesince }} ago</span>
+                <div class="topic-main">
+                    <a href="{{ topic.get_absolute_url }}" data-dynamic-widget="topic-is-new:{{ topic.id }}">{{ topic.subject }}</a>
+                    <div class="tags">
+                        {% for tag in topic.tags.all %}<span class="tag">{{ tag }}</span>{% endfor %}
+                        <span class="tag solved">solved</span>
+                       <!-- <span class="tag closed">closed</span>-->
+                    </div>
+
+                    <div class="topic-meta">
+                        {% if topic.response_count %}
+                            {{ topic.response_count }} response{{ topic.response_count|pluralize }}
+                        {% else %}
+                            -
+                        {% endif %}
+                        <span data-dynamic-widget="topic-view-count:{{ topic.id }}"></span>
+                        <span title="{{ topic.updated }}">{{ topic.updated|timesince }} ago</span>
+                    </div>
+
                 </div>
             </div>
         {% empty %}

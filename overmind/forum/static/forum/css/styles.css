@@ -45,13 +45,19 @@ a img {
 article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section, summary {
   display: block; }
 
-p, span, div, em {
-  color: #333333; }
-  p.small, span.small, div.small, em.small {
-    font-size: 12px; }
+p, div, em {
+  color: gray; }
+  p.small, div.small, em.small {
+    font-size: 11px; }
+  p.tiny, div.tiny, em.tiny {
+    font-size: 10px; }
 
-a {
-  color: #0088cc; }
+h1 {
+  font-size: 24px;
+  color: #383838; }
+
+a, a > span {
+  color: #383838; }
 
 .hidden {
   display: none; }
@@ -123,39 +129,49 @@ html, body {
     padding: 0 4px; }
 
 .topic-list {
-  background: white;
-  table-layout: fixed; }
-  .topic-list .row {
-    border-bottom: 1px solid #ebf1f5; }
-  .topic-list .col {
-    padding: 6px 8px;
-    overflow: hidden;
-    max-width: 439px;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    line-height: 1.6em; }
-    .topic-list .col:first-child {
-      line-height: 0;
-      width: 36px; }
-    .topic-list .col:last-child {
-      text-align: right; }
-    .topic-list .col.right-align {
-      text-align: right; }
-  .topic-list .topic-col a {
-    font-size: 16px;
-    font-weight: bold;
-    text-decoration: none; }
+  width: 80%;
+  margin: auto; }
+  .topic-list .topic {
+    table-layout: fixed;
+    background: white;
+    border-bottom: 1px solid #dddddd; }
+  .topic-list .avatar {
+    line-height: 0;
+    width: 36px;
+    padding: 0 0 0 8px;
+    display: table-cell;
+    vertical-align: middle; }
+  .topic-list .topic-main {
+    display: table-cell;
+    vertical-align: top;
+    position: relative;
+    padding: 6px 8px 2px 8px;
+    line-height: 1.2em; }
+    .topic-list .topic-main a {
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      text-decoration: none; }
+    .topic-list .topic-main .new {
+      font-weight: bold; }
+    .topic-list .topic-main .tags {
+      font-size: 11px;
+      position: absolute;
+      right: 4px;
+      bottom: 4px; }
+    .topic-list .topic-main .topic-meta {
+      font-size: 10px;
+      color: #566579; }
+      .topic-list .topic-main .topic-meta span {
+        color: #566579; }
 
 .topic-title {
   width: 80%;
   margin: 14px auto; }
   .topic-title h1 {
     display: inline-block;
-    font-size: 24px;
     font-weight: bold;
-    padding: 8px;
-    color: #333333; }
-  .topic-title .tag {
+    padding: 8px; }
+  .topic-title .tags {
     display: inline-block; }
 
 .posts-list {
@@ -210,10 +226,51 @@ html, body {
       color: #566579;
       line-height: 2em; }
 
+.new-post {
+  width: 80%;
+  margin: 8px auto; }
+  .new-post .col {
+    vertical-align: top;
+    position: relative; }
+    .new-post .col:first-child {
+      width: 92px; }
+    .new-post .col:last-child {
+      text-align: right; }
+    .new-post .col textarea {
+      position: relative;
+      background: white;
+      padding: 4px 1%;
+      min-height: 64px;
+      line-height: 1.5em;
+      border: 1px solid #dddddd;
+      -webkit-border-radius: 6px;
+      -moz-border-radius: 6px;
+      -ms-border-radius: 6px;
+      -o-border-radius: 6px;
+      border-radius: 6px;
+      width: 98%; }
+    .new-post .col .ta-after {
+      content: '';
+      position: absolute;
+      border-style: solid;
+      border-width: 0 14px 14px 0;
+      border-color: transparent white;
+      display: block;
+      width: 0;
+      z-index: 1;
+      left: -13px;
+      top: 20px; }
+    .new-post .col .ta-before {
+      content: '';
+      position: absolute;
+      border-style: solid;
+      border-width: 0 14px 14px 0;
+      border-color: transparent #dddddd;
+      display: block;
+      width: 0;
+      z-index: 0;
+      left: -14px;
+      top: 20px; }
+
 .pagination {
-  background: #333333;
-  padding: 8px;
-  text-align: center;
-  border-top: 5px solid #0088cc; }
-  .pagination span {
-    color: white; }
+  text-align: center; }

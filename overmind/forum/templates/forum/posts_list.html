@@ -12,18 +12,18 @@
 {% block forum_content %}
     <div class="topic-title">
         <h1>{{ topic.subject }}</h1>
-        {% for tag in topic.tags.all %}<span class="tag">{{ tag }}</span>{% endfor %}
+        <span class="tags">{% for tag in topic.tags.all %}<span class="tag">{{ tag }}</span>{% endfor %}</span>
     </div>
 
     <div class="table posts-list">
         {% for post in posts %}
             <div class="row">
                 <div class="col">
-                    <span data-dynamic-widget="post-is-new:{{ post.id }}"></span>
                     {% avatar_tag post.author.email 76 %}
                 </div>
                 <div class="col">
                     <div class="post">
+                        <span class="flag new" data-dynamic-widget="post-is-new:{{ post.id }}"></span>
                         <span class="meta small"><a href="{% url "forum:user-details" post.author.pk %}">{{ post.author.username }}</a>, {{ post.created }}</span>
                         <p>{{ post.content|markup:"markdown" }}</p>
                     </div>
@@ -34,7 +34,7 @@
         {% endfor %}
     </div>
 
-    <div class="" data-dynamic-widget="topic-comment-form:{{ topic.id }}"></div>
+    <div class="table new-post" data-dynamic-widget="topic-comment-form:{{ topic.id }}"></div>
 
     <div class="pagination">
         {% if posts.has_previous %}

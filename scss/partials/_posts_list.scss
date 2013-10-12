@@ -3,12 +3,10 @@
   margin: 14px auto;
   h1 {
     display: inline-block;
-    font-size: 24px;
     font-weight: bold;
     padding: 8px;
-    color: $colorDarkGrey;
   }
-  .tag {
+  .tags {
     display: inline-block;
   }
 }
@@ -68,5 +66,57 @@
       color: $colorGrey;
       line-height: 2em;
     }
+  }
+}
+
+.new-post {
+  width: 80%;
+  margin: 8px auto;
+
+  .col {
+    vertical-align: top;
+    position: relative;
+    &:first-child {
+      width: 92px;
+    }
+    &:last-child {
+      text-align: right;
+    }
+
+    textarea {
+      position: relative;
+      background: $colorWhite;
+      padding: 4px 1%;
+      min-height: 64px;
+      line-height: 1.5em;
+      border: 1px solid $colorLightGrey;
+      @include border-radius(6px);
+      width: 98%;
+    }
+    .ta-after {
+        content: '';
+        position: absolute;
+        border-style: solid;
+        border-width: 0 14px 14px 0;
+        border-color: transparent $colorWhite;
+        display: block;
+        width: 0;
+        z-index: 1;
+        left: -13px;
+        top: 20px;
+      }
+
+      .ta-before {
+        content: '';
+        position: absolute;
+        border-style: solid;
+        border-width: 0 14px 14px 0;
+        border-color: transparent $colorLightGrey;
+        display: block;
+        width: 0;
+        z-index: 0;
+        left: -14px;
+        top: 20px;
+      }
   }
 }

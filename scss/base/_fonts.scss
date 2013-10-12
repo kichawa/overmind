@@ -1,16 +1,26 @@
 $fontFamilyMain: "Helvetica Neue", Helvetica, arial, sans-serif;
 $fontSizeBase: 14px;
-$fontSizeSmall: 12px;
-$fontSizeBig: 16px;
+$fontSizeSmall: 11px;
+$fontSizeTiny: 10px;
+$fontSizeBig: 18px;
+$fontSizeHuge: 24px;
 
-p, span, div, em {
+p, div, em {
   color: $textPrimary;
 
   &.small {
     font-size: $fontSizeSmall;
   }
+  &.tiny {
+    font-size: $fontSizeTiny;
+  }
 }
 
-a {
+h1 {
+  font-size: $fontSizeHuge;
+  color: $colorDarkerGrey
+}
+
+a, a > span {
   color: $textHighlight;
 }

@@ -11,7 +11,8 @@ $colorLightGreen: #bfb;
 $colorLighterGrey: #eee;
 $colorLightGrey: #ddd;
 $colorGrey: #566579;
-$colorDarkGrey: #333;
+$colorDarkGrey: #808080;
+$colorDarkerGrey: #383838;
 
 
 $bgLevel1: $colorLighterGrey;
@@ -19,7 +20,7 @@ $bgLevel2: $colorWhite;
 $bgLevel3: $colorVeryLightBlue;
 
 $textPrimary: $colorDarkGrey;
-$textHighlight: $colorShinyBlue;
+$textHighlight: $colorDarkerGrey;
 
 $tagSolved: $colorLightGreen;
 $tagClosed: $colorLightRed;
