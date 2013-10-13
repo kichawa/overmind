@@ -1,8 +1,9 @@
 .topic-list {
-  width: 80%;
+  width: 90%;
   margin: auto;
 
   .topic {
+    position: relative;
     table-layout: fixed;
     background: $bgLevel2;
     border-bottom: 1px solid $colorLightGrey;
@@ -22,10 +23,11 @@
     position: relative;
     padding: 6px 8px 2px 8px;
     line-height: 1.2em;
+    overflow: hidden;
+    text-overflow: ellipsis;
 
     a {
       white-space: nowrap;
-      text-overflow: ellipsis;
       text-decoration: none;
     }
 

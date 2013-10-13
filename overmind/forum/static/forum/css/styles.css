@@ -114,10 +114,18 @@ html, body {
   margin: auto; }
 
 .header {
-  background-color: white;
-  margin: auto;
-  padding: 1%;
-  border-bottom: 5px solid #0088cc; }
+  background-color: #383838;
+  margin: 0 auto 20px auto;
+  padding: 18px 5%;
+  position: relative;
+  color: #f6f9fc; }
+  .header p, .header a, .header span {
+    color: inherit; }
+  .header .login-area {
+    color: inherit;
+    position: absolute;
+    right: 5%;
+    top: 18px; }
 
 .tag {
   margin: 0 4px; }
@@ -129,9 +137,10 @@ html, body {
     padding: 0 4px; }
 
 .topic-list {
-  width: 80%;
+  width: 90%;
   margin: auto; }
   .topic-list .topic {
+    position: relative;
     table-layout: fixed;
     background: white;
     border-bottom: 1px solid #dddddd; }
@@ -146,10 +155,11 @@ html, body {
     vertical-align: top;
     position: relative;
     padding: 6px 8px 2px 8px;
-    line-height: 1.2em; }
+    line-height: 1.2em;
+    overflow: hidden;
+    text-overflow: ellipsis; }
     .topic-list .topic-main a {
       white-space: nowrap;
-      text-overflow: ellipsis;
       text-decoration: none; }
     .topic-list .topic-main .new {
       font-weight: bold; }
@@ -165,7 +175,7 @@ html, body {
         color: #566579; }
 
 .topic-title {
-  width: 80%;
+  width: 90%;
   margin: 14px auto; }
   .topic-title h1 {
     display: inline-block;
@@ -175,7 +185,7 @@ html, body {
     display: inline-block; }
 
 .posts-list {
-  width: 80%;
+  width: 90%;
   margin: auto; }
   .posts-list .col {
     padding: 8px 0;
@@ -227,15 +237,14 @@ html, body {
       line-height: 2em; }
 
 .new-post {
-  width: 80%;
+  width: 90%;
   margin: 8px auto; }
   .new-post .col {
     vertical-align: top;
-    position: relative; }
-    .new-post .col:first-child {
-      width: 92px; }
+    position: relative;
+    text-align: right; }
     .new-post .col:last-child {
-      text-align: right; }
+      width: 92px; }
     .new-post .col textarea {
       position: relative;
       background: white;
@@ -248,29 +257,37 @@ html, body {
       -ms-border-radius: 6px;
       -o-border-radius: 6px;
       border-radius: 6px;
-      width: 98%; }
-    .new-post .col .ta-after {
+      width: 98%;
+      max-width: 98%;
+      outline: none;
+      transition: 0.3s linear border-color; }
+      .new-post .col textarea:focus {
+        border-color: #0088cc; }
+        .new-post .col textarea:focus + .arrow-border {
+          border-color: transparent #0088cc; }
+    .new-post .col .arrow-fill {
       content: '';
       position: absolute;
       border-style: solid;
-      border-width: 0 14px 14px 0;
+      border-width: 0 0 14px 14px;
       border-color: transparent white;
       display: block;
       width: 0;
       z-index: 1;
-      left: -13px;
+      right: -13px;
       top: 20px; }
-    .new-post .col .ta-before {
+    .new-post .col .arrow-border {
       content: '';
       position: absolute;
       border-style: solid;
-      border-width: 0 14px 14px 0;
+      border-width: 0 0 14px 14px;
       border-color: transparent #dddddd;
       display: block;
       width: 0;
       z-index: 0;
-      left: -14px;
-      top: 20px; }
+      right: -14px;
+      top: 20px;
+      transition: 0.3s linear border-color; }
 
 .pagination {
   text-align: center; }

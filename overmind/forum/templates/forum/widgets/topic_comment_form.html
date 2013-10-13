@@ -2,14 +2,13 @@
 
 <form class="row" action="{% url "forum:post-create" topic_pk=topic_id %}" method="POST">
     <div class="col">
-        {% avatar_tag user.email 76 %}
-    </div>
-    <div class="col">
-        <span class="ta-before"></span>
         <textarea name="content" placeholder="reply"></textarea>
-        <span class="ta-after"></span>
+        <span class="arrow-border"></span>
+        <span class="arrow-fill"></span>
         {% csrf_token %}
         <button type="submit">reply</button>
     </div>
-
+    <div class="col">
+        {% avatar_tag user.email 76 %}
+    </div>
 </form>

@@ -37,18 +37,16 @@
                     <a href="{{ topic.get_absolute_url }}" data-dynamic-widget="topic-is-new:{{ topic.id }}">{{ topic.subject }}</a>
                     <div class="tags">
                         {% for tag in topic.tags.all %}<span class="tag">{{ tag }}</span>{% endfor %}
-                        <span class="tag solved">solved</span>
-                       <!-- <span class="tag closed">closed</span>-->
                     </div>
 
                     <div class="topic-meta">
                         {% if topic.response_count %}
                             {{ topic.response_count }} response{{ topic.response_count|pluralize }}
                         {% else %}
-                            -
+                            no responses
                         {% endif %}
-                        <span data-dynamic-widget="topic-view-count:{{ topic.id }}"></span>
-                        <span title="{{ topic.updated }}">{{ topic.updated|timesince }} ago</span>
+                        | <span data-dynamic-widget="topic-view-count:{{ topic.id }}"></span>
+                        | <span title="{{ topic.updated }}">{{ topic.updated|timesince }} ago</span>
                     </div>
 
                 </div>

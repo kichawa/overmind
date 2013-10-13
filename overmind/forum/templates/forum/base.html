@@ -15,7 +15,7 @@
                 <a href="{% url "forum:topics-list" %}">topics list</a>
                 | <a href="{% url "forum:topic-create" %}">create topic</a>
             {% endblock %}
-            | <span data-dynamic-widget="login-logout"></span>
+            <div class="login-area"><span data-dynamic-widget="login-logout"></span></div>
         </div>
         <div class="content">
         {% block forum_content %}{% endblock %}

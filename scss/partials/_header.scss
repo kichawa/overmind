@@ -1,6 +1,18 @@
 .header {
-  background-color: $bgLevel2;
-  margin: auto;
-  padding: 1%;
-  border-bottom: 5px solid $colorShinyBlue;
+  background-color: $bgLevel3;
+  margin: 0 auto 20px auto;
+  padding: 18px 5%;
+  position: relative;
+  color: $colorVeryLightBlue;
+  p, a, span {
+    color: inherit;
+  }
+
+
+  .login-area {
+    color: inherit;
+    position: absolute;
+    right: 5%;
+    top: 18px;
+  }
 }
