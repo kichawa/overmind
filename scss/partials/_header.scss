@@ -1,18 +1,40 @@
 .header {
-  background-color: $bgLevel3;
+  background: $bgLevel2;
   margin: 0 auto 20px auto;
   padding: 18px 5%;
   position: relative;
-  color: $colorVeryLightBlue;
-  p, a, span {
-    color: inherit;
-  }
 
 
   .login-area {
-    color: inherit;
     position: absolute;
     right: 5%;
     top: 18px;
+  }
+
+  .search-bar {
+    width: 200px;
+    background: inherit;
+    display: inline-block;
+    &:hover {
+      .search-filter {
+        display: block;
+      }
+    }
+  }
+
+  .search-top {
+
+  }
+
+  .search-filter {
+    display: none;
+    position: absolute;
+    width: 100%;
+    left: 0;
+    background: inherit;
+
+    form {
+      margin-left: 5%;
+    }
   }
 }

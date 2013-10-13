@@ -114,18 +114,28 @@ html, body {
   margin: auto; }
 
 .header {
-  background-color: #383838;
+  background: white;
   margin: 0 auto 20px auto;
   padding: 18px 5%;
-  position: relative;
-  color: #f6f9fc; }
-  .header p, .header a, .header span {
-    color: inherit; }
+  position: relative; }
   .header .login-area {
-    color: inherit;
     position: absolute;
     right: 5%;
     top: 18px; }
+  .header .search-bar {
+    width: 200px;
+    background: inherit;
+    display: inline-block; }
+    .header .search-bar:hover .search-filter {
+      display: block; }
+  .header .search-filter {
+    display: none;
+    position: absolute;
+    width: 100%;
+    left: 0;
+    background: inherit; }
+    .header .search-filter form {
+      margin-left: 5%; }
 
 .tag {
   margin: 0 4px; }
