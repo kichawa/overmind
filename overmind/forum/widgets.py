@@ -111,3 +111,10 @@ def topic_comment_form(request, widgets):
         html = render_to_string('forum/widgets/topic_comment_form.html', ctx)
         res[widget['wid']] = {'html': html}
     return res
+
+
+@widget_handler(r"^logged-user-actions$")
+def logged_user_actions(request, widgets):
+    ctx = RequestContext(request)
+    html = render_to_string('forum/widgets/logged_user_actions.html', ctx)
+    return {"logged-user-actions": {"html": html}}

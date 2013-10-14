@@ -13,7 +13,7 @@
         <div class="header">
             {% block forum_header %}
                 <a href="{% url "forum:topics-list" %}">topics list</a>
-                | <a href="{% url "forum:topic-create" %}">create topic</a>
+                <span data-dynamic-widget="logged-user-actions"></span>
             {% endblock %}
             <div class="login-area"><span data-dynamic-widget="login-logout"></span></div>
         </div>
