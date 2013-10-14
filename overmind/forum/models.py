@@ -69,6 +69,23 @@ class Topic(models.Model):
         return self.subject
 
 
+class TopicHistory(models.Model):
+    ACTION_CHOICES = (
+        ('deleted', 'Topic was deleted'),
+        ('recovered', 'Topic was recovered'),
+        ('subject_changed', 'Topic subject was changed'),
+        ('solved', 'Topic was marked as solved'),
+        ('not_solved', 'Topic was marked as not solved'),
+        ('closed', 'Topic was closed'),
+        ('opened', 'Topic was opened'),
+    )
+    topic = models.ForeignKey(Topic)
+    action = models.CharField(max_length=16, choices=ACTION_CHOICES)
+    created = models.DateTimeField(auto_now_add=True)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL)
+    prev_subject = models.TextField(default='', blank=True)
+
+
 class Post(models.Model):
     topic = models.ForeignKey(Topic, related_name='posts')
     author = models.ForeignKey(settings.AUTH_USER_MODEL)
@@ -95,3 +112,16 @@ class Post(models.Model):
             url += '?page={}'.format(page)
         url += '#post-{}'.format(self.pk)
         return url
+
+
+class PostHistory(models.Model):
+    ACTION_CHOICES = (
+        ('deleted', 'Post was deleted'),
+        ('recovered', 'Post was recovered'),
+        ('content_changed', 'Post content was changed'),
+    )
+    post = models.ForeignKey(Post)
+    action = models.CharField(max_length=16, choices=ACTION_CHOICES)
+    created = models.DateTimeField(auto_now_add=True)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL)
+    prev_content = models.TextField(default='', blank=True)

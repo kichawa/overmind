@@ -14,7 +14,7 @@ from django.views.decorators.cache import never_cache
 from counter import backend
 
 from . import cache, permissions
-from .models import Topic, Post, Tag, LastSeen
+from .models import Topic, Post, Tag, LastSeen, PostHistory, TopicHistory
 from .forms import TopicForm, PostForm, SearchForm
 
 
@@ -200,7 +200,11 @@ def topic_toggle_delete(request, topic_pk):
     if not perm_manager.can_delete_topic(topic):
         return HttpResponseForbidden()
 
+    action = 'recovered' if topic.is_deleted else 'deleted'
+    TopicHistory.objects.create(topic=topic, action=action, author=request.user)
+
     topic.is_deleted = not topic.is_deleted
+    topic.updated = datetime.datetime.now().replace(tzinfo=utc)
     topic.save()
     url = request.META.get('HTTP_REFERER', None)
     if not url:
@@ -209,14 +213,20 @@ def topic_toggle_delete(request, topic_pk):
 
 
 @never_cache
+@transaction.atomic
 def post_toggle_delete(request, post_pk):
     post = get_object_or_404(Post, pk=post_pk)
     perm_manager = permissions.manager_for(request.user)
     if not perm_manager.can_delete_post(post):
         return HttpResponseForbidden()
 
+    action = 'recovered' if post.is_deleted else 'deleted'
+    PostHistory.objects.create(post=post, action=action, author=request.user)
+
     post.is_deleted = not post.is_deleted
     post.save()
+    post.topic.updated = datetime.datetime.now().replace(tzinfo=utc)
+    post.topic.save()
     url = request.META.get('HTTP_REFERER', None)
     if not url:
         url = post.get_absolute_url()
