@@ -19,7 +19,7 @@ class SimpleManager:
             post = self._posts_cache.get(post_pk)
             if not post:
                 post = Post.objects.get(pk=post_pk)
-        self._post_from_cache[post.id] = post
+        self._posts_cache[post.id] = post
         return post
 
     def _topic_from_cache(self, topic_or_pk):
@@ -80,9 +80,9 @@ class SimpleManager:
         if self._is_moderator():
             return True
         topic = self._topic_from_cache(topic_or_pk)
+        return True
         if topic.is_closed:
             return False
-        return True
 
     def can_solve_topic_with_post(self, post_or_pk):
         if self.user.is_anonymous():

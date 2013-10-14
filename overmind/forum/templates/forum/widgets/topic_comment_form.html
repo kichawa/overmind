@@ -1,6 +1,6 @@
 {% load avatar %}
 
-<form class="row" action="{% url "forum:post-create" topic_pk=topic_id %}" method="POST">
+<form class="row" action="{% url "forum:post-create" topic_pk=topic.id %}" method="POST">
     <div class="col">
         <textarea name="content" placeholder="reply"></textarea>
         <span class="arrow-border"></span>
