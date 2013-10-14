@@ -2,5 +2,11 @@
     <a href="javascript:alert('todo')">edit</a>
 {% endif %}
 {% if can_delete %}
-    <a href="javascript:alert('todo')">delete</a>
+    <a href="{% url "forum:post-toggle-delete" post_pk=post.pk %}">
+        {% if post.is_deleted %}
+            recover
+        {% else %}
+            delete
+        {% endif %}
+    </a>
 {% endif %}

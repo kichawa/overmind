@@ -47,6 +47,32 @@ def topic_is_new(request, widgets):
     return res
 
 
+@widget_handler(r"^topic-attributes:(?P<tid>\d+)$")
+def topic_attributes(request, widgets):
+    if request.user.is_anonymous():
+        return {w['wid']: {'html': ''} for w in widgets}
+
+    topics = {}
+    query = Topic.objects.filter(id__in=[w['params']['tid'] for w in widgets])
+    for topic in query:
+        topics[topic.id] = topic
+
+    perm_manager = permissions.manager_for(request.user)
+
+    res = {}
+    for widget in widgets:
+        topic = topics[int(widget['params']['tid'])]
+        ctx = {
+            'topic': topic,
+            'can_edit': perm_manager.can_edit_topic(topic),
+            'can_delete': perm_manager.can_delete_topic(topic),
+        }
+        html = render_to_string('forum/widgets/topic_attributes.html',
+                                RequestContext(request, ctx))
+        res[widget['wid']] = {'html': html}
+    return res
+
+
 @widget_handler(r"^login-logout$")
 def login_logout(request, widgets):
     ctx = RequestContext(request)

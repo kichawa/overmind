@@ -40,7 +40,7 @@ def bbcode_to_markdown(text):
     return text
 
 
-def copy_users(pg_connection):
+def copy_users(pg_connection, sqlt_connection):
     pg_c = pg_connection.cursor()
     pg_c.execute('''
         SELECT
@@ -50,7 +50,6 @@ def copy_users(pg_connection):
             auth_user
     ''')
 
-    sqlt_connection = sqlite3.connect(sqlt_db_path)
     sqlt_c = sqlt_connection.cursor()
     for row in pg_c:
         sqlt_c.execute('''
@@ -61,10 +60,9 @@ def copy_users(pg_connection):
                 VALUES (?, ?, ?, ?, '-', ?, 0, ?, 0, 1, ?)
             ''', row)
     pg_c.close()
-    sqlt_connection.commit()
 
 
-def copy_topics(pg_connection):
+def copy_topics(pg_connection, sqlt_connection):
     pg_c = pg_connection.cursor()
     pg_c.execute('''
     SELECT
@@ -73,7 +71,6 @@ def copy_topics(pg_connection):
         djangobb_forum_topic
     ''')
 
-    sqlt_connection = sqlite3.connect(sqlt_db_path)
     sqlt_c = sqlt_connection.cursor()
     for tag in TAGS:
         sqlt_c.execute('''
@@ -82,8 +79,8 @@ def copy_topics(pg_connection):
         ''', (tag, ))
     for row in pg_c:
         sqlt_c.execute('''
-            INSERT INTO forum_topic(id, author_id, subject, created, updated, response_count)
-            VALUES ($1, $2, $3, $4, $4, $5 - 1)
+            INSERT INTO forum_topic(id, author_id, subject, created, updated, response_count, is_deleted)
+            VALUES ($1, $2, $3, $4, $4, $5 - 1, 0)
         ''', row)
         attached_tags = {None}
         for _ in range(random.randint(1, len(TAGS))):
@@ -98,10 +95,9 @@ def copy_topics(pg_connection):
             ''', (row[0], tid))
 
     pg_c.close()
-    sqlt_connection.commit()
 
 
-def copy_posts(pg_connection):
+def copy_posts(pg_connection, sqlt_connection):
     pg_c = pg_connection.cursor()
     pg_c.execute('''
     SELECT
@@ -110,14 +106,16 @@ def copy_posts(pg_connection):
         djangobb_forum_post
     ''')
 
-    sqlt_connection = sqlite3.connect(sqlt_db_path)
     sqlt_c = sqlt_connection.cursor()
     for row in pg_c:
         row = list(row)
         row[3] = bbcode_to_markdown(row[3])
-        sqlt_c.execute('INSERT INTO forum_post(id, topic_id, author_id, content, created, ip) VALUES (?, ?, ?, ?, ?, ?)', row)
+        row.append(False)
+        sqlt_c.execute('''
+            INSERT INTO forum_post(id, topic_id, author_id, content, created, ip, is_deleted)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        ''', row)
     pg_c.close()
-    sqlt_connection.commit()
 
 
 
@@ -135,10 +133,12 @@ Important: database has to be initialized but empty.
     pg_conn = psycopg2.connect(
             dbname="pg_5908", user="pg_5908u", host='archlinux.megiteam.pl',
             port=5435, password=getpass.getpass('archlinux database password:'))
-    copy_users(pg_conn)
-    copy_topics(pg_conn)
-    copy_posts(pg_conn)
+    sqlt_connection = sqlite3.connect(sqlt_db_path)
+    copy_users(pg_conn, sqlt_connection)
+    copy_topics(pg_conn, sqlt_connection)
+    copy_posts(pg_conn, sqlt_connection)
     pg_conn.close()
+    sqlt_connection.commit()
 
 if __name__ == "__main__":
     main()

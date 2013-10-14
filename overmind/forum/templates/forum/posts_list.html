@@ -13,6 +13,7 @@
     <div class="topic-title">
         <h1>{{ topic.subject }}</h1>
         <span class="tags">{% for tag in topic.tags.all %}<span class="tag">{{ tag }}</span>{% endfor %}</span>
+        <div data-dynamic-widget="topic-attributes:{{ topic.id }}"></div>
     </div>
 
     <div class="table posts-list">

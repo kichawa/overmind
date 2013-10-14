@@ -53,8 +53,11 @@ class Topic(models.Model):
     updated = models.DateTimeField(auto_now_add=True)
     tags = models.ManyToManyField(Tag)
     response_count = models.PositiveIntegerField(default=0)
+    is_deleted = models.BooleanField(db_index=True, default=False)
 
     def get_absolute_url(self, last_page=False):
+        if self.is_deleted:
+            return None
         slug = slugify('{}-{}'.format(self.created.date(), self.subject))
         url = reverse('forum:posts-list', args=(self.pk, slug))
         if last_page:
@@ -72,13 +75,18 @@ class Post(models.Model):
     content = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
     ip = models.IPAddressField(null=True, blank=True)
+    is_deleted = models.BooleanField(db_index=True, default=False)
 
     def __str__(self):
         return self.content[:120]
 
     def get_absolute_url(self):
+        if self.is_deleted or self.topic.is_deleted:
+            return None
         cursor = connection.cursor()
-        sql = "SELECT COUNT(*) FROM {} WHERE created < ?".format(Post._meta.db_table)
+        sql = """
+            SELECT COUNT(*) FROM {} WHERE NOT is_deleted AND created < %s
+        """.format(Post._meta.db_table)
         cursor.execute(sql, [self.created])
         (position, ) = cursor.fetchone()
         page = math.ceil(position / settings.FORUM_POSTS_PER_PAGE)

@@ -60,7 +60,7 @@ class SimpleManager:
         return self.user.is_authenticated()
 
     def can_delete_topic(self, topic_or_pk):
-        return False
+        return self._is_moderator()
 
     def can_edit_post(self, post_or_pk):
         if self.user.is_anonymous():

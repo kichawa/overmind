@@ -1,0 +1,9 @@
+{% if can_delete %}
+    <a href="{% url "forum:topic-toggle-delete" topic_pk=topic.pk %}">
+        {% if topic.is_deleted %}
+            recover
+        {% else %}
+            delete
+        {% endif %}
+    </a>
+{% endif %}

@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.core.urlresolvers import reverse
 from django.db import transaction
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, HttpResponseGone
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.timezone import utc
 from django.views.decorators.cache import never_cache
@@ -27,7 +27,8 @@ def posts_search(request):
         form = SearchForm()
 
     if form.is_valid():
-        posts = Post.objects.select_related().order_by('-created')
+        posts = Post.objects.exclude(is_deleted=True)\
+                .select_related().order_by('-created')
         tag_labels = request.GET.getlist('tag')
         if tag_labels:
             posts = posts.filter(topic__tags__label__in=tag_labels).distinct()
@@ -63,8 +64,8 @@ def posts_search(request):
 
 @cache.topics_list
 def topics_list(request):
-    topics = Topic.objects.select_related().prefetch_related('tags')\
-            .order_by('-updated')
+    topics = Topic.objects.exclude(is_deleted=True).select_related()\
+            .prefetch_related('tags').order_by('-updated')
 
     tag_labels = request.GET.getlist('tag')
     if tag_labels:
@@ -96,7 +97,9 @@ def topics_list(request):
 @cache.posts_list
 def posts_list(request, topic_pk):
     topic = get_object_or_404(Topic, pk=topic_pk)
-    posts = Post.objects.filter(topic=topic)\
+    if topic.is_deleted:
+        return HttpResponseGone()
+    posts = Post.objects.filter(topic=topic, is_deleted=False)\
             .select_related('author').order_by('created')
     paginator = Paginator(posts, settings.FORUM_POSTS_PER_PAGE)
     try:
@@ -122,6 +125,8 @@ def posts_list(request, topic_pk):
 @never_cache
 def posts_list_last_page(request, topic_pk):
     topic = get_object_or_404(Topic, pk=topic_pk)
+    if topic.is_deleted:
+        return HttpResponseGone()
     return redirect(topic.get_absolute_url(last_page=True))
 
 
@@ -161,7 +166,8 @@ def post_create(request, topic_pk):
                 post = form.save(commit=False)
                 post.ip = request.META.get('REMOTE_ADDR')
                 post.save()
-                topic.response_count = topic.posts.count() - 1
+                posts_count = topic.posts.exclude(is_deleted=True).count()
+                topic.response_count = posts_count - 1
                 topic.updated = post.created
                 topic.save()
                 return redirect(post.get_absolute_url())
@@ -185,3 +191,33 @@ def user_details(request, user_pk):
     user = get_object_or_404(get_user_model(), pk=user_pk)
     ctx = {'user': user}
     return render(request, 'forum/user_details.html', ctx)
+
+
+@never_cache
+def topic_toggle_delete(request, topic_pk):
+    topic = get_object_or_404(Topic, pk=topic_pk)
+    perm_manager = permissions.manager_for(request.user)
+    if not perm_manager.can_delete_topic(topic):
+        return HttpResponseForbidden()
+
+    topic.is_deleted = not topic.is_deleted
+    topic.save()
+    url = request.META.get('HTTP_REFERER', None)
+    if not url:
+        url = topic.get_absolute_url()
+    return redirect(url)
+
+
+@never_cache
+def post_toggle_delete(request, post_pk):
+    post = get_object_or_404(Post, pk=post_pk)
+    perm_manager = permissions.manager_for(request.user)
+    if not perm_manager.can_delete_post(post):
+        return HttpResponseForbidden()
+
+    post.is_deleted = not post.is_deleted
+    post.save()
+    url = request.META.get('HTTP_REFERER', None)
+    if not url:
+        url = post.get_absolute_url()
+    return redirect(url)
