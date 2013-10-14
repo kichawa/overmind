@@ -40,14 +40,19 @@
 
                     <div class="topic-meta">
                         {% if topic.response_count %}
-                            {{ topic.response_count }} response{{ topic.response_count|pluralize }},
+                            {{ topic.response_count }} response{{ topic.response_count|pluralize }}
                         {% else %}
-                            no responses,
+                            no responses
                         {% endif %}
-                        <span data-dynamic-widget="topic-view-count:{{ topic.id }}">- views</span>,
+                        &bull;
+                        <span data-dynamic-widget="topic-view-count:{{ topic.id }}">- views</span>
+                        &bull;
                         <span title="{{ topic.updated }}">created {{ topic.updated|timesince }} ago</span>
+                        {% if topic.posts_count > POSTS_PER_PAGE %}
+                            &bull;
+                            <a href="{% url "forum:posts-list-last-page" topic_pk=topic.pk %}">last page</a>
+                        {% endif %}
                     </div>
-
                 </div>
             </div>
         {% empty %}

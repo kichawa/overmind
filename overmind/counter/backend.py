@@ -1,5 +1,5 @@
-from django.core.cache import get_cache
 from django.conf import settings
+from django.core.cache import get_cache
 from django.utils.importlib import import_module
 
 

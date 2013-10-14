@@ -17,7 +17,7 @@
 
     <div class="table posts-list">
         {% for post in posts %}
-            <div class="row">
+            <div class="row" id="post-{{ post.id }}">
                 <div class="col">
                     {% avatar_tag post.author.email 76 %}
                 </div>
@@ -34,7 +34,10 @@
         {% endfor %}
     </div>
 
-    <div class="table new-post" data-dynamic-widget="topic-comment-form:{{ topic.id }}"></div>
+    {% if not page.has_next %}
+        {# we're able to comment only from the lasts page #}
+        <div class="table new-post" data-dynamic-widget="topic-comment-form:{{ topic.id }}"></div>
+    {% endif %}
 
     <div class="pagination">
         {% if posts.has_previous %}

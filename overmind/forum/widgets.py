@@ -1,10 +1,11 @@
 from django.template import RequestContext
 from django.template.loader import render_to_string
 
-from forum.forms import PostForm
-from forum.models import Topic, Post, LastSeen
 from counter import backend
 from dynamicwidget.decorators import widget_handler
+
+from .forms import PostForm
+from .models import LastSeen, Post, Topic
 
 
 @widget_handler(r"^topic-view-count:(?P<tid>\d+)$")

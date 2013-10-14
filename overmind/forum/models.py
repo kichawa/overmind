@@ -1,10 +1,13 @@
 import datetime
+import math
 
-from django.core.urlresolvers import reverse
 from django.conf import settings
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.text import slugify
 from django.utils.timezone import utc
+from django.db import connection
+
 
 from json_field import JSONField
 
@@ -46,9 +49,13 @@ class Topic(models.Model):
     tags = models.ManyToManyField(Tag)
     response_count = models.PositiveIntegerField(default=0)
 
-    def get_absolute_url(self):
+    def get_absolute_url(self, last_page=False):
         slug = slugify('{}-{}'.format(self.created.date(), self.subject))
-        return reverse('forum:posts-list', args=(self.pk, slug))
+        url = reverse('forum:posts-list', args=(self.pk, slug))
+        if last_page:
+            num_pages = math.ceil((self.response_count + 1) / settings.FORUM_POSTS_PER_PAGE)
+            url = "{}?page={}".format(url, num_pages)
+        return url
 
     def __str__(self):
         return self.subject
@@ -65,4 +72,13 @@ class Post(models.Model):
         return self.content[:120]
 
     def get_absolute_url(self):
-        return self.topic.get_absolute_url()
+        cursor = connection.cursor()
+        sql = "SELECT COUNT(*) FROM {} WHERE created < ?".format(Post._meta.db_table)
+        cursor.execute(sql, [self.created])
+        (position, ) = cursor.fetchone()
+        page = math.ceil(position / settings.FORUM_POSTS_PER_PAGE)
+        url = self.topic.get_absolute_url()
+        if page > 1:
+            url += '?page={}'.format(page)
+        url += '#post-{}'.format(self.pk)
+        return url

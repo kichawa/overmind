@@ -8,6 +8,7 @@ from django.core.urlresolvers import reverse
 from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.timezone import utc
+from django.views.decorators.cache import never_cache
 
 from counter import backend
 
@@ -86,6 +87,7 @@ def topics_list(request):
     ctx = {
         'topics': page,
         'tags': tags,
+        'POSTS_PER_PAGE': settings.FORUM_POSTS_PER_PAGE,
     }
     return render(request, 'forum/topics_list.html', ctx)
 
@@ -114,6 +116,12 @@ def posts_list(request, topic_pk):
         'posts': page,
     }
     return render(request, 'forum/posts_list.html', ctx)
+
+
+@never_cache
+def posts_list_last_page(request, topic_pk):
+    topic = get_object_or_404(Topic, pk=topic_pk)
+    return redirect(topic.get_absolute_url(last_page=True))
 
 
 @login_required

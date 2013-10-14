@@ -2,7 +2,7 @@ import json
 
 from django.http import HttpResponse
 
-from counter import backend
+from . import backend
 
 
 def get_counter(request):

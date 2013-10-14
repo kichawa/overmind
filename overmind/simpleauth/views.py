@@ -1,7 +1,7 @@
-from django.contrib import auth
 from django.conf import settings
+from django.contrib import auth
 from django.db import transaction
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect, render
 from django.views.decorators.http import require_http_methods
 
 from simpleauth.forms import RegistrationForm
