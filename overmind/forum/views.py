@@ -8,11 +8,12 @@ from django.core.urlresolvers import reverse
 from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.timezone import utc
-from django.views.decorators.http import condition
 
-from forum.models import Topic, Post, Tag, LastSeen
-from forum.forms import TopicForm, PostForm, SearchForm
 from counter import backend
+
+from . import cache
+from .models import Topic, Post, Tag, LastSeen
+from .forms import TopicForm, PostForm, SearchForm
 
 
 def posts_search(request):
@@ -58,24 +59,7 @@ def posts_search(request):
 
 
 
-def _latest_topics_update(request):
-    if not getattr(settings, 'HTTP_CACHE', True):
-        return None
-    if request.GET.get('q'):
-        return None
-    if request.GET.get('page', '1') != '1':
-        return None
-    topics = Topic.objects.select_related().order_by('-updated')
-    tag_labels = request.GET.getlist('tag')
-    if tag_labels:
-        topics = topics.filter(tags__label__in=tag_labels)
-    try:
-        return topics[0].updated
-    except IndexError:
-        return None
-
-
-@condition(last_modified_func=_latest_topics_update)
+@cache.topics_list
 def topics_list(request):
     topics = Topic.objects.select_related().prefetch_related('tags')\
             .order_by('-updated')
@@ -106,14 +90,7 @@ def topics_list(request):
     return render(request, 'forum/topics_list.html', ctx)
 
 
-def _latest_topic_update(request, topic_pk):
-    if not getattr(settings, 'HTTP_CACHE', True):
-        return None
-    topic = get_object_or_404(Topic, pk=topic_pk)
-    return topic.updated
-
-
-@condition(last_modified_func=_latest_topic_update)
+@cache.posts_list
 def posts_list(request, topic_pk):
     topic = get_object_or_404(Topic, pk=topic_pk)
     posts = Post.objects.filter(topic=topic)\
