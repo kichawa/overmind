@@ -41,12 +41,12 @@
 
                     <div class="topic-meta">
                         {% if topic.response_count %}
-                            {{ topic.response_count }} response{{ topic.response_count|pluralize }}
+                            {{ topic.response_count }} response{{ topic.response_count|pluralize }},
                         {% else %}
-                            no responses
+                            no responses,
                         {% endif %}
-                        | <span data-dynamic-widget="topic-view-count:{{ topic.id }}"></span>
-                        | <span title="{{ topic.updated }}">{{ topic.updated|timesince }} ago</span>
+                        <span data-dynamic-widget="topic-view-count:{{ topic.id }}">- views</span>,
+                        <span title="{{ topic.updated }}">created {{ topic.updated|timesince }} ago</span>
                     </div>
 
                 </div>
