@@ -5,7 +5,7 @@
   .topic {
     position: relative;
     table-layout: fixed;
-    background: $bgLevel2;
+    background: $colorWhite;
     border-bottom: 1px solid $colorLightGrey;
   }
 
@@ -36,9 +36,11 @@
     }
 
     .closed {
+      // todo: add icon with :before
     }
 
     .solved {
+      // todo: add icon with :before
     }
 
     .tags {

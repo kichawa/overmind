@@ -1,6 +1,6 @@
 .topic-title {
   width: 90%;
-  margin: 14px auto;
+  margin: 0 auto;
   h1 {
     display: inline-block;
     font-weight: bold;
@@ -103,7 +103,6 @@
       }
     }
     .arrow-fill {
-        content: '';
         position: absolute;
         border-style: solid;
         border-width: 0 0 14px 14px;
@@ -116,7 +115,6 @@
       }
 
       .arrow-border {
-        content: '';
         position: absolute;
         border-style: solid;
         border-width: 0 0 14px 14px;
