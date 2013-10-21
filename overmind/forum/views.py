@@ -143,6 +143,7 @@ def topic_create(request):
         if form.is_valid():
             ip = request.META.get('REMOTE_ADDR')
             topic = form.save(ip)
+            cache.expire_group('topic:all')
             return redirect(topic.get_absolute_url())
     else:
         form = TopicForm()
@@ -170,6 +171,10 @@ def post_create(request, topic_pk):
                 topic.response_count = posts_count - 1
                 topic.updated = post.created
                 topic.save()
+                cache.expire_groups((
+                    'topic:all',
+                    'topic:{}'.format(topic.pk),
+                ))
                 return redirect(post.get_absolute_url())
     else:
         form = PostForm()
@@ -206,6 +211,10 @@ def topic_toggle_delete(request, topic_pk):
     topic.is_deleted = not topic.is_deleted
     topic.updated = datetime.datetime.now().replace(tzinfo=utc)
     topic.save()
+    cache.expire_groups((
+        'topic:all',
+        'topic:{}'.format(topic.pk),
+    ))
     url = request.META.get('HTTP_REFERER', None)
     if not url:
         url = topic.get_absolute_url()
@@ -227,6 +236,7 @@ def post_toggle_delete(request, post_pk):
     post.save()
     post.topic.updated = datetime.datetime.now().replace(tzinfo=utc)
     post.topic.save()
+    cache.expire_group('topic:{}'.format(post.topic_id))
     url = request.META.get('HTTP_REFERER', None)
     if not url:
         url = post.get_absolute_url()
