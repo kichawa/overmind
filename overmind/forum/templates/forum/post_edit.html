@@ -1,0 +1,10 @@
+{% extends "forum/base.html" %}
+
+
+{% block forum_content %}
+    <form action="{% url "forum:post-edit" post_pk=post.pk %}" method="POST">
+        {{ form.as_p }}
+        {% csrf_token %}
+        <button type="submit">save</button>
+    </form>
+{% endblock %}

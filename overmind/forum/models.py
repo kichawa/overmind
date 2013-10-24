@@ -6,7 +6,6 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.text import slugify
 from django.utils.timezone import utc
-from django.db import connection
 
 
 from json_field import JSONField
@@ -98,20 +97,7 @@ class Post(models.Model):
         return self.content[:120]
 
     def get_absolute_url(self):
-        if self.is_deleted or self.topic.is_deleted:
-            return None
-        cursor = connection.cursor()
-        sql = """
-            SELECT COUNT(*) FROM {} WHERE NOT is_deleted AND created < %s
-        """.format(Post._meta.db_table)
-        cursor.execute(sql, [self.created])
-        (position, ) = cursor.fetchone()
-        page = math.ceil(position / settings.FORUM_POSTS_PER_PAGE)
-        url = self.topic.get_absolute_url()
-        if page > 1:
-            url += '?page={}'.format(page)
-        url += '#post-{}'.format(self.pk)
-        return url
+        return reverse('forum:post-details', args=(self.pk, ))
 
 
 class PostHistory(models.Model):

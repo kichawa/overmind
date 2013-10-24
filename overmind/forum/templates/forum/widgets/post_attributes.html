@@ -1,5 +1,5 @@
 {% if can_edit %}
-    <a href="javascript:alert('todo')">edit</a>
+    <a href="{% url "forum:post-edit" post_pk=post.pk %}">edit</a>
 {% endif %}
 {% if can_delete %}
     <a href="{% url "forum:post-toggle-delete" post_pk=post.pk %}">

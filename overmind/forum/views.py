@@ -1,11 +1,12 @@
 import datetime
+import math
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.core.urlresolvers import reverse
-from django.db import transaction
+from django.db import connection, transaction
 from django.http import HttpResponseForbidden, HttpResponseGone
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.timezone import utc
@@ -120,6 +121,31 @@ def posts_list(request, topic_pk):
         'posts': page,
     }
     return render(request, 'forum/posts_list.html', ctx)
+
+
+def post_details(request, post_pk):
+    "Redirect to topic details page, on which given post can be found"
+    topic = get_object_or_404(Topic, is_deleted=False, posts__pk=post_pk)
+    cursor = connection.cursor()
+    sql = """
+        SELECT
+            COUNT(*)
+        FROM
+            {post_table_name}
+        WHERE
+            topic_id = %s
+            AND NOT is_deleted
+            AND created < (SELECT created FROM {post_table_name} WHERE id = %s)
+    """.format(post_table_name=Post._meta.db_table)
+
+    cursor.execute(sql, [topic.id, post_pk])
+    (position, ) = cursor.fetchone()
+    page = math.ceil((position + 1) / settings.FORUM_POSTS_PER_PAGE)
+    url = topic.get_absolute_url()
+    if page > 1:
+        url += '?page={}'.format(page)
+    url += '#post-{}'.format(post_pk)
+    return redirect(url)
 
 
 @never_cache
@@ -241,3 +267,26 @@ def post_toggle_delete(request, post_pk):
     if not url:
         url = post.get_absolute_url()
     return redirect(url)
+
+
+@never_cache
+@transaction.atomic
+def post_edit(request, post_pk):
+    post = get_object_or_404(Post, pk=post_pk)
+    perm_manager = permissions.manager_for(request.user)
+    if not perm_manager.can_edit_post(post):
+        return HttpResponseForbidden()
+
+    if request.method == "POST":
+        form = PostForm(request.POST, instance=post)
+        if form.is_valid():
+            post = form.save()
+            post.topic.updated = datetime.datetime.now().replace(tzinfo=utc)
+            post.topic.save()
+            cache.expire_group('topic:{}'.format(post.topic_id))
+            return redirect(post.get_absolute_url())
+    else:
+        form = PostForm(instance=post)
+
+    ctx = {'form': form, 'post': post}
+    return render(request, "forum/post_edit.html", ctx)
