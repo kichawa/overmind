@@ -285,7 +285,10 @@ def post_edit(request, post_pk):
             post = form.save()
             post.topic.updated = datetime.datetime.now().replace(tzinfo=utc)
             post.topic.save()
-            cache.expire_group('topic:{}'.format(post.topic_id))
+            cache.expire_groups((
+                'topic:all',
+                'topic:{}'.format(post.topic_id),
+            ))
             return redirect(post.get_absolute_url())
     else:
         form = PostForm(instance=post)

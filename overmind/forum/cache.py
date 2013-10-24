@@ -43,8 +43,6 @@ def _expire_groups(names):
 def latest_topics_update(request):
     if not getattr(settings, 'HTTP_CACHE', True):
         return None
-    if request.GET.get('q'):
-        return None
     if request.GET.get('page', '1') != '1':
         return None
     topics = Topic.objects.select_related().order_by('-updated')
