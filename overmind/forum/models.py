@@ -64,6 +64,9 @@ class Topic(models.Model):
             url = "{}?page={}".format(url, num_pages)
         return url
 
+    def posts_count(self):
+        return self.response_count + 1
+
     def __str__(self):
         return self.subject
 
