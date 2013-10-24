@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.core.urlresolvers import reverse
 from django.db import connection, transaction
+from django.db.models import Q
 from django.http import HttpResponseForbidden, HttpResponseGone
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.timezone import utc
@@ -125,7 +126,8 @@ def posts_list(request, topic_pk):
 
 def post_details(request, post_pk):
     "Redirect to topic details page, on which given post can be found"
-    topic = get_object_or_404(Topic, is_deleted=False, posts__pk=post_pk)
+    query = Post.objects.exclude(Q(topic__is_deleted=True) | Q(is_deleted=True))
+    post = get_object_or_404(query.select_related(), pk=post_pk)
     cursor = connection.cursor()
     sql = """
         SELECT
@@ -135,13 +137,13 @@ def post_details(request, post_pk):
         WHERE
             topic_id = %s
             AND NOT is_deleted
-            AND created < (SELECT created FROM {post_table_name} WHERE id = %s)
+            AND created < %s
     """.format(post_table_name=Post._meta.db_table)
 
-    cursor.execute(sql, [topic.id, post_pk])
+    cursor.execute(sql, [post.topic_id, post.created])
     (position, ) = cursor.fetchone()
     page = math.ceil((position + 1) / settings.FORUM_POSTS_PER_PAGE)
-    url = topic.get_absolute_url()
+    url = post.topic.get_absolute_url()
     if page > 1:
         url += '?page={}'.format(page)
     url += '#post-{}'.format(post_pk)
