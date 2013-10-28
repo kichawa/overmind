@@ -96,3 +96,9 @@ class SimpleManager:
 
     def can_delete_post(self, post_or_pk):
         return self.can_edit_post(post_or_pk)
+
+    def can_report_topic_as_spam(self, topic_or_pk):
+        return self.user.is_authenticated()
+
+    def can_report_post_as_spam(self, post_or_pk):
+        return self.user.is_authenticated()
