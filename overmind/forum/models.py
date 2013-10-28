@@ -81,6 +81,7 @@ class TopicHistory(models.Model):
         ('not_solved', 'Topic was marked as not solved'),
         ('closed', 'Topic was closed'),
         ('opened', 'Topic was opened'),
+        ('spam_reported', 'Topic was reported as spam'),
     )
     topic = models.ForeignKey(Topic)
     action = models.CharField(max_length=16, choices=ACTION_CHOICES)
@@ -110,6 +111,7 @@ class PostHistory(models.Model):
         ('deleted', 'Post was deleted'),
         ('recovered', 'Post was recovered'),
         ('content_changed', 'Post content was changed'),
+        ('spam_reported', 'Post was reported as spam'),
     )
     post = models.ForeignKey(Post)
     action = models.CharField(max_length=16, choices=ACTION_CHOICES)

@@ -7,3 +7,9 @@
         {% endif %}
     </a>
 {% endif %}
+
+{% if can_report_as_spam %}
+    <a href="{% url "forum:topic-report-as-spam" topic_pk=topic.pk %}">
+        report as spam
+    </a>
+{% endif %}

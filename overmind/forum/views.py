@@ -303,3 +303,52 @@ def post_edit(request, post_pk):
 
     ctx = {'form': form, 'post': post}
     return render(request, "forum/post_edit.html", ctx)
+
+
+@never_cache
+@login_required
+def post_report_as_spam(request, post_pk):
+    post = get_object_or_404(Post, is_deleted=False, pk=post_pk)
+    _, created = PostHistory.objects.get_or_create(
+            post=post, author=request.user, action='spam_reported')
+    if created:
+        all_reports = PostHistory.objects.filter(action='spam_reported',
+                                                 post=post)
+        if all_reports.count() > 5:
+            now = datetime.datetime.now().replace(tzinfo=utc)
+            post.is_deleted = True
+            post.updated = now
+            post.save()
+            post.topic.updated = now
+            post.topic.content_updated = now
+            post.topic.save()
+            cache.expire_group('topic:{}'.format(post.topic_id))
+    dest_url = request.META.get('HTTP_REFERER', None)
+    if not dest_url:
+        dest_url = post.get_absolute_url()
+    return redirect(dest_url)
+
+
+@never_cache
+@login_required
+def topic_report_as_spam(request, topic_pk):
+    topic = get_object_or_404(Topic, is_deleted=False, pk=topic_pk)
+    _, created = TopicHistory.objects.get_or_create(
+            topic=topic, author=request.user, action='spam_reported')
+    if created:
+        all_reports = TopicHistory.objects.filter(action='spam_reported',
+                                                  topic=topic)
+        if all_reports.count() > 5:
+            now = datetime.datetime.now().replace(tzinfo=utc)
+            topic.is_deleted = True
+            topic.updated = now
+            topic.content_updated = now
+            topic.save()
+            cache.expire_groups((
+                'topic:all',
+                'topic:{}'.format(topic.pk),
+            ))
+    dest_url = request.META.get('HTTP_REFERER', None)
+    if not dest_url:
+        dest_url = topic.get_absolute_url()
+    return redirect(dest_url)
