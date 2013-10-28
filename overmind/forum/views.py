@@ -285,10 +285,14 @@ def post_edit(request, post_pk):
         return HttpResponseForbidden()
 
     if request.method == "POST":
+        old_content = post.content
         form = PostForm(request.POST, instance=post)
         if form.is_valid():
             now = datetime.datetime.now().replace(tzinfo=utc)
             post.updated = now
+            PostHistory.objects.create(
+                    post=post, action='content_changed', author=request.user,
+                    prev_content=old_content, created=now)
             post = form.save()
             post.topic.updated = now
             post.topic.content_updated = now
