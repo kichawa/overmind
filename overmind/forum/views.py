@@ -238,7 +238,9 @@ def topic_toggle_delete(request, topic_pk):
     TopicHistory.objects.create(topic=topic, action=action, author=request.user)
 
     topic.is_deleted = not topic.is_deleted
-    topic.updated = datetime.datetime.now().replace(tzinfo=utc)
+    now = datetime.datetime.now().replace(tzinfo=utc)
+    topic.updated = now
+    topic.content_updated = now
     topic.save()
     cache.expire_groups((
         'topic:all',
