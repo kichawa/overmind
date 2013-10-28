@@ -37,9 +37,18 @@ class LastSeen(models.Model):
         return obj
 
 
+class TagManager(models.Manager):
+    def list_all(self):
+        "Results are cached in memory"
+        if not hasattr(self, '_cached_list_all'):
+            self._cached_list_all = list(self.all())
+        return self._cached_list_all
+
+
 class Tag(models.Model):
     label = models.CharField(max_length=32, unique=True)
     description = models.TextField(default='', blank=True)
+    objects = TagManager()
 
     def __str__(self):
         return self.label

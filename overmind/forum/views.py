@@ -49,7 +49,7 @@ def posts_search(request):
         page = paginator.page(paginator.num_pages)
 
     tags = []
-    for tag in Tag.objects.all():
+    for tag in Tag.objects.list_all():
         tags.append({
             'label': tag.label,
             'checked': tag.label in request.GET.getlist('tag'),
@@ -82,7 +82,7 @@ def topics_list(request):
         page = paginator.page(paginator.num_pages)
 
     tags = []
-    for tag in Tag.objects.all():
+    for tag in Tag.objects.list_all():
         tags.append({
             'label': tag.label,
             'checked': tag.label in request.GET.getlist('tag'),
