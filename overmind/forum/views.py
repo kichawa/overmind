@@ -288,6 +288,11 @@ def post_edit(request, post_pk):
         old_content = post.content
         form = PostForm(request.POST, instance=post)
         if form.is_valid():
+
+            # nothing changed
+            if post.content == old_content:
+                return redirect(post.get_absolute_url())
+
             now = datetime.datetime.now().replace(tzinfo=utc)
             post.updated = now
             PostHistory.objects.create(
