@@ -79,8 +79,9 @@ def copy_topics(pg_connection, sqlt_connection):
         ''', (tag, ))
     for row in pg_c:
         sqlt_c.execute('''
-            INSERT INTO forum_topic(id, author_id, subject, created, updated, response_count, is_deleted)
-            VALUES ($1, $2, $3, $4, $4, $5 - 1, 0)
+            INSERT INTO forum_topic(id, author_id, subject, created, updated,
+                                    content_updated, response_count, is_deleted)
+            VALUES ($1, $2, $3, $4, $4, $4, $5 - 1, 0)
         ''', row)
         attached_tags = {None}
         for _ in range(random.randint(1, len(TAGS))):
@@ -112,8 +113,9 @@ def copy_posts(pg_connection, sqlt_connection):
         row[3] = bbcode_to_markdown(row[3])
         row.append(False)
         sqlt_c.execute('''
-            INSERT INTO forum_post(id, topic_id, author_id, content, created, ip, is_deleted)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO forum_post(id, topic_id, author_id, content, created,
+                                   updated, ip, is_deleted)
+            VALUES ($1, $2, $3, $4, $5, $5, $6, $7)
         ''', row)
     pg_c.close()
 

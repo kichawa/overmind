@@ -50,6 +50,7 @@ class Topic(models.Model):
     author = models.ForeignKey(settings.AUTH_USER_MODEL)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now_add=True)
+    content_updated = models.DateTimeField(auto_now_add=True)
     tags = models.ManyToManyField(Tag)
     response_count = models.PositiveIntegerField(default=0)
     is_deleted = models.BooleanField(db_index=True, default=False)
@@ -93,6 +94,7 @@ class Post(models.Model):
     author = models.ForeignKey(settings.AUTH_USER_MODEL)
     content = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now_add=True)
     ip = models.IPAddressField(null=True, blank=True)
     is_deleted = models.BooleanField(db_index=True, default=False)
 

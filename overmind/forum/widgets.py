@@ -40,7 +40,7 @@ def topic_is_new(request, widgets):
         latest = last_seen.seen_topics.get(
                 str(topic_id), request.user.forum_last_seen.last_seen_all)
         topic = topics.get(topic_id)
-        is_new = topic.updated.replace(microsecond=0) > latest
+        is_new = topic.content_updated.replace(microsecond=0) > latest
         ctx = {'is_new': is_new, 'topic': topic}
         html = render_to_string('forum/widgets/topic_is_new.html', ctx)
         res[widget['wid']] = {'html': html, 'isnew': is_new}
@@ -90,9 +90,9 @@ def post_is_new(request, widgets):
     posts = {}
     topics = {}
     newest = {}
-    for pid, created, tid in query.values_list('id', 'created', 'topic_id'):
-        created = created.replace(microsecond=0)
-        posts[pid] = (tid, created)
+    for pid, updated, tid in query.values_list('id', 'updated', 'topic_id'):
+        updated = updated.replace(microsecond=0)
+        posts[pid] = (tid, updated)
 
         # find out, when the topic was last seen
         if tid not in topics:
@@ -103,15 +103,15 @@ def post_is_new(request, widgets):
         # find the newest post creation date for every related topic
         dt = newest.get(tid)
         if not dt:
-            newest[tid] = created
-        elif created > dt:
-            newest[tid] = created
+            newest[tid] = updated
+        elif updated > dt:
+            newest[tid] = updated
 
     res = {}
     for widget in widgets:
         post_id = int(widget['params']['pid'])
-        tid, created = posts[post_id]
-        is_new = created > topics[tid]
+        tid, updated = posts[post_id]
+        is_new = updated > topics[tid]
         ctx = {'is_new': is_new}
         html = render_to_string('forum/widgets/post_is_new.html', ctx)
         res[widget['wid']] = {'html': html, 'isnew': is_new}

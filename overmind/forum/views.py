@@ -198,6 +198,7 @@ def post_create(request, topic_pk):
                 posts_count = topic.posts.exclude(is_deleted=True).count()
                 topic.response_count = posts_count - 1
                 topic.updated = post.created
+                topic.content_updated = post.created
                 topic.save()
                 cache.expire_groups((
                     'topic:all',
@@ -260,9 +261,11 @@ def post_toggle_delete(request, post_pk):
     action = 'recovered' if post.is_deleted else 'deleted'
     PostHistory.objects.create(post=post, action=action, author=request.user)
 
+    now = datetime.datetime.now().replace(tzinfo=utc)
     post.is_deleted = not post.is_deleted
+    post.updated = now
     post.save()
-    post.topic.updated = datetime.datetime.now().replace(tzinfo=utc)
+    post.topic.updated = now
     post.topic.save()
     cache.expire_group('topic:{}'.format(post.topic_id))
     url = request.META.get('HTTP_REFERER', None)
@@ -282,8 +285,11 @@ def post_edit(request, post_pk):
     if request.method == "POST":
         form = PostForm(request.POST, instance=post)
         if form.is_valid():
+            now = datetime.datetime.now().replace(tzinfo=utc)
+            post.updated = now
             post = form.save()
-            post.topic.updated = datetime.datetime.now().replace(tzinfo=utc)
+            post.topic.updated = now
+            post.topic.content_updated = now
             post.topic.save()
             cache.expire_groups((
                 'topic:all',
