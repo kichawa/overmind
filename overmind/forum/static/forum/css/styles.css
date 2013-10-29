@@ -392,19 +392,32 @@ html, body {
     right: 5%;
     top: 18px; }
   .header .search-bar {
-    width: 200px;
+    width: 270px;
     background: inherit;
     display: inline-block; }
     .header .search-bar:hover .search-filter {
       display: block; }
+    .header .search-bar input {
+      border: 1px solid #dddddd;
+      padding: 2px 4px;
+      outline: none; }
   .header .search-filter {
     display: none;
     position: absolute;
     width: 100%;
     left: 0;
-    background: inherit; }
+    background: inherit;
+    z-index: 100; }
     .header .search-filter form {
-      margin-left: 5%; }
+      padding: 20px 5%;
+      box-shadow: 0 2px 2px 0 #dddddd; }
+    .header .search-filter label {
+      display: block;
+      line-height: 1.8em; }
+      .header .search-filter label input {
+        vertical-align: middle; }
+    .header .search-filter button {
+      margin-top: 20px; }
 
 .tag {
   margin: 0 4px; }
@@ -464,7 +477,8 @@ html, body {
     padding: 8px 0;
     vertical-align: top; }
     .posts-list .col:first-child {
-      padding: 8px 16px 8px 0; }
+      padding: 8px 24px 8px 0;
+      width: 76px; }
     .posts-list .col img {
       -webkit-border-radius: 2px;
       -moz-border-radius: 2px;

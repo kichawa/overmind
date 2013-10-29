@@ -12,13 +12,18 @@
   }
 
   .search-bar {
-    width: 200px;
+    width: 270px;
     background: inherit;
     display: inline-block;
     &:hover {
       .search-filter {
         display: block;
       }
+    }
+    input {
+      border: 1px solid #ddd;
+      padding: 2px 4px;
+      outline: none;
     }
   }
 
@@ -28,9 +33,22 @@
     width: 100%;
     left: 0;
     background: inherit;
+    z-index: 100;
 
     form {
-      margin-left: 5%;
+      padding: 20px 5%;
+      box-shadow: 0 2px 2px 0 $colorLightGrey;
     }
+    label {
+      display: block;
+      line-height: 1.8em;
+      input {
+        vertical-align: middle;
+      }
+    }
+    button {
+      margin-top: 20px;
+    }
+
   }
 }
