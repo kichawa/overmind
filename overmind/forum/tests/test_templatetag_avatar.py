@@ -25,3 +25,9 @@ class GravatarTag(TestCase):
         result = avatar.avatar_tag('bob@example.com', 40, 60, **extra)
         expected = '<img src="{}" width="40px" height="60px" class="avatar">'.format(url)
         self.assertMultiLineEqual(result, expected)
+
+    def test_avatar_tag_no_height(self):
+        url = avatar.avatar('bob@example.com', 40)
+        result = avatar.avatar_tag('bob@example.com', 40)
+        expected = '<img src="{}" width="40px" height="40px">'.format(url)
+        self.assertMultiLineEqual(result, expected)

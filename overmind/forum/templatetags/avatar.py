@@ -24,6 +24,8 @@ def avatar(email, width=32, height=None, **extra_params):
 
 @register.simple_tag
 def avatar_tag(email, width=32, height=None, **tag_attributes):
+    if height is None:
+        height = width
     url = avatar(email, width, height)
     attributes = [
         'width="{}px"'.format(width),
