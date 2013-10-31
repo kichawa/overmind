@@ -2,8 +2,11 @@ from django.conf.urls import patterns, url
 
 
 urlpatterns = patterns('',
-    url(r'^login/$',
+    url(r'^login/login/$',
         'django.contrib.auth.views.login',
+        name="login"),
+    url(r'^login/$',
+        'simpleauth.views.login',
         name="login"),
     url(r'^logout/$',
         'simpleauth.views.logout',

@@ -1,6 +1,7 @@
 <form action="{% url "simpleauth:login" %}" method="POST">
     {{ form.as_p }}
     {% csrf_token %}
+    <input type="hidden" name="next" value="{{ next }}">
     <button type="submit">Login</button>
     or <a href="{% url "simpleauth:register" %}">register</a>.
     <div>
