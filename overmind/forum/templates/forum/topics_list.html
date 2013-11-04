@@ -5,25 +5,6 @@
 
 
 {% block forum_header %}
-    <div class="search-bar">
-        <div class="search-top">
-            <form action="{% url "forum:posts-search" %}" method="GET">
-                <input type="search" name="pattern">
-                <button type="submit">Search</button>
-            </form>
-        </div>
-        <div class="search-filter">
-            <form action="{% url "forum:topics-list" %}" method="GET">
-
-                {% for tag in tags %}
-                    <label>
-                        <input type="checkbox" name="tag" value="{{ tag.label }}" {% if tag.checked %}checked{% endif %}> {{ tag.label }}
-                    </label>
-                {% endfor %}
-                <button type="submit">Filter topics</button>
-            </form>
-        </div>
-    </div>
     {{ block.super }}
 {% endblock %}
 
@@ -31,6 +12,25 @@
 {% block forum_content %}
 
     <div class="topic-list">
+        <div class="table expand">
+             <div class="search-bar">
+                <form action="{% url "forum:posts-search" %}" method="GET">
+                    <input type="search" name="pattern">
+                    <button type="submit">Search</button>
+                </form>
+            </div>
+            <div class="search-filter">
+                <form action="{% url "forum:topics-list" %}" method="GET">
+    
+                    {% for tag in tags %}
+                        <label>
+                            <input type="checkbox" name="tag" value="{{ tag.label }}" {% if tag.checked %}checked{% endif %}> {{ tag.label }}
+                        </label>
+                    {% endfor %}
+                    <button type="submit">Filter topics</button>
+                </form>
+            </div>
+        </div>
         {% for topic in topics %}
             <div class="table expand topic">
                 <div class="avatar">

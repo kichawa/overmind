@@ -384,40 +384,13 @@ html, body {
 
 .header {
   background: white;
-  margin: 0 auto 20px auto;
+  margin: 0 auto;
   padding: 18px 5%;
   position: relative; }
   .header .login-area {
     position: absolute;
     right: 5%;
     top: 18px; }
-  .header .search-bar {
-    width: 270px;
-    background: inherit;
-    display: inline-block; }
-    .header .search-bar:hover .search-filter {
-      display: block; }
-    .header .search-bar input {
-      border: 1px solid #dddddd;
-      padding: 2px 4px;
-      outline: none; }
-  .header .search-filter {
-    display: none;
-    position: absolute;
-    width: 100%;
-    left: 0;
-    background: inherit;
-    z-index: 100; }
-    .header .search-filter form {
-      padding: 20px 5%;
-      box-shadow: 0 2px 2px 0 #dddddd; }
-    .header .search-filter label {
-      display: block;
-      line-height: 1.8em; }
-      .header .search-filter label input {
-        vertical-align: middle; }
-    .header .search-filter button {
-      margin-top: 20px; }
 
 .tag {
   margin: 0 4px; }
@@ -459,6 +432,28 @@ html, body {
       color: #566579; }
       .topic-list .topic-main .topic-meta span {
         color: #566579; }
+
+.search-bar {
+  display: table-cell;
+  background: inherit; }
+  .search-bar input {
+    border: 1px solid #dddddd;
+    padding: 2px 4px;
+    outline: none; }
+
+.search-filter {
+  display: table-cell;
+  text-align: right;
+  padding: 8px 0; }
+  .search-filter label {
+    display: inline-block;
+    margin-right: 16px;
+    line-height: 1.8em; }
+    .search-filter label input {
+      vertical-align: middle; }
+  .search-filter button {
+    display: inline-block;
+    vertical-align: middle; }
 
 .topic-title {
   width: 90%;
@@ -573,6 +568,16 @@ html, body {
       right: -14px;
       top: 20px;
       transition: 0.3s linear border-color; }
+
+.search-results {
+  width: 90%;
+  margin: auto; }
+
+.results {
+  box-shadow: 1px 1px 3px -1px #566579;
+  margin: 16px auto;
+  padding: 8px;
+  background: white; }
 
 .pagination {
   text-align: center; }

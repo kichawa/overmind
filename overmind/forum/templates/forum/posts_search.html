@@ -5,34 +5,33 @@
 
 
 {% block forum_content %}
-    <div class="box box-shadow text-center">
-    <div class="box box-shadow text-center">
-        <form action="{% url "forum:posts-search" %}" method="GET">
-            {{ form.as_p }}
-            {% for tag in tags %}
-                <label>
-                    <input type="checkbox" name="tag" value="{{ tag.label }}" {% if tag.checked %}checked{% endif %}> {{ tag.label }}
-                </label>
-            {% endfor %}
-            <button class="btn" type="submit">Search</button>
-        </form>
-    </div>
-
-    <div class="box box-shadow content">
+    <div class="search-results">
+        <div class="expand search-box">
+            <form action="{% url "forum:posts-search" %}" method="GET">
+                {{ form.as_p }}
+                {% for tag in tags %}
+                    <label>
+                        <input type="checkbox" name="tag" value="{{ tag.label }}" {% if tag.checked %}checked{% endif %}> {{ tag.label }}
+                    </label>
+                {% endfor %}
+                <button class="btn" type="submit">Search</button>
+            </form>
+        </div>
+    
         {% for post in posts %}
-            <h2>{{ post.topic.subject }}</h2>
-            <div class="span12">
-                {% mark_pattern post.content pattern %}
+            <div class="expand results">
+                <h1>{{ post.topic.subject }}</h1>
+                <div class="">
+                    {% mark_pattern post.content pattern %}
+                </div>
             </div>
-            <hr>
         {% empty %}
             {% if pattern %}
                 No results
             {% endif %}
         {% endfor %}
     </div>
-
-    <div class="box box-shadow text-center">
+    <div class="pagination">
         {% if posts.has_previous %}
             <a href="?{% urlquery_set request page=posts.previous_page_number %}">previous</a>
         {% endif %}

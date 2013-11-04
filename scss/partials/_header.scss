@@ -1,6 +1,6 @@
 .header {
   background: $colorWhite;
-  margin: 0 auto 20px auto;
+  margin: 0 auto;
   padding: 18px 5%;
   position: relative;
 
@@ -9,46 +9,5 @@
     position: absolute;
     right: 5%;
     top: 18px;
-  }
-
-  .search-bar {
-    width: 270px;
-    background: inherit;
-    display: inline-block;
-    &:hover {
-      .search-filter {
-        display: block;
-      }
-    }
-    input {
-      border: 1px solid #ddd;
-      padding: 2px 4px;
-      outline: none;
-    }
-  }
-
-  .search-filter {
-    display: none;
-    position: absolute;
-    width: 100%;
-    left: 0;
-    background: inherit;
-    z-index: 100;
-
-    form {
-      padding: 20px 5%;
-      box-shadow: 0 2px 2px 0 $colorLightGrey;
-    }
-    label {
-      display: block;
-      line-height: 1.8em;
-      input {
-        vertical-align: middle;
-      }
-    }
-    button {
-      margin-top: 20px;
-    }
-
   }
 }
