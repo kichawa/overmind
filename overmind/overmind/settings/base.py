@@ -8,7 +8,7 @@ TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
 
-HTTP_CACHE = True
+HTTP_CACHE = False
 
 INSTALLED_APPS = (
     'django.contrib.admin',

@@ -1,5 +1,6 @@
 import socket
 import pickle
+import threading
 
 
 class UnexpectedResponse(Exception):
@@ -13,10 +14,22 @@ class Disconnected(Exception):
 class Cache:
     "Single cachedb server connection"
     def __init__(self, address):
-        self._conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        host, port = address.split(':')
-        self._conn.connect((host, int(port)))
-        self._rd = self._conn.makefile('rb', newline='\r\n')
+        self.address = address
+        self._local = threading.local()
+
+    @property
+    def _conn(self):
+        if not hasattr(self._local, 'conn'):
+            host, port = self.address.split(':')
+            self._local.conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self._local.conn.connect((host, int(port)))
+        return self._local.conn
+
+    @property
+    def _rd(self):
+        if not hasattr(self._local, 'rd'):
+            self._local.rd = self._conn.makefile('rb', newline='\r\n')
+        return self._local.rd
 
     def _readline(self):
         line = self._rd.readline()
