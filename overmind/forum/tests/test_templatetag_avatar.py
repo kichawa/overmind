@@ -12,10 +12,9 @@ class Gravatar(TestCase):
         result = avatar.avatar(email=email, width=40, height=50)
         url = urllib.parse.urlparse(result)
         hashed_email = str(hashlib.md5(email.encode('utf8')).hexdigest())
-        self.assertEqual(url.path, '/{}.png'.format(hashed_email))
+        self.assertEqual(url.path, '/avatar/{}'.format(hashed_email))
         query = urllib.parse.parse_qs(url.query)
-        self.assertEqual(query['gravatar'], ['hashed'])
-        self.assertEqual(query['size'],  ['40x50'])
+        self.assertEqual(query['s'],  ['40'])
 
 
 class GravatarTag(TestCase):

@@ -14,12 +14,12 @@ def avatar(email, width=32, height=None, **extra_params):
         height = width
     params = extra_params.copy()
     params.update({
-        'gravatar': 'hashed',
-        'size': '{}x{}'.format(width, height),
+        's': '{}'.format(width),
+        'd':  'http://placehold.it/{}x{}.jpg'.format(width, height)
     })
     query = urllib.parse.urlencode(params)
     enc_email = str(hashlib.md5(email.lower().encode('utf8')).hexdigest())
-    return  'http://robohash.org/{}.png?{}'.format(enc_email, query)
+    return 'http://www.gravatar.com/avatar/{}?{}'.format(enc_email, query)
 
 
 @register.simple_tag
