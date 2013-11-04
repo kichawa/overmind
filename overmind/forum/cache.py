@@ -1,43 +1,25 @@
-from http.client import HTTPConnection
-from urllib.parse import urlparse
-
 from django.conf import settings
 from django.shortcuts import get_object_or_404
 from django.views.decorators.http import condition
 
+from cachedb import Cache
 from .models import Topic
 
 
+cache = Cache(settings.CACHEDB_ADDRESS)
+
+
 def expire_group(name):
-    return expire_groups((name, ))[0]
+    if not getattr(settings, 'HTTP_CACHE', False):
+        return
+    cache.delete_group(name)
 
 
 def expire_groups(names):
-    try:
-        return _expire_groups(names)
-    except ConnectionRefusedError:
-        return [None for _ in names]
-
-
-def _expire_groups(names):
-    results = []
-    url = urlparse(settings.GROUPCACHE_URL)
-    conn = HTTPConnection(url.netloc)
+    if not getattr(settings, 'HTTP_CACHE', False):
+        return
     for name in names:
-        conn.request("DELETEGROUP", "{}/{}".format(url.path, name))
-        resp = conn.getresponse()
-        # just because we're sending one after another
-        resp.read()
-        if resp.status == 204:
-            results.append(True)
-            continue
-        if resp.status == 404:
-            results.append(False)
-            continue
-        # don't worry about errors
-        results.append(None)
-    conn.close()
-    return results
+        cache.delete_group(name)
 
 
 def latest_topics_update(request):
