@@ -18,6 +18,7 @@ def login(request):
         return redirect(url)
     return django_login(request)
 
+
 @require_http_methods(["GET", "POST"])
 @transaction.atomic
 def register(request):
