@@ -13,7 +13,10 @@ from .models import Topic
 CACHABLE_RESPONSE_CODE = {200, 301, 404}
 
 
-cache = Cache(settings.CACHEDB_ADDRESS)
+if getattr(settings, 'HTTP_CACHE', False):
+    cache = Cache(settings.CACHEDB_ADDRESS)
+else:
+    cache = None
 
 
 
@@ -106,6 +109,9 @@ def cache_view(key, groups=(), last_modified_func=None):
     def decorator(view):
         if last_modified_func:
             view = condition(last_modified_func=last_modified_func)(view)
+
+        if not getattr(settings, 'HTTP_CACHE', False):
+            return view
 
         @functools.wraps(view)
         def wrapper(request, *args, **kwargs):
