@@ -75,6 +75,7 @@ class TopicViewCountTest(TransactionTestCase):
         self.client.get(topic.get_absolute_url())
         self.assertEqual(self.counter_value(widget_key), 1)
         self.client.get(topic.get_absolute_url())
+        # because we cache the view now!
         self.assertEqual(self.counter_value(widget_key), 2)
 
     def counter_value(self, key):

@@ -59,10 +59,11 @@ class Topic(models.Model):
     author = models.ForeignKey(settings.AUTH_USER_MODEL)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now_add=True)
-    content_updated = models.DateTimeField(auto_now_add=True)
     tags = models.ManyToManyField(Tag)
     response_count = models.PositiveIntegerField(default=0)
     is_deleted = models.BooleanField(db_index=True, default=False)
+    # updated whenever content was changed (value used for caching)
+    content_updated = models.DateTimeField(auto_now_add=True)
 
     def get_absolute_url(self, last_page=False):
         if self.is_deleted:
@@ -112,7 +113,7 @@ class Post(models.Model):
         return self.content[:120]
 
     def get_absolute_url(self):
-        return reverse('forum:post-details', args=(self.pk, ))
+        return reverse('forum:post-details', args=(self.topic_id, self.pk, ))
 
 
 class PostHistory(models.Model):

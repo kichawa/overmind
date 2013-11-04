@@ -1,3 +1,6 @@
+import functools
+import re
+
 from django.conf import settings
 from django.shortcuts import get_object_or_404
 from django.views.decorators.http import condition
@@ -6,7 +9,12 @@ from cachedb import Cache
 from .models import Topic
 
 
+# cache only those response objects that response_code is in following set
+CACHABLE_RESPONSE_CODE = {200, 301, 404}
+
+
 cache = Cache(settings.CACHEDB_ADDRESS)
+
 
 
 def expire_group(name):
@@ -20,6 +28,98 @@ def expire_groups(names):
         return
     for name in names:
         cache.delete_group(name)
+
+
+_group_param_rx = re.compile(r'{[^}]+}')
+
+
+def create_name_builder(name_repr):
+    """Return a name buidler function for given string
+
+    Group builder is a function, that for given string and set of parameters
+    (url and GET parameters) can generate string containing choosed data. For
+    example, for view parameter id=5 and GET parameter page=2:
+
+    "key_{url:id}_{get:page}" => "key_5_2"
+
+    """
+    live_parts = _group_param_rx.findall(name_repr)
+    dynamic_chunks = []
+    for part in live_parts:
+        chunks = part[1:-1].split(':', 3)
+        if len(chunks) == 2:
+            default = ''
+            tp, name = chunks
+        else:
+            tp, name, default = chunks
+        if tp not in ['url', 'get']:
+            raise TypeError('unknown cache parameter type: {}'.format(tp))
+        dynamic_chunks.append((tp, name, default))
+    dynamic_chunks.append(None)
+    static_chunks = _group_param_rx.split(name_repr)
+
+    def builder(params, kwargs):
+        chunks = []
+        for static, dynamic in zip(static_chunks, dynamic_chunks):
+            chunks.append(static)
+            if dynamic is None:
+                continue
+            if dynamic[0] == 'url':
+                chunks.append(kwargs.get(dynamic[1], dynamic[2]))
+            else:
+                chunks.append(','.join(params.getlist(dynamic[1], ())))
+        return ''.join(chunks)
+
+    return builder
+
+
+def create_names_builder(groups):
+    "For given set of group names, return list of builder functions"
+    builders = []
+    for group in groups:
+        builders.append(create_name_builder(group))
+    builders = tuple(builders)
+
+    def builder(params, kwargs):
+        return [fn(params, kwargs) for fn in builders]
+
+    return builder
+
+
+def cache_view(key, groups=(), last_modified_func=None):
+    """Cache view
+
+    This can use two layers cache:
+
+    1) cache response object
+    2) provide "Last-Modified" header variable
+
+    Every view cache can be assigned to any number of dynamic groups for ease
+    of multiple key expiration.
+
+    If `last_modified_func` is provided, "Last-Modified" header value is
+    cached and expired together with response (because it's part of it).
+    """
+    gbuilder = create_names_builder(groups)
+    kbuilder = create_name_builder(key)
+
+    def decorator(view):
+        if last_modified_func:
+            view = condition(last_modified_func=last_modified_func)(view)
+
+        @functools.wraps(view)
+        def wrapper(request, *args, **kwargs):
+            key = kbuilder(request.GET, kwargs)
+            response = cache.getset(key)
+            if not response:
+                response = view(request, *args, **kwargs)
+                if response.status_code in CACHABLE_RESPONSE_CODE:
+                    cache.set(key, response,
+                              groups=gbuilder(request.GET, kwargs))
+            return response
+
+        return wrapper
+    return decorator
 
 
 def latest_topics_update(request):
@@ -37,7 +137,8 @@ def latest_topics_update(request):
         return None
 
 
-topics_list = condition(last_modified_func=latest_topics_update)
+topics_list = cache_view('topics:{get:page:1}:{get:tag}', groups=('topic:all',),
+                         last_modified_func=latest_topics_update)
 
 
 def latest_topic_update(request, topic_pk):
@@ -47,4 +148,6 @@ def latest_topic_update(request, topic_pk):
     return topic.updated
 
 
-posts_list = condition(last_modified_func=latest_topic_update)
+posts_list = cache_view('posts_list:{url:topic_pk}:{get:page:1}',
+                        groups=('topic:all', 'topic:{url:topic_pk}'),
+                        last_modified_func=latest_topic_update)

@@ -75,10 +75,6 @@ class Cache:
             raise UnexpectedResponse(resp)
         return True
 
-    def setting(self, key):
-        cmd = 'setting {}\r\n'.format(key)
-        self._conn.send(cmd.encode('utf8'))
-        resp = self._readline()
-        if resp != b'OK':
-            raise UnexpectedResponse(resp)
-        return True
+    def getset(self, key, timeout=0.2):
+        # TODO
+        return self.get(key)

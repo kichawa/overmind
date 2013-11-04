@@ -1,9 +1,9 @@
 {% if can_edit %}
-    <a href="{% url "forum:post-edit" post_pk=post.pk %}">edit</a>
+    <a href="{% url "forum:post-edit" topic_pk=post.topic_id post_pk=post.pk %}">edit</a>
 {% endif %}
 
 {% if can_delete %}
-    <a href="{% url "forum:post-toggle-delete" post_pk=post.pk %}">
+    <a href="{% url "forum:post-toggle-delete" topic_pk=post.topic_id post_pk=post.pk %}">
         {% if post.is_deleted %}
             recover
         {% else %}
@@ -13,7 +13,7 @@
 {% endif %}
 
 {% if can_report_as_spam %}
-    <a href="{% url "forum:post-report-as-spam" post_pk=post.pk %}">
+    <a href="{% url "forum:post-report-as-spam" topic_pk=post.topic_id post_pk=post.pk %}">
         report as spam
     </a>
 {% endif %}

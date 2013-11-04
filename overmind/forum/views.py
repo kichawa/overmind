@@ -119,6 +119,7 @@ def posts_list(request, topic_pk):
     # this is not always called (condition cache decorator), but that's good
     # thing. It means that the same user is not bumping the counter all the
     # time
+    # XXX remove if from here, because the view is cached
     counter = backend.default()
     counter.increment('topic:view:{}'.format(topic.pk))
 
@@ -129,8 +130,9 @@ def posts_list(request, topic_pk):
     return render(request, 'forum/posts_list.html', ctx)
 
 
+@cache.cache_view('post_details:{url:post_pk}', groups=('topic:topic_pk',))
 @never_cache
-def post_details(request, post_pk):
+def post_details(request, topic_pk, post_pk):
     "Redirect to topic details page, on which given post can be found"
     query = Post.objects.exclude(Q(topic__is_deleted=True) | Q(is_deleted=True))
     post = get_object_or_404(query.select_related(), pk=post_pk)
@@ -263,8 +265,8 @@ def topic_toggle_delete(request, topic_pk):
 
 @never_cache
 @transaction.atomic
-def post_toggle_delete(request, post_pk):
-    post = get_object_or_404(Post, pk=post_pk)
+def post_toggle_delete(request, topic_pk, post_pk):
+    post = get_object_or_404(Post, topic__pk=topic_pk, pk=post_pk)
     perm_manager = permissions.manager_for(request.user)
     if not perm_manager.can_delete_post(post):
         return HttpResponseForbidden()
@@ -287,8 +289,8 @@ def post_toggle_delete(request, post_pk):
 
 @never_cache
 @transaction.atomic
-def post_edit(request, post_pk):
-    post = get_object_or_404(Post, pk=post_pk)
+def post_edit(request, topic_pk, post_pk):
+    post = get_object_or_404(Post, topic__pk=topic_pk, pk=post_pk)
     perm_manager = permissions.manager_for(request.user)
     if not perm_manager.can_edit_post(post):
         return HttpResponseForbidden()
@@ -325,8 +327,9 @@ def post_edit(request, post_pk):
 
 @never_cache
 @login_required
-def post_report_as_spam(request, post_pk):
-    post = get_object_or_404(Post, is_deleted=False, pk=post_pk)
+def post_report_as_spam(request, topic_pk, post_pk):
+    post = get_object_or_404(Post, is_deleted=False, topic__pk=topic_pk,
+                             pk=post_pk)
     _, created = PostHistory.objects.get_or_create(
             post=post, author=request.user, action='spam_reported')
     if created:
