@@ -3,12 +3,9 @@ import pickle
 import threading
 
 
-class UnexpectedResponse(Exception):
-    pass
-
-
-class Disconnected(Exception):
-    pass
+class CachedbError(Exception): pass
+class UnexpectedResponse(CachedbError): pass
+class Disconnected(CachedbError): pass
 
 
 class Cache:
@@ -37,12 +34,12 @@ class Cache:
             raise Disconnected()
         return line[:-2]
 
-    def get(self, key):
+    def get(self, key, default=None):
         cmd = 'get {}\r\n'.format(key)
         self._conn.send(cmd.encode('utf8'))
         resp = self._readline()
         if resp == b'NOT_FOUND':
-            return None
+            return default
         # VALUE <name> <size>
         _, size_str = resp.decode('iso-8859-1').rsplit(' ', 1)
         size = int(size_str)
@@ -88,6 +85,6 @@ class Cache:
             raise UnexpectedResponse(resp)
         return True
 
-    def getset(self, key, timeout=0.2):
+    def getset(self, key, default=None, timeout=0.2):
         # TODO
-        return self.get(key)
+        return self.get(key, default)

@@ -105,25 +105,39 @@ def cache_view(key, groups=(), last_modified_func=None):
     Every view cache can be assigned to any number of dynamic groups for ease
     of multiple key expiration.
 
-    If `last_modified_func` is provided, "Last-Modified" header value is
-    cached and expired together with response (because it's part of it).
+    If `last_modified_func` is provided, it's result is cached with the same
+    groups as the response object.
     """
+    # XXX  this does not properly cache gzip header
+    nil = object()
     gbuilder = create_names_builder(groups)
     kbuilder = create_name_builder(key)
 
     def decorator(view):
-        if last_modified_func:
-            view = condition(last_modified_func=last_modified_func)(view)
-
         if not getattr(settings, 'HTTP_CACHE', False):
             return view
 
         @functools.wraps(view)
         def wrapper(request, *args, **kwargs):
+            view_fn = view
             key = kbuilder(request.GET, kwargs)
-            response = cache.getset(key)
-            if not response:
-                response = view(request, *args, **kwargs)
+
+            if last_modified_func:
+                # if last modified function is provided, wrap it with group
+                # cache and reuse the result
+                def cached_last_modified_func(*args, **kwargs):
+                    key_last_modified = key + ':last_modified'
+                    result = cache.getset(key_last_modified, nil)
+                    if result is nil:
+                        result = last_modified_func(*args, **kwargs)
+                        cache.set(key_last_modified, result,
+                                  groups=gbuilder(request.GET, kwargs))
+                    return result
+                view_fn = condition(last_modified_func=cached_last_modified_func)(view_fn)
+
+            response = cache.getset(key, nil)
+            if response is nil:
+                response = view_fn(request, *args, **kwargs)
                 if response.status_code in CACHABLE_RESPONSE_CODE:
                     cache.set(key, response,
                               groups=gbuilder(request.GET, kwargs))
