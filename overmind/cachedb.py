@@ -1,5 +1,6 @@
 import socket
 import pickle
+import yaml
 import threading
 
 
@@ -8,11 +9,30 @@ class UnexpectedResponse(CachedbError): pass
 class Disconnected(CachedbError): pass
 
 
+
+class YamlSerializer:
+    "Debug only serializer"
+    def load(self, data):
+        return yaml.load(data.decode('utf8'))
+
+    def dump(self, item):
+        return yaml.dump(item).encode('utf8')
+
+
+class PickleSerializer:
+    def load(self, data):
+        return pickle.loads(data)
+
+    def dump(self, item):
+        return pickle.dumps(item)
+
+
 class Cache:
     "Single cachedb server connection"
-    def __init__(self, address):
+    def __init__(self, address, serializer=PickleSerializer):
         self.address = address
         self._local = threading.local()
+        self.serializer = serializer()
 
     @property
     def _conn(self):
@@ -44,10 +64,10 @@ class Cache:
         _, size_str = resp.decode('iso-8859-1').rsplit(' ', 1)
         size = int(size_str)
         data = self._rd.read(size + 2)
-        return pickle.loads(data[:-2])
+        return self.serializer.load(data[:-2])
 
     def set(self, key, item, timeout=0, groups=()):
-        value = pickle.dumps(item)
+        value = self.serializer.dump(item)
         if groups:
             cmd = 'set {} {} {} {}\r\n'.format(key, len(value), timeout, ' '.join(groups))
         else:
