@@ -68,6 +68,7 @@ class TopicViewCountTest(TransactionTestCase):
 
     @mock.patch('counter.backend.default')
     def test_topic_view_count(self, default_backend):
+        # XXX we cache the view now, so counting has to be fixed
         default_backend.return_value = Memory()
         topic = Topic.objects.get(pk=1)
         widget_key = 'topic-view-count:{}'.format(topic.id)
@@ -75,7 +76,6 @@ class TopicViewCountTest(TransactionTestCase):
         self.client.get(topic.get_absolute_url())
         self.assertEqual(self.counter_value(widget_key), 1)
         self.client.get(topic.get_absolute_url())
-        # because we cache the view now!
         self.assertEqual(self.counter_value(widget_key), 2)
 
     def counter_value(self, key):

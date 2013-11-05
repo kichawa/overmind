@@ -38,13 +38,14 @@ class PostDetailsPageTest(TransactionTestCase):
     @override_settings(FORUM_POSTS_PER_PAGE=2)
     def test_redirects(self):
         test_data = (
-            (2, 'topic/2/2013-09-02-second-topic/#post-2'),
-            (3, 'topic/2/2013-09-02-second-topic/#post-3'),
-            (4, 'topic/2/2013-09-02-second-topic/?page=2#post-4'),
-            (5, 'topic/2/2013-09-02-second-topic/?page=2#post-5'),
+            (2, 2, 'topic/2/2013-09-02-second-topic/#post-2'),
+            (2, 3, 'topic/2/2013-09-02-second-topic/#post-3'),
+            (2, 4, 'topic/2/2013-09-02-second-topic/?page=2#post-4'),
+            (2, 5, 'topic/2/2013-09-02-second-topic/?page=2#post-5'),
         )
-        for post_pk, url_suffix in test_data:
-            resp = self.client.get(reverse('forum:post-details', args=(post_pk,)))
+        for topic_pk, post_pk, url_suffix in test_data:
+            resp = self.client.get(
+                    reverse('forum:post-details', args=(topic_pk, post_pk,)))
             self.assertEqual(resp.status_code, 302)
             self.assertTrue(resp.url.endswith(url_suffix),
                             "{} does not end with {}".format(resp.url, url_suffix))
@@ -53,13 +54,15 @@ class PostDetailsPageTest(TransactionTestCase):
         post = Post.objects.get(pk=2)
         post.is_deleted = True
         post.save()
-        resp = self.client.get(reverse('forum:post-details', args=(post.pk, )))
+        resp = self.client.get(
+                reverse('forum:post-details', args=(post.topic_id, post.pk, )))
         self.assertEqual(resp.status_code, 404)
 
     def test_redirect_topic_deleted(self):
         post = Post.objects.get(pk=2)
         post.topic.is_deleted = True
         post.topic.save()
-        resp = self.client.get(reverse('forum:post-details', args=(post.pk, )))
+        resp = self.client.get(
+                reverse('forum:post-details', args=(post.topic_id, post.pk, )))
         self.assertEqual(resp.status_code, 404)
 
