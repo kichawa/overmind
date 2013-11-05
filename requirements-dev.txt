@@ -5,4 +5,3 @@ Werkzeug
 django-extensions
 flake8
 pyyaml
-mock
