@@ -11,13 +11,17 @@
 {% block forum_content %}
     <div class="topic-title">
         <h1>{{ topic.subject }}</h1>
-        <span class="tags">{% for tag in topic.tags.all %}<span class="tag">{{ tag }}</span>{% endfor %}</span>
+        <span class="tags">
+            {% if topic.is_closed %}<span class="tag">closed</span>{% endif %}
+            {% if topic.is_solved %}<span class="tag">solved</span>{% endif %}
+            {% for tag in topic.tags.all %}<span class="tag">{{ tag }}</span>{% endfor %}
+        </span>
         <div data-dynamic-widget="topic-attributes:{{ topic.id }}"></div>
     </div>
 
     <div class="table posts-list">
         {% for post in posts %}
-            <div class="row" id="post-{{ post.id }}">
+            <div class="row {% if post.is_solving %}solving" style="background:red{% endif %}" id="post-{{ post.id }}">
                 <div class="col">
                     {% avatar_tag post.author.email 76 %}
                 </div>

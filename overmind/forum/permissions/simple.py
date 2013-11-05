@@ -87,7 +87,7 @@ class SimpleManager:
     def can_solve_topic_with_post(self, post_or_pk):
         if self.user.is_anonymous():
             return False
-        if self.is_moderator():
+        if self._is_moderator():
             return True
         post = self._post_from_cache(post_or_pk)
         if self.user.id == post.topic.author_id:

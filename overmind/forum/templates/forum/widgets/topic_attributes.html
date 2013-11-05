@@ -13,3 +13,13 @@
         report as spam
     </a>
 {% endif %}
+
+{% if can_close %}
+    <a href="{% url "forum:topic-toggle-close" topic_pk=topic.pk %}">
+        {% if topic.is_closed %}
+            open
+        {% else %}
+            close
+        {% endif %}
+    </a>
+{% endif %}

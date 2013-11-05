@@ -11,12 +11,18 @@ import psycopg2
 sqlt_db_path = sys.argv[1]
 
 TAGS = [
-    'howto',
-    'beginner',
-    'xorg',
-    'gtk',
-    'qt',
-    'programming',
+    'Beginner',
+    'Installation',
+    'Kernel & Hardware',
+    'Desktop Environment',
+    'Laptop',
+    'Networking',
+    'Games',
+    'Multimedia',
+    'Administration',
+    'About forum',
+    'Pacman',
+    'Random',
 ]
 
 
@@ -80,11 +86,12 @@ def copy_topics(pg_connection, sqlt_connection):
     for row in pg_c:
         sqlt_c.execute('''
             INSERT INTO forum_topic(id, author_id, subject, created, updated,
-                                    content_updated, response_count, is_deleted)
-            VALUES ($1, $2, $3, $4, $4, $4, $5 - 1, 0)
+                                    content_updated, response_count,
+                                    is_deleted, is_closed, is_solved)
+            VALUES ($1, $2, $3, $4, $4, $4, $5 - 1, 0, 0, 0)
         ''', row)
         attached_tags = {None}
-        for _ in range(random.randint(1, len(TAGS))):
+        for _ in range(random.randint(1, 5)):
             tid = None
             while tid in attached_tags:
                 tid = random.randint(1, len(TAGS))
@@ -114,8 +121,8 @@ def copy_posts(pg_connection, sqlt_connection):
         row.append(False)
         sqlt_c.execute('''
             INSERT INTO forum_post(id, topic_id, author_id, content, created,
-                                   updated, ip, is_deleted)
-            VALUES ($1, $2, $3, $4, $5, $5, $6, $7)
+                                   updated, ip, is_deleted, is_solving)
+            VALUES ($1, $2, $3, $4, $5, $5, $6, $7, 0)
         ''', row)
     pg_c.close()
 

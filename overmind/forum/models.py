@@ -62,6 +62,8 @@ class Topic(models.Model):
     tags = models.ManyToManyField(Tag)
     response_count = models.PositiveIntegerField(default=0)
     is_deleted = models.BooleanField(db_index=True, default=False)
+    is_closed = models.BooleanField(default=False)
+    is_solved = models.BooleanField(default=False)
     # updated whenever content was changed (value used for caching)
     content_updated = models.DateTimeField(auto_now_add=True)
 
@@ -108,6 +110,7 @@ class Post(models.Model):
     updated = models.DateTimeField(auto_now_add=True)
     ip = models.IPAddressField(null=True, blank=True)
     is_deleted = models.BooleanField(db_index=True, default=False)
+    is_solving = models.BooleanField(default=False)
 
     def __str__(self):
         return self.content[:120]
@@ -122,6 +125,8 @@ class PostHistory(models.Model):
         ('recovered', 'Post was recovered'),
         ('content_changed', 'Post content was changed'),
         ('spam_reported', 'Post was reported as spam'),
+        ('is_solving', 'Post was marked as solving a problem'),
+        ('not_solving', 'Post mark of solving a problem was removed'),
     )
     post = models.ForeignKey(Post)
     action = models.CharField(max_length=16, choices=ACTION_CHOICES)

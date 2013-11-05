@@ -10,7 +10,6 @@
 
 
 {% block forum_content %}
-
     <div class="topic-list">
         <div class="table expand">
              <div class="search-bar">
@@ -21,7 +20,7 @@
             </div>
             <div class="search-filter">
                 <form action="{% url "forum:topics-list" %}" method="GET">
-    
+
                     {% for tag in tags %}
                         <label>
                             <input type="checkbox" name="tag" value="{{ tag.label }}" {% if tag.checked %}checked{% endif %}> {{ tag.label }}
@@ -39,6 +38,8 @@
                 <div class="topic-main">
                     <a href="{{ topic.get_absolute_url }}" data-dynamic-widget="topic-is-new:{{ topic.id }}">{{ topic.subject }}</a>
                     <div class="tags">
+                        {% if topic.is_closed %}<span class="tag">closed</span>{% endif %}
+                        {% if topic.is_solved %}<span class="tag">solved</span>{% endif %}
                         {% for tag in topic.tags.all %}<span class="tag">{{ tag }}</span>{% endfor %}
                     </div>
 

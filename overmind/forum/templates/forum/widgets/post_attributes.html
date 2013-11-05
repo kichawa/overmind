@@ -17,3 +17,13 @@
         report as spam
     </a>
 {% endif %}
+
+{% if can_solve %}
+    <a href="{% url "forum:post-toggle-is-solving" topic_pk=post.topic_id post_pk=post.pk %}">
+        {% if post.is_solving %}
+            post is not solving the problem - remove the mark
+        {% endif %}
+            mark post as solving the problem
+        {% else %}
+    </a>
+{% endif %}

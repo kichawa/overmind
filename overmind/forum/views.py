@@ -265,6 +265,33 @@ def topic_toggle_delete(request, topic_pk):
 
 @never_cache
 @transaction.atomic
+def topic_toggle_close(request, topic_pk):
+    topic = get_object_or_404(Topic, pk=topic_pk)
+    perm_manager = permissions.manager_for(request.user)
+    if not perm_manager.can_close_topic(topic):
+        return HttpResponseForbidden()
+
+    topic.is_closed = not topic.is_closed
+    now = datetime.datetime.now().replace(tzinfo=utc)
+    topic.content_updated = now
+    topic.save()
+
+    action = 'closed' if topic.is_closed else 'opened'
+    TopicHistory.objects.create(topic=topic, action=action,
+                                author=request.user)
+    cache.expire_groups((
+        'topic:all',
+        'topic:{}'.format(topic.pk),
+    ))
+
+    url = request.META.get('HTTP_REFERER', None)
+    if not url:
+        url = topic.get_absolute_url()
+    return redirect(url)
+
+
+@never_cache
+@transaction.atomic
 def post_toggle_delete(request, topic_pk, post_pk):
     post = get_object_or_404(Post, topic__pk=topic_pk, pk=post_pk)
     perm_manager = permissions.manager_for(request.user)
@@ -276,14 +303,51 @@ def post_toggle_delete(request, topic_pk, post_pk):
 
     now = datetime.datetime.now().replace(tzinfo=utc)
     post.is_deleted = not post.is_deleted
-    post.updated = now
     post.save()
     post.topic.updated = now
     post.topic.save()
-    cache.expire_group('topic:{}'.format(post.topic_id))
+    cache.expire_groups((
+        'topic:all',
+        'topic:{}'.format(post.topic.pk),
+    ))
     url = request.META.get('HTTP_REFERER', None)
     if not url:
         url = post.get_absolute_url()
+    return redirect(url)
+
+
+@never_cache
+@transaction.atomic
+def post_toggle_is_solving(request, topic_pk, post_pk):
+    post = get_object_or_404(Post, topic__pk=topic_pk, pk=post_pk)
+    perm_manager = permissions.manager_for(request.user)
+    if not perm_manager.can_solve_topic_with_post(post):
+        return HttpResponseForbidden()
+
+    action = 'not_solving' if post.is_solving else 'is_solving'
+    PostHistory.objects.create(post=post, action=action, author=request.user)
+    topic = post.topic
+    topic_is_solved = topic.posts.filter(is_solving=True).exists()
+    if topic.is_solved != topic_is_solved:
+        topic.is_solved = topic_is_solved
+        action = 'solved' if topic_is_solved else 'not_solved'
+        PostHistory.objects.create(post=post, action=action,
+                                   author=request.user)
+
+    now = datetime.datetime.now().replace(tzinfo=utc)
+    post.is_solving = not post.is_solving
+    post.save()
+    topic.content_updated = now
+    topic.save()
+
+    cache.expire_groups((
+        'topic:all',
+        'topic:{}'.format(topic.pk),
+    ))
+
+    url = request.META.get('HTTP_REFERER', None)
+    if not url:
+        url = topic.get_absolute_url()
     return redirect(url)
 
 

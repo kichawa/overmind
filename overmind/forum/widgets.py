@@ -66,6 +66,7 @@ def topic_attributes(request, widgets):
             'topic': topic,
             'can_edit': perm_manager.can_edit_topic(topic),
             'can_delete': perm_manager.can_delete_topic(topic),
+            'can_close': perm_manager.can_close_topic(topic),
             'can_report_as_spam': perm_manager.can_report_topic_as_spam(topic),
         }
         html = render_to_string('forum/widgets/topic_attributes.html',
@@ -147,6 +148,7 @@ def post_attributes(request, widgets):
             'can_edit': perm_manager.can_edit_post(post),
             'can_delete': perm_manager.can_delete_post(post),
             'can_report_as_spam': perm_manager.can_report_post_as_spam(post),
+            'can_solve': perm_manager.can_solve_topic_with_post(post),
         }
         html = render_to_string('forum/widgets/post_attributes.html',
                                 RequestContext(request, ctx))
