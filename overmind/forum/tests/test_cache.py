@@ -52,8 +52,8 @@ class GroupBuilderTest(TestCase):
         self.assertEqual(result, expected)
 
     def test_with_default_value(self):
-        name = 'a:{url:page:1}:{get:tag}:{url:filter}'
+        name = 'a:{url:page:1}:{get:tag:bob}:{url:filter}'
         builder = cache.create_name_builder(name)
 
         result = builder(ListDict(), {})
-        self.assertEqual(result, 'a:1::')
+        self.assertEqual(result, 'a:1:bob:')

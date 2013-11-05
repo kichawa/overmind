@@ -70,7 +70,12 @@ def create_name_builder(name_repr):
             if dynamic[0] == 'url':
                 chunks.append(kwargs.get(dynamic[1], dynamic[2]))
             else:
-                chunks.append(','.join(params.getlist(dynamic[1], ())))
+                items = params.getlist(dynamic[1], ())
+                if items:
+                    value = ','.join(items)
+                else:
+                    value = dynamic[2]
+                chunks.append(value)
         return ''.join(chunks)
 
     return builder
