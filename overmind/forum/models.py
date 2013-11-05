@@ -68,8 +68,8 @@ class Topic(models.Model):
     def get_absolute_url(self, last_page=False):
         if self.is_deleted:
             return None
-        slug = slugify('{}-{}'.format(self.created.date(), self.subject))
-        url = reverse('forum:posts-list', args=(self.pk, slug))
+        slug = slugify('{}_{}'.format(self.subject, self.created.date()))
+        url = reverse('forum:posts-list', args=(slug, self.pk))
         if last_page:
             num_pages = math.ceil((self.response_count + 1) / settings.FORUM_POSTS_PER_PAGE)
             url = "{}?page={}".format(url, num_pages)

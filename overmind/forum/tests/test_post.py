@@ -38,10 +38,10 @@ class PostDetailsPageTest(TransactionTestCase):
     @override_settings(FORUM_POSTS_PER_PAGE=2)
     def test_redirects(self):
         test_data = (
-            (2, 2, 'topic/2/2013-09-02-second-topic/#post-2'),
-            (2, 3, 'topic/2/2013-09-02-second-topic/#post-3'),
-            (2, 4, 'topic/2/2013-09-02-second-topic/?page=2#post-4'),
-            (2, 5, 'topic/2/2013-09-02-second-topic/?page=2#post-5'),
+            (2, 2, 'topic/second-topic_2013-09-02/2/#post-2'),
+            (2, 3, 'topic/second-topic_2013-09-02/2/#post-3'),
+            (2, 4, 'topic/second-topic_2013-09-02/2/?page=2#post-4'),
+            (2, 5, 'topic/second-topic_2013-09-02/2/?page=2#post-5'),
         )
         for topic_pk, post_pk, url_suffix in test_data:
             resp = self.client.get(
