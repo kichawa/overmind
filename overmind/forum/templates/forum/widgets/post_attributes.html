@@ -1,3 +1,7 @@
+<a class="tooltip">
+    <span class="tooltip-head">hover me</span>
+    <span class="tooltip-body"><span class="tooltip-text">I hovered you, what should I do next?</span></span>
+</a>
 {% if can_edit %}
     <a href="{% url "forum:post-edit" topic_pk=post.topic_id post_pk=post.pk %}">edit</a>
 {% endif %}
@@ -27,3 +31,4 @@
         {% else %}
     </a>
 {% endif %}
+

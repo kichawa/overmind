@@ -382,6 +382,32 @@ html, body {
 .content {
   margin: auto; }
 
+.tooltip {
+  position: relative;
+  min-width: 16px;
+  display: inline-block;
+  text-align: center; }
+  .tooltip .tooltip-head {
+    line-height: 16px; }
+  .tooltip .tooltip-body {
+    display: none;
+    position: absolute;
+    left: 0;
+    top: 16px;
+    margin-left: -400%;
+    width: 900%;
+    z-index: 100; }
+    .tooltip .tooltip-body .tooltip-text {
+      width: 100%;
+      max-width: 250px;
+      display: inline-block;
+      padding: 4px;
+      box-shadow: 0 1px 4px 1px #cccccc;
+      border-radius: 8px;
+      background: white; }
+  .tooltip:hover .tooltip-body {
+    display: inline-block; }
+
 .header {
   background: white;
   margin: 0 auto;
@@ -392,8 +418,25 @@ html, body {
     right: 5%;
     top: 18px; }
 
+.solving {
+  border: 2px solid #bbddbb;
+  text-align: center;
+  background: #cceecc;
+  padding: 2px 4px; }
+
 .tag {
-  margin: 0 4px; }
+  margin: 0 4px;
+  padding: 2px 4px;
+  border: 1px solid #cccccc;
+  background: white;
+  position: relative;
+  top: -5px; }
+  .tag.solved {
+    border: 1px solid #bbddbb;
+    background: #cceecc; }
+  .tag.closed {
+    border: 1px solid #ddbbbb;
+    background: #eecccc; }
 
 .topic-list {
   width: 90%;
@@ -514,6 +557,18 @@ html, body {
         z-index: 0;
         left: -15px;
         top: 20px; }
+      .posts-list .col .post:hover .post-options {
+        display: block; }
+    .posts-list .col .post-options {
+      display: none;
+      position: absolute;
+      top: 4px;
+      right: 0; }
+      .posts-list .col .post-options a {
+        padding: 0 8px;
+        border-left: 1px solid #dddddd; }
+        .posts-list .col .post-options a:first-child {
+          border-left: none; }
     .posts-list .col .meta {
       color: #566579;
       line-height: 2em; }
@@ -578,6 +633,9 @@ html, body {
   margin: 16px auto;
   padding: 8px;
   background: white; }
+
+.marked-pattern {
+  background: #ffff88; }
 
 .pagination {
   text-align: center; }

@@ -1,3 +1,28 @@
+.solving {
+  border: 2px solid $colorLightGreen;
+  text-align: center;
+  background: $colorLighterGreen;
+  padding: 2px 4px;
+}
+
 .tag {
+  $tagBorderWidth: 1px;
+  $tagTopPadding: 2px;
+
   margin: 0 4px;
+  padding: $tagTopPadding 4px;
+  border: $tagBorderWidth solid #ccc;
+  background: $colorWhite;
+  position: relative;
+  top: ($tagBorderWidth + ($tagTopPadding * 2)) * -1;
+
+  &.solved {
+    border: $tagBorderWidth solid $colorLightGreen;
+    background: $colorLighterGreen;
+  }
+
+  &.closed {
+    border: $tagBorderWidth solid $colorLightRed;
+    background: $colorLighterRed;
+  }
 }

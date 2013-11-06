@@ -12,8 +12,8 @@
     <div class="topic-title">
         <h1>{{ topic.subject }}</h1>
         <span class="tags">
-            {% if topic.is_closed %}<span class="tag">closed</span>{% endif %}
-            {% if topic.is_solved %}<span class="tag">solved</span>{% endif %}
+            {% if topic.is_closed %}<span class="tag closed">closed</span>{% endif %}
+            {% if topic.is_solved %}<span class="tag solved">solved</span>{% endif %}
             {% for tag in topic.tags.all %}<span class="tag">{{ tag }}</span>{% endfor %}
         </span>
         <div data-dynamic-widget="topic-attributes:{{ topic.id }}"></div>
@@ -21,16 +21,17 @@
 
     <div class="table posts-list">
         {% for post in posts %}
-            <div class="row {% if post.is_solving %}solving" style="background:red{% endif %}" id="post-{{ post.id }}">
+            <div class="row" id="post-{{ post.id }}">
                 <div class="col">
                     {% avatar_tag post.author.email 76 %}
+                    {% if post.is_solving %}<p class="solving">SOLVING</p>{% endif %}
                 </div>
                 <div class="col">
                     <div class="post">
+                        <div class="post-options"><div data-dynamic-widget="post-attributes:{{ post.id }}"></div></div>
                         <span class="flag new" data-dynamic-widget="post-is-new:{{ post.id }}"></span>
                         <span class="meta small"><a href="{% url "forum:user-details" post.author.pk %}">{{ post.author.username }}</a>, {{ post.created }}</span>
                         <p>{{ post.content|markup:"markdown" }}</p>
-                        <div data-dynamic-widget="post-attributes:{{ post.id }}"></div>
                     </div>
                 </div>
             </div>
