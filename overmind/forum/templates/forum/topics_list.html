@@ -36,7 +36,7 @@
                     {% avatar_tag topic.author.email 30 %}
                 </div>
                 <div class="topic-main">
-                    <a href="{{ topic.get_absolute_url }}" data-dynamic-widget="topic-is-new:{{ topic.id }}">{{ topic.subject }}</a>
+                    <a href="{{ topic.get_absolute_url }}" dw-load="topic-is-new:{{ topic.id }}">{{ topic.subject }}</a>
                     <div class="tags">
                         {% if topic.is_closed %}<span class="tag closed">closed</span>{% endif %}
                         {% if topic.is_solved %}<span class="tag solved">solved</span>{% endif %}
@@ -50,7 +50,7 @@
                             no responses
                         {% endif %}
                         &bull;
-                        <span data-dynamic-widget="topic-view-count:{{ topic.id }}">- views</span>
+                        <span dw-load="topic-view-count:{{ topic.id }}">- views</span>
                         &bull;
                         <span title="{{ topic.updated }}">created {{ topic.updated|timesince }} ago</span>
                         {% if topic.posts_count > POSTS_PER_PAGE %}

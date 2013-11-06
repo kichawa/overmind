@@ -27,7 +27,7 @@ def topic_view_count(request, widgets):
 @widget_handler(r"^topic-is-new:(?P<tid>\d+)$")
 def topic_is_new(request, widgets):
     if request.user.is_anonymous():
-        return {w['wid']: {'html': '', 'isnew': False} for w in widgets}
+        return {w['wid']: {'isnew': False} for w in widgets}
 
     topics = {}
     query = Topic.objects.filter(id__in=[w['params']['tid'] for w in widgets])
@@ -50,7 +50,7 @@ def topic_is_new(request, widgets):
 @widget_handler(r"^topic-attributes:(?P<tid>\d+)$")
 def topic_attributes(request, widgets):
     if request.user.is_anonymous():
-        return {w['wid']: {'html': ''} for w in widgets}
+        return {w['wid']: {} for w in widgets}
 
     topics = {}
     query = Topic.objects.filter(id__in=[w['params']['tid'] for w in widgets])
@@ -85,7 +85,7 @@ def login_logout(request, widgets):
 @widget_handler(r"post-is-new:(?P<pid>\d+)$")
 def post_is_new(request, widgets):
     if request.user.is_anonymous():
-        return {w['wid']: {'html': '', 'isnew': False} for w in widgets}
+        return {w['wid']: {'isnew': False} for w in widgets}
 
     last_seen = LastSeen.obtain_for(request.user)
     query = Post.objects.filter(id__in=[w['params']['pid'] for w in widgets])
@@ -131,7 +131,7 @@ def post_is_new(request, widgets):
 @widget_handler(r"^post-attributes:(?P<pid>\d+)$")
 def post_attributes(request, widgets):
     if request.user.is_anonymous():
-        return {w['wid']: {'html': ''} for w in widgets}
+        return {w['wid']: {} for w in widgets}
 
     posts = {}
     query = Post.objects.filter(id__in=[w['params']['pid'] for w in widgets])
@@ -159,7 +159,7 @@ def post_attributes(request, widgets):
 @widget_handler(r"^topic-comment-form:(?P<tid>\d+)$")
 def topic_comment_form(request, widgets):
     if request.user.is_anonymous():
-        return {w['wid']: {'html': ''} for w in widgets}
+        return {w['wid']: {} for w in widgets}
 
     perm_manager = permissions.manager_for(request.user)
 
@@ -187,3 +187,8 @@ def logged_user_actions(request, widgets):
     ctx = RequestContext(request)
     html = render_to_string('forum/widgets/logged_user_actions.html', ctx)
     return {"logged-user-actions": {"html": html}}
+
+
+@widget_handler(r"^topic-reports-list:(?P<tid>\d+)$")
+def topic_reports_list(request, widgets):
+    return {w['wid']: {} for w in widgets}
