@@ -4,6 +4,7 @@
     {% load staticfiles %}
     <meta charset="utf-8">
     <title>{% block title %}Forum 4.0{% endblock %}</title>
+    <script type="text/javascript">window.DYNAMIC_WIDGETS_URL = '{% url "dynamicwidget:widgets" %}';</script>
     {% block css %}
         <link rel="stylesheet" href="{% static "forum/css/styles.css" %}" type="text/css">
     {% endblock %}
@@ -13,9 +14,9 @@
         <div class="header">
             {% block forum_header %}
                 <a href="{% url "forum:topics-list" %}">topics list</a>
-                <span data-dynamic-widget="logged-user-actions"></span>
+                <span dw-load="logged-user-actions"></span>
             {% endblock %}
-            <div class="login-area"><span data-dynamic-widget="login-logout"></span></div>
+            <div class="login-area"><span dw-load="login-logout"></span></div>
         </div>
         <div class="content">
         {% block forum_content %}{% endblock %}
@@ -24,11 +25,6 @@
     {% block javascript %}
         <script src="{% static "forum/js/jquery.js" %}" type="text/javascript"></script>
         <script src="{% static "dynamicwidget/js/dynamicwidget.js" %}" type="text/javascript"></script>
-        <script type="text/javascript">
-            $(function () {
-                $('[data-dynamic-widget]').dynamicWidget({url: '{% url "dynamicwidget:widgets" %}'});
-            });
-        </script>
     {% endblock %}
 </body>
 </html>
