@@ -1,3 +1,5 @@
+import collections
+
 from django.template import RequestContext
 from django.template.loader import render_to_string
 
@@ -6,7 +8,7 @@ from dynamicwidget.decorators import widget_handler
 
 from . import permissions
 from .forms import PostForm
-from .models import LastSeen, Post, Topic
+from .models import LastSeen, Post, Topic, PostHistory
 
 
 @widget_handler(r"^topic-view-count:(?P<tid>\d+)$")
@@ -189,6 +191,18 @@ def logged_user_actions(request, widgets):
     return {"logged-user-actions": {"html": html}}
 
 
-@widget_handler(r"^topic-reports-list:(?P<tid>\d+)$")
-def topic_reports_list(request, widgets):
-    return {w['wid']: {} for w in widgets}
+@widget_handler(r"^post-history-info:(?P<pid>\d+)$")
+def post_history_info(request, widgets):
+    res = {}
+
+    history = collections.defaultdict(list)
+    post_ids = [w['params']['pid'] for w in widgets]
+    for h in PostHistory.objects.filter(post__id__in=post_ids):
+        history[str(h.post_id)].append(h)
+
+    for widget in widgets:
+        ctx = {'history': history[widget['params']['pid']]}
+        html = render_to_string('forum/widgets/post_history_info.html', ctx)
+        res[widget['wid']] = {'append': html}
+
+    return res

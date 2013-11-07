@@ -108,7 +108,12 @@
     }));
 
     $doc.on('click', '[dw-click]', withLock(function (done) {
-      done();
+      var $el = $(this);
+      var wid = $el.attr('dw-click');
+      loadWidgets($el, 'dw-click', [wid]).done(function () {
+        $el.removeAttr('dw-click');
+        done();
+      });
     }));
 
     widgetsLoadContent($doc);

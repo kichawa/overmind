@@ -331,8 +331,8 @@ def post_toggle_is_solving(request, topic_pk, post_pk):
     if topic.is_solved != topic_is_solved:
         topic.is_solved = topic_is_solved
         action = 'solved' if topic_is_solved else 'not_solved'
-        PostHistory.objects.create(post=post, action=action,
-                                   author=request.user)
+        TopicHistory.objects.create(topic=post.topic, action=action,
+                                    author=request.user)
 
     now = datetime.datetime.now().replace(tzinfo=utc)
     post.is_solving = not post.is_solving
