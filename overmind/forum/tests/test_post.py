@@ -66,3 +66,33 @@ class PostDetailsPageTest(TransactionTestCase):
                 reverse('forum:post-details', args=(post.topic_id, post.pk, )))
         self.assertEqual(resp.status_code, 404)
 
+
+class PostMarkAsSolvingTest(TransactionTestCase):
+    fixtures = ['forum/tests/small_size_forum.yaml']
+
+    def setUp(self):
+        u = get_user_model().objects.get(id=2)
+        u.set_password('a')
+        u.save()
+        self.client = Client()
+        self.assertTrue(self.client.login(username=u.username, password='a'))
+
+    def test_any_post_solving_is_solving_topic(self):
+        topic_id = 2
+        def toggle_solve_post(post_id):
+            url = reverse("forum:post-toggle-is-solving", args=(topic_id, post_id))
+            resp = self.client.get(url)
+            self.assertEqual(resp.status_code, 302)
+
+        def topic_is_solved():
+            return Topic.objects.filter(id=topic_id, is_solved=True).exists()
+
+        self.assertFalse(topic_is_solved())
+        toggle_solve_post(3)
+        self.assertTrue(topic_is_solved())
+        toggle_solve_post(4)
+        self.assertTrue(topic_is_solved())
+        toggle_solve_post(4)
+        self.assertTrue(topic_is_solved())
+        toggle_solve_post(3)
+        self.assertFalse(topic_is_solved())

@@ -324,10 +324,15 @@ def post_toggle_is_solving(request, topic_pk, post_pk):
     if not perm_manager.can_solve_topic_with_post(post):
         return HttpResponseForbidden()
 
-    action = 'not_solving' if post.is_solving else 'is_solving'
+
+    post.is_solving = not post.is_solving
+
+    action = 'solving' if post.is_solving else 'not_solving'
     PostHistory.objects.create(post=post, action=action, author=request.user)
+
     topic = post.topic
-    topic_is_solved = topic.posts.filter(is_solving=True).exists()
+    topic_is_solved = post.is_solving or \
+                      topic.posts.filter(is_solving=True).count() > 1
     if topic.is_solved != topic_is_solved:
         topic.is_solved = topic_is_solved
         action = 'solved' if topic_is_solved else 'not_solved'
@@ -335,7 +340,6 @@ def post_toggle_is_solving(request, topic_pk, post_pk):
                                     author=request.user)
 
     now = datetime.datetime.now().replace(tzinfo=utc)
-    post.is_solving = not post.is_solving
     post.save()
     topic.content_updated = now
     topic.save()
