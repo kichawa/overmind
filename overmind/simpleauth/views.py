@@ -13,8 +13,11 @@ from simpleauth.forms import RegistrationForm
 
 def login(request):
     if request.method == 'GET' and not 'next' in request.GET:
-        curr_url = urllib.parse.quote(request.META.get('HTTP_REFERER'))
-        url = "{}?next={}".format(reverse('simpleauth:login'), curr_url)
+        url = reverse('simpleauth:login')
+        next_url = request.META.get('HTTP_REFERER')
+        if next_url:
+            next_url = urllib.parse.quote(next_url)
+            url = "{}?next={}".format(url, next_url)
         return redirect(url)
     return django_login(request)
 
