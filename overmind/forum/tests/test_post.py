@@ -79,6 +79,7 @@ class PostMarkAsSolvingTest(TransactionTestCase):
 
     def test_any_post_solving_is_solving_topic(self):
         topic_id = 2
+
         def toggle_solve_post(post_id):
             url = reverse("forum:post-toggle-is-solving", args=(topic_id, post_id))
             resp = self.client.get(url)
