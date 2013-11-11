@@ -27,8 +27,9 @@ class MarkPostTest(TestCase):
             ('foo baz bar foo', 'baz', 'foo [baz] bar foo'),
             ('foofoofoo', 'foo', '[foo][foo][foo]'),
             ('foofoofoo', 'oo', 'f[oo]f[oo]f[oo]'),
+            ('foOFOofoo', 'foo', '[foO][FOo][foo]'),
         )
 
         for input_data, pattern, expected in test_data:
-            result = search.mark_pattern(input_data, pattern, fmt='[{}]')
+            result = search.mark_pattern(input_data, pattern, fmt=r'[\1]')
             self.assertMultiLineEqual(result, expected)
