@@ -52,7 +52,7 @@
                         &bull;
                         <span dw-load="topic-view-count:{{ topic.id }}">- views</span>
                         &bull;
-                        <span title="{{ topic.updated }}">created {{ topic.updated|timesince }} ago</span>
+                        <span title="{{ topic.updated }}">created {{ topic.updated }}</span>
                         {% if topic.posts_count > POSTS_PER_PAGE %}
                             &bull;
                             <a href="{% url "forum:posts-list-last-page" topic_pk=topic.pk %}">last page</a>
