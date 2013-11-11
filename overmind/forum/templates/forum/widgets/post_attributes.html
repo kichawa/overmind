@@ -1,33 +1,68 @@
-<a class="tooltip">
-    <span class="tooltip-head" dw-hover="post-history-info:{{ post.id }}">[X]</span>
-</a>
-{% if can_edit %}
-    <a href="{% url "forum:post-edit" topic_pk=post.topic_id post_pk=post.pk %}">edit</a>
-{% endif %}
-
-{% if can_delete %}
-    <a href="{% url "forum:post-toggle-delete" topic_pk=post.topic_id post_pk=post.pk %}">
-        {% if post.is_deleted %}
-            recover
-        {% else %}
-            delete
+<span class="tooltip-body">
+    <span class="tooltip-text">
+        {% if can_edit %}
+            <a href="{% url "forum:post-edit" topic_pk=post.topic_id post_pk=post.pk %}">edit</a>
         {% endif %}
-    </a>
-{% endif %}
 
-{% if can_report_as_spam %}
-    <a href="{% url "forum:post-report-as-spam" topic_pk=post.topic_id post_pk=post.pk %}">
-        report as spam
-    </a>
-{% endif %}
-
-{% if can_solve %}
-    <a href="{% url "forum:post-toggle-is-solving" topic_pk=post.topic_id post_pk=post.pk %}">
-        {% if post.is_solving %}
-            post is not solving the problem - remove the mark
+        {% if can_delete %}
+            <a href="{% url "forum:post-toggle-delete" topic_pk=post.topic_id post_pk=post.pk %}">
+                {% if post.is_deleted %}
+                    recover
+                {% else %}
+                    delete
+                {% endif %}
+            </a>
         {% endif %}
-            mark post as solving the problem
-        {% else %}
-    </a>
-{% endif %}
 
+        {% if can_report_as_spam %}
+            <a href="{% url "forum:post-report-as-spam" topic_pk=post.topic_id post_pk=post.pk %}">
+                report as spam
+            </a>
+        {% endif %}
+
+        {% if can_solve %}
+            <a href="{% url "forum:post-toggle-is-solving" topic_pk=post.topic_id post_pk=post.pk %}">
+                {% if post.is_solving %}
+                    post is not solving the problem - remove the mark
+                {% endif %}
+                    mark post as solving the problem
+                {% else %}
+            </a>
+        {% endif %}
+
+        <h2>History</h2>
+        {% if history %}
+            <ul>
+                {% for entry in history %}
+                    <li>
+                        {% if entry.action == "is_solving" %}
+                            marked as solving {{ entry.created|timesince }} ago
+                        {% endif %}
+
+                        {% if entry.action == "not_solving" %}
+                            mark "solving" removed {{ entry.created|timesince }} ago
+                        {% endif %}
+
+                        {% if entry.action == "spam_reported" %}
+                            reported as span {{ entry.created|timesince }} ago
+                        {% endif %}
+
+                        {% if entry.action == "deleted" %}
+                            deleted {{ entry.created|timesince }} ago
+                        {% endif %}
+
+                        {% if entry.action == "content_changed" %}
+                            edited {{ entry.created|timesince }} ago
+                        {% endif %}
+
+                        {% if entry.action == "recovered" %}
+                            recovered {{ entry.created|timesince }} ago
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            no history entries
+        {% endif %}
+    </span>
+</span>

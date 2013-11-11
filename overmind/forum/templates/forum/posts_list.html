@@ -28,7 +28,13 @@
                 </div>
                 <div class="col">
                     <div class="post">
-                        <div class="post-options"><div dw-load="post-attributes:{{ post.id }}"></div></div>
+                        <div style="position:absolute;right:10px;t">
+                            <div class="tooltip">
+                                <span class="tooltop-head" dw-hover="post-attributes:{{ post.id }}">
+                                    details
+                                </span>
+                            </div>
+                        </div>
                         <span class="flag new" dw-load="post-is-new:{{ post.id }}"></span>
                         <span class="meta small"><a href="{% url "forum:user-details" post.author.pk %}">{{ post.author.username }}</a>, {{ post.created }}</span>
                         <p>{{ post.content|markup:"markdown" }}</p>

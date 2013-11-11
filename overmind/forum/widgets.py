@@ -132,17 +132,20 @@ def post_is_new(request, widgets):
 
 @widget_handler(r"^post-attributes:(?P<pid>\d+)$")
 def post_attributes(request, widgets):
-    if request.user.is_anonymous():
-        return {w['wid']: {} for w in widgets}
+    res = {}
+    post_ids = [w['params']['pid'] for w in widgets]
+
+    history = collections.defaultdict(list)
+    for h in PostHistory.objects.filter(post__id__in=post_ids):
+        history[str(h.post_id)].append(h)
 
     posts = {}
-    query = Post.objects.filter(id__in=[w['params']['pid'] for w in widgets])
+    query = Post.objects.filter(id__in=post_ids)
     for post in query:
         posts[post.id] = post
 
     perm_manager = permissions.manager_for(request.user)
 
-    res = {}
     for widget in widgets:
         post = posts[int(widget['params']['pid'])]
         ctx = {
@@ -151,10 +154,11 @@ def post_attributes(request, widgets):
             'can_delete': perm_manager.can_delete_post(post),
             'can_report_as_spam': perm_manager.can_report_post_as_spam(post),
             'can_solve': perm_manager.can_solve_topic_with_post(post),
+            'history': history[widget['params']['pid']],
         }
         html = render_to_string('forum/widgets/post_attributes.html',
                                 RequestContext(request, ctx))
-        res[widget['wid']] = {'html': html}
+        res[widget['wid']] = {'append': html}
     return res
 
 
