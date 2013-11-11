@@ -164,9 +164,6 @@ def post_attributes(request, widgets):
 
 @widget_handler(r"^topic-comment-form:(?P<tid>\d+)$")
 def topic_comment_form(request, widgets):
-    if request.user.is_anonymous():
-        return {w['wid']: {} for w in widgets}
-
     perm_manager = permissions.manager_for(request.user)
 
     topics = {}
@@ -179,11 +176,9 @@ def topic_comment_form(request, widgets):
     ctx = RequestContext(request, {'form': form, 'user': request.user})
     for widget in widgets:
         topic = topics[int(widget['params']['tid'])]
-        if not perm_manager.can_create_post(topic):
-            html = ''
-        else:
-            ctx['topic'] = topic
-            html = render_to_string('forum/widgets/topic_comment_form.html', ctx)
+        ctx['can_create_post'] = perm_manager.can_create_post(topic)
+        ctx['topic'] = topic
+        html = render_to_string('forum/widgets/topic_comment_form.html', ctx)
         res[widget['wid']] = {'html': html}
     return res
 

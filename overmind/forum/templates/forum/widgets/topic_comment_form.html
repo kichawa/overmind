@@ -2,19 +2,25 @@
 
 {% if topic.is_closed %}
     <div>
-        Topic is closed.
+        You cannot comment. Topic is closed.
     </div>
+{% elif user.is_anonymous %}
+    You have to <a href="{% url "simpleauth:login" %}">login</a> to comment.
 {% else %}
-    <form class="row" action="{% url "forum:post-create" topic_pk=topic.id %}" method="POST">
-        <div class="col">
-            <textarea name="content" placeholder="reply"></textarea>
-            <span class="arrow-border"></span>
-            <span class="arrow-fill"></span>
-            {% csrf_token %}
-            <button type="submit">reply</button>
-        </div>
-        <div class="col">
-            {% avatar_tag user.email 76 %}
-        </div>
-    </form>
+    {% if can_create_post %}
+        <form class="row" action="{% url "forum:post-create" topic_pk=topic.id %}" method="POST">
+            <div class="col">
+                <textarea name="content" placeholder="reply"></textarea>
+                <span class="arrow-border"></span>
+                <span class="arrow-fill"></span>
+                {% csrf_token %}
+                <button type="submit">reply</button>
+            </div>
+            <div class="col">
+                {% avatar_tag user.email 76 %}
+            </div>
+        </form>
+    {% else %}
+        You do not have permission to comment on this topic.
+    {% endif %}
 {% endif %}
