@@ -12,7 +12,6 @@ from django.http import HttpResponseForbidden, HttpResponseGone
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.timezone import utc
 from django.views.decorators.cache import never_cache
-from django.views.decorators.gzip import gzip_page
 
 from counter import backend
 
@@ -22,7 +21,6 @@ from .forms import TopicForm, PostForm, SearchForm
 
 
 @never_cache
-@gzip_page
 def posts_search(request):
     form = SearchForm()
 
@@ -66,9 +64,6 @@ def posts_search(request):
     return render(request, 'forum/posts_search.html', ctx)
 
 
-
-@cache.topics_list
-@gzip_page
 def topics_list(request):
     topics = Topic.objects.exclude(is_deleted=True).select_related()\
             .prefetch_related('tags').order_by('-updated')
@@ -100,8 +95,6 @@ def topics_list(request):
     return render(request, 'forum/topics_list.html', ctx)
 
 
-@cache.posts_list
-@gzip_page
 def posts_list(request, topic_pk):
     topic = get_object_or_404(Topic, pk=topic_pk)
     if topic.is_deleted:
@@ -130,7 +123,6 @@ def posts_list(request, topic_pk):
     return render(request, 'forum/posts_list.html', ctx)
 
 
-@cache.cache_view('post_details:{url:post_pk}', groups=('topic:topic_pk',))
 @never_cache
 def post_details(request, topic_pk, post_pk):
     "Redirect to topic details page, on which given post can be found"
