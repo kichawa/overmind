@@ -39,10 +39,7 @@ _bbcode_to_markdown = (
 )
 
 
-def bbcode_to_markdown(text, post_id):
-    for rx, repl in _bbcode_to_markdown:
-        text = rx.sub(repl, text)
-    
+def code_converter(text):
     codes = re.findall(r'\[code\]((?:.|\n)+?)\[\/code\]', text)
     changes = []
     for code in codes:
@@ -56,6 +53,32 @@ def bbcode_to_markdown(text, post_id):
     for change in changes:
         text = text.replace(change[0], change[1])
     text = re.sub(r'\[code\]((?:.|\n)+?)\[\/code\]', r"\1", text)
+    return text
+
+
+def quote_converter(text):
+    quotes = re.findall(r'\[quote(.*?)\]((?:.|\n)+?)\[\/quote\]', text)
+    changes = []
+    for trash, quote in quotes:
+        new_lines = quote.split("\n")
+        string = "\n"
+        for new_line in new_lines:
+            string += "> {}".format(new_line)
+        string += "\n"
+        changes.append((quote, string))
+
+    for change in changes:
+        text = text.replace(change[0], change[1])
+    text = re.sub(r'\[quote(.*?)\]((.*?|\n)+?)\[\/quote\]', r"\2", text)
+    return text
+
+
+def bbcode_to_markdown(text, post_id):
+    for rx, repl in _bbcode_to_markdown:
+        text = rx.sub(repl, text)
+
+    text = code_converter(text)
+    text = quote_converter(text)
 
     return text
 
