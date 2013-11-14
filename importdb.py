@@ -76,10 +76,8 @@ def quote_converter(text):
 def bbcode_to_markdown(text, post_id):
     for rx, repl in _bbcode_to_markdown:
         text = rx.sub(repl, text)
-
     text = code_converter(text)
     text = quote_converter(text)
-
     return text
 
 
