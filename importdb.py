@@ -27,22 +27,36 @@ TAGS = [
 
 
 _bbcode_to_markdown = (
-    (re.compile(r'\[b\]((?:.|\n)+?)\[\/b\]'), "**\1**"),
-    (re.compile(r'\[u\]((?:.|\n)+?)\[\/u\]'), "*\1*"),
-    (re.compile(r'\[s\]((?:.|\n)+?)\[\/s\]'), "~~\1~~"),
-    (re.compile(r'\[color\=.+?\]((?:.|\n)+?)\[\/color\]'), "\1"),
-    (re.compile(r'(\n)\[\*\]'), "\1* "),
-    (re.compile(r'\[\/*list\]'), ''),
-    (re.compile(r'\[img\]((?:.|\n)+?)\[\/img\]'), '![](\1)'),
-    (re.compile(r'\[url=(.+?)\]((?:.|\n)+?)\[\/url\]'), '[\2](\1)'),
-    # TODO - [code]
+    (re.compile(r'\[b\]((?:.|\n)+?)\[\/b\]'), r"**\1**"),
+    (re.compile(r'\[u\]((?:.|\n)+?)\[\/u\]'), r"*\1*"),
+    (re.compile(r'\[s\]((?:.|\n)+?)\[\/s\]'), r"~~\1~~"),
+    (re.compile(r'\[color\=.+?\]((?:.|\n)+?)\[\/color\]'), r"\1"),
+    (re.compile(r'(\n)\[\*\]'), r"\1* "),
+    (re.compile(r'\[\/*list\]'), r''),
+    (re.compile(r'\[img\]((?:.|\n)+?)\[\/img\]'), r'![](\1)'),
+    (re.compile(r'\[url=(.+?)\]((?:.|\n)+?)\[\/url\]'), r'[\2](\1)'),
     # TODO - [quote]
 )
 
 
-def bbcode_to_markdown(text):
+def bbcode_to_markdown(text, post_id):
     for rx, repl in _bbcode_to_markdown:
         text = rx.sub(repl, text)
+    
+    codes = re.findall(r'\[code\]((?:.|\n)+?)\[\/code\]', text)
+    changes = []
+    for code in codes:
+        new_lines = code.split("\n")
+        string = "\n"
+        for new_line in new_lines:
+            string += "    {}".format(new_line)
+        string += "\n"
+        changes.append((code, string))
+
+    for change in changes:
+        text = text.replace(change[0], change[1])
+    text = re.sub(r'\[code\]((?:.|\n)+?)\[\/code\]', r"\1", text)
+
     return text
 
 
@@ -117,7 +131,7 @@ def copy_posts(pg_connection, sqlt_connection):
     sqlt_c = sqlt_connection.cursor()
     for row in pg_c:
         row = list(row)
-        row[3] = bbcode_to_markdown(row[3])
+        row[3] = bbcode_to_markdown(row[3], row[0])
         row.append(False)
         sqlt_c.execute('''
             INSERT INTO forum_post(id, topic_id, author_id, content, created,

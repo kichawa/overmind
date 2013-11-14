@@ -1,7 +1,7 @@
 {% extends "forum/base.html" %}
 
 
-{% load search urlquery %}
+{% load search urlquery markup %}
 
 
 {% block forum_content %}
@@ -22,7 +22,7 @@
             <div class="expand results">
                 <h1>{{ post.topic.subject }}</h1>
                 <div class="">
-                    {% mark_pattern post.content pattern %}
+                    <p>{% mark_pattern post.content|markup:"markdown" pattern %}</p>
                 </div>
             </div>
         {% empty %}

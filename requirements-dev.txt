@@ -1,4 +1,5 @@
--e git+http://github.com/elvard/django-debug-toolbar#egg=django_debug_toolbar
+#-e git+http://github.com/elvard/django-debug-toolbar#egg=django_debug_toolbar
+#django-debug-toolbar==dev
 ipdb
 psycopg2
 Werkzeug
