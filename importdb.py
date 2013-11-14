@@ -41,6 +41,7 @@ _bbcode_to_markdown = (
 )
 
 
+def code_converter(text):
     codes = re.findall(r'\[code\]((?:.|\n)+?)\[\/code\]', text)
     changes = []
     for code in codes:
