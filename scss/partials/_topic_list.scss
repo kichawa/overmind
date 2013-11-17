@@ -29,6 +29,7 @@
     a {
       white-space: nowrap;
       text-decoration: none;
+      font-size: $fontSizeBig;
     }
 
     .new {
@@ -51,7 +52,7 @@
     }
 
     .topic-meta {
-      font-size: $fontSizeTiny;
+      font-size: fontSizeBase;
       color: $colorGrey;
       span {
         color: $colorGrey;

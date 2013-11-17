@@ -141,12 +141,12 @@
   width: 0px;
   background: $colorWhite;
   border-bottom: 1px solid $colorLightGrey;
-  @include border-top-right-radius(6px);
-  @include border-bottom-left-radius(6px);
-  transition: width .2s linear;
+  @include border-radius(6px);
+  z-index: 1000;
+  //transition: width .2s linear;
 
   &:hover {
-    width: 70%;
+    width: auto;
     border-left: 1px solid $colorLightGrey;
     box-shadow: -2px 2px 5px 0px $colorLightGrey;
 
@@ -156,7 +156,7 @@
     }
 
     .options-content {
-      width: 90%;
+      width: auto;
     }
   }
 
@@ -167,18 +167,16 @@
     width: 16px;
     height: 16px;
     background: transparent;
-    @include border-bottom-left-radius(6px);
-    @include border-top-right-radius(6px);
     font-size: 16px;
     padding: 6px;
     line-height: 1em;
-    transition: left .2s linear;
   }
 
   .options-content {
     width: 0;
     overflow: hidden;
-    transition: width .2s linear;
+    @include border-top-left-radius(6px);
+    overflow: hidden;
   }
 
   .title {
@@ -190,7 +188,7 @@
   }
 
   .options {
-    min-width: 500px;
+    //white-space: nowrap;
   }
 
   .option {

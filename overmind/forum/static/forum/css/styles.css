@@ -344,7 +344,7 @@ a, a:visited, a:hover, a:active, a:link {
 .content p, .content div, .content em {
   color: gray; }
   .content p.small, .content div.small, .content em.small {
-    font-size: 11px; }
+    font-size: 12px; }
   .content p.tiny, .content div.tiny, .content em.tiny {
     font-size: 10px; }
 .content a, .content a > span {
@@ -372,7 +372,8 @@ a, a:visited, a:hover, a:active, a:link {
 
 html, body {
   min-height: 100%;
-  background-color: #eeeeee; }
+  background-color: #eeeeee;
+  overflow-x: hidden; }
 
 .main {
   width: 100%;
@@ -493,27 +494,16 @@ html, body {
   width: 180px; }
 
 p.solving {
-  border: 2px solid #226622;
-  text-align: center;
-  background: #22aa22;
-  padding: 2px 4px;
-  color: white; }
+  color: #22aa22;
+  margin-top: 8px; }
 
 .tag {
   margin: 0 4px;
-  padding: 2px 4px;
-  border: 1px solid #cccccc;
-  background: white;
-  position: relative;
-  top: -5px; }
+  padding: 2px 0; }
   .tag.solved {
-    border: 1px solid #226622;
-    background: #22aa22;
-    color: white; }
+    color: #22aa22; }
   .tag.closed {
-    border: 1px solid #cc2222;
-    background: #ff2222;
-    color: white; }
+    color: #ff2222; }
 
 .topic-list {
   width: 96%;
@@ -539,16 +529,17 @@ p.solving {
     text-overflow: ellipsis; }
     .topic-list .topic-main a {
       white-space: nowrap;
-      text-decoration: none; }
+      text-decoration: none;
+      font-size: 15px; }
     .topic-list .topic-main .new {
       font-weight: bold; }
     .topic-list .topic-main .tags {
-      font-size: 11px;
+      font-size: 12px;
       position: absolute;
       right: 4px;
       bottom: 4px; }
     .topic-list .topic-main .topic-meta {
-      font-size: 10px;
+      font-size: fontSizeBase;
       color: #566579; }
       .topic-list .topic-main .topic-meta span {
         color: #566579; }
@@ -676,13 +667,12 @@ p.solving {
   width: 0px;
   background: white;
   border-bottom: 1px solid #dddddd;
-  -moz-border-radius-topright: 6px;
-  -webkit-border-top-right-radius: 6px;
-  border-top-right-radius: 6px;
-  -moz-border-radius-bottomleft: 6px;
-  -webkit-border-bottom-left-radius: 6px;
-  border-bottom-left-radius: 6px;
-  transition: width 0.2s linear;
+  -webkit-border-radius: 6px;
+  -moz-border-radius: 6px;
+  -ms-border-radius: 6px;
+  -o-border-radius: 6px;
+  border-radius: 6px;
+  z-index: 1000;
   /*
     .post-history {
       display: block;
@@ -695,14 +685,14 @@ p.solving {
     }
   */ }
   .options-bar:hover {
-    width: 70%;
+    width: auto;
     border-left: 1px solid #dddddd;
     box-shadow: -2px 2px 5px 0px #dddddd; }
     .options-bar:hover .options-icon {
       left: 0;
       color: white; }
     .options-bar:hover .options-content {
-      width: 90%; }
+      width: auto; }
   .options-bar .options-icon {
     position: absolute;
     top: 0;
@@ -710,28 +700,22 @@ p.solving {
     width: 16px;
     height: 16px;
     background: transparent;
-    -moz-border-radius-bottomleft: 6px;
-    -webkit-border-bottom-left-radius: 6px;
-    border-bottom-left-radius: 6px;
-    -moz-border-radius-topright: 6px;
-    -webkit-border-top-right-radius: 6px;
-    border-top-right-radius: 6px;
     font-size: 16px;
     padding: 6px;
-    line-height: 1em;
-    transition: left 0.2s linear; }
+    line-height: 1em; }
   .options-bar .options-content {
     width: 0;
     overflow: hidden;
-    transition: width 0.2s linear; }
+    -moz-border-radius-topleft: 6px;
+    -webkit-border-top-left-radius: 6px;
+    border-top-left-radius: 6px;
+    overflow: hidden; }
   .options-bar .title {
     display: inline-block;
     padding: 4px 10px 4px 35px;
     vertical-align: top;
     background: #383838;
     color: white; }
-  .options-bar .options {
-    min-width: 500px; }
   .options-bar .option {
     display: inline-block;
     margin: 4px 0 0 8px;

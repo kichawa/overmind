@@ -5,18 +5,22 @@
 
 {% block forum_header %}
     {{ block.super }}
+        <a href="{% url "forum:topics-list" %}"><i class="fa fa-angle-double-left fa-fw"></i>back to topics list</a>
 {% endblock %}
 
+{% block sidebar_actions %}
+    {{ block.super }}
+    <div dw-load="topic-attributes:{{ topic.id }}"></div>
+{% endblock %}
 
 {% block forum_content %}
     <div class="topic-title">
         <h1>{{ topic.subject }}</h1>
         <span class="tags">
-            {% if topic.is_closed %}<span class="tag closed">closed</span>{% endif %}
-            {% if topic.is_solved %}<span class="tag solved">solved</span>{% endif %}
-            {% for tag in topic.tags.all %}<span class="tag">{{ tag }}</span>{% endfor %}
+            {% if topic.is_closed %}<span class="tag closed"><i class="fa fa-ban fa-fw"></i>closed</span>{% endif %}
+            {% if topic.is_solved %}<span class="tag solved"><i class="fa fa-check fa-fw"></i>solved</span>{% endif %}
+            {% for tag in topic.tags.all %}<span class="tag">{% if forloop.first %}<i class="fa fa-tags fa-fw"></i>{% endif %}{{ tag }}{% if not forloop.last %},{% endif %}</span>{% endfor %}
         </span>
-        <div dw-load="topic-attributes:{{ topic.id }}"></div>
     </div>
 
     <div class="table posts-list">
@@ -24,7 +28,7 @@
             <div class="row" id="post-{{ post.id }}">
                 <div class="col">
                     {% avatar_tag post.author.email 76 %}
-                    {% if post.is_solving %}<p class="solving">SOLVING</p>{% endif %}
+                    {% if post.is_solving %}<p class="solving"><i class="fa fa-check fa-fw"></i>solving</p>{% endif %}
                 </div>
                 <div class="col">
                     <div class="post">
