@@ -1,0 +1,69 @@
+.sidebar {
+  .user-actions {
+    color: $colorWhite;
+  }
+}
+
+.logo-container {
+  background: url('img/archlogo.png')  center center no-repeat;
+  height: 54px;
+}
+
+.sidebar-item {
+  display: block;
+  padding: 14px;
+  color: $colorWhite;
+  text-transform: capitalize;
+  letter-spacing: .1em;
+
+  &:hover {
+    background: $colorShinyBlue;
+  }
+}
+
+.search-filter {
+  position: relative;
+  .filter-form {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: $sidebarWidth;
+    width: $sidebarWidth*2;
+    background: inherit;
+    padding-bottom: 10px;
+    letter-spacing: 0;
+
+    .right-align {
+      padding: 0 10px;
+      text-align: right;
+    }
+  }
+
+  label {
+    display: inline-block;
+    padding: 0 10px;
+    line-height: 1.8em;
+    width: 176px;
+    input {
+      vertical-align: middle;
+    }
+  }
+  button {
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  &:hover {
+    .filter-form {
+      display: block;
+    }
+  }
+}
+
+.sidebar-footer {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  padding: 10px 10px 50px 10px;
+  width: 180px;
+}

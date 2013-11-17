@@ -1,5 +1,5 @@
 .topic-title {
-  width: 90%;
+  width: 96%;
   margin: 0 auto;
   h1 {
     display: inline-block;
@@ -12,9 +12,8 @@
 }
 
 .posts-list {
-  width: 90%;
+  width: 96%;
   margin: auto;
-
   .col {
     padding: 8px 0;
     vertical-align: top;
@@ -68,22 +67,6 @@
       }
     }
 
-    .post-options {
-      display: none;
-      position: absolute;
-      top: 4px;
-      right: 0;
-
-      a {
-        padding: 0 8px;
-        border-left: 1px solid $colorLightGrey;
-        &:first-child {
-          border-left: none;
-        }
-      }
-
-    }
-
     .meta {
       color: $colorGrey;
       line-height: 2em;
@@ -92,7 +75,7 @@
 }
 
 .new-post {
-  width: 90%;
+  width: 96%;
   margin: 8px auto;
 
   .col {
@@ -150,3 +133,90 @@
       }
   }
 }
+
+.options-bar {
+  position: absolute;
+  top: 0;
+  right: 0px;
+  width: 0px;
+  background: $colorWhite;
+  border-bottom: 1px solid $colorLightGrey;
+  @include border-top-right-radius(6px);
+  @include border-bottom-left-radius(6px);
+  transition: width .2s linear;
+
+  &:hover {
+    width: 70%;
+    border-left: 1px solid $colorLightGrey;
+    box-shadow: -2px 2px 5px 0px $colorLightGrey;
+
+    .options-icon {
+      left: 0;
+      color: $colorWhite;
+    }
+
+    .options-content {
+      width: 90%;
+    }
+  }
+
+  .options-icon {
+    position: absolute;
+    top: 0;
+    left: -28px;
+    width: 16px;
+    height: 16px;
+    background: transparent;
+    @include border-bottom-left-radius(6px);
+    @include border-top-right-radius(6px);
+    font-size: 16px;
+    padding: 6px;
+    line-height: 1em;
+    transition: left .2s linear;
+  }
+
+  .options-content {
+    width: 0;
+    overflow: hidden;
+    transition: width .2s linear;
+  }
+
+  .title {
+    display: inline-block;
+    padding: 4px 10px 4px 35px;
+    vertical-align: top;
+    background: $colorDarkerGrey;
+    color: $colorWhite;
+  }
+
+  .options {
+    min-width: 500px;
+  }
+
+  .option {
+    display: inline-block;
+    margin: 4px 0 0 8px;
+    vertical-align: top;
+    padding: 10px 4px 14px 0;
+    &:hover {
+      color: $colorShinyBlue;
+    }
+    &.disabled:hover {
+      color: inherit;
+    }
+  }
+
+/*
+  .post-history {
+    display: block;
+    font-size: $fontSizeSmall;
+    + ul {
+      li {
+        font-size: $fontSizeSmall;
+      }
+    }
+  }
+*/
+}
+
+

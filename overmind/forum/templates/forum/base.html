@@ -7,16 +7,52 @@
     <script type="text/javascript">window.DYNAMIC_WIDGETS_URL = '{% url "dynamicwidget:widgets" %}';</script>
     {% block css %}
         <link rel="stylesheet" href="{% static "forum/css/styles.css" %}" type="text/css">
+        <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+        <link rel="stylesheet" href="http://yui.yahooapis.com/combo?pure/0.3.0/forms-min.css&pure/0.3.0/buttons-min.css">
     {% endblock %}
 </head>
 <body>
     <div class="main">
+        <div class="sidebar">
+            <div class="logo-container"></div>
+            <div class="user-actions">
+                {% if tags|length > 0 %}
+                <div class="search-filter sidebar-item">
+                    <span>filter topics</span>
+                    <form class="pure-form filter-form" action="{% url "forum:topics-list" %}" method="GET">
+                        {% for tag in tags %}
+                            <label>
+                                <input type="checkbox" name="tag" value="{{ tag.label }}" {% if tag.checked %}checked{% endif %}> {{ tag.label }}
+                            </label>
+                        {% endfor %}
+                        <div class="right-align">
+                            <button type="submit" class="pure-button">Filter topics</button>
+                        </div>
+                    </form>
+                </div>
+                {% endif %}
+                <div dw-load="logged-user-actions"></div>
+            </div>
+            <div class="sidebar-footer">
+                <div class="login-area"><div dw-load="login-logout"></div></div>
+            </div>
+        </div>
         <div class="header">
-            {% block forum_header %}
-                <a href="{% url "forum:topics-list" %}">topics list</a>
-                <span dw-load="logged-user-actions"></span>
-            {% endblock %}
-            <div class="login-area"><span dw-load="login-logout"></span></div>
+            <div class="header-inner">
+                <div class="header-left">
+                    {% block forum_header %}
+                        <a href="{% url "forum:topics-list" %}">&lt;&lt; back to topics list</a>
+                    {% endblock %}
+                </div>
+                <div class="header-right">
+                    <div class="search-bar">
+                        <form class="pure-form" action="{% url "forum:posts-search" %}" method="GET">
+                            <input type="search" name="pattern" placeholder="search">
+                            <button type="submit" class="pure-button pure-button-primary">search</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="content">
         {% block forum_content %}{% endblock %}

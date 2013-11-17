@@ -1,13 +1,29 @@
 .header {
   background: $colorWhite;
-  margin: 0 auto;
-  padding: 18px 5%;
-  position: relative;
+  margin: 0 auto 20px $sidebarWidth;
+  padding: 12px 2%;
+  box-shadow: 0 2px 2px 0 $colorLightGrey;
 
+  .header-inner {
+    display: table;
+    width: 100%;
+  }
 
-  .login-area {
-    position: absolute;
-    right: 5%;
-    top: 18px;
+  .header-right {
+    display: table-cell;
+    width: 49%;
+    text-align: right;
+  }
+
+  .header-left {
+    display: table-cell;
+    width: 50%;
+    text-align: left;
+  }
+}
+
+.search-bar {
+  input, button {
+    vertical-align: middle;
   }
 }

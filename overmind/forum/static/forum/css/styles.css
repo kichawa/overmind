@@ -338,18 +338,19 @@ table {
   border-collapse: collapse;
   border-spacing: 0; }
 
-p, div, em {
+a, a:visited, a:hover, a:active, a:link {
+  text-decoration: none; }
+
+.content p, .content div, .content em {
   color: gray; }
-  p.small, div.small, em.small {
+  .content p.small, .content div.small, .content em.small {
     font-size: 11px; }
-  p.tiny, div.tiny, em.tiny {
+  .content p.tiny, .content div.tiny, .content em.tiny {
     font-size: 10px; }
-
-h1 {
-  font-size: 24px;
+.content a, .content a > span {
   color: #383838; }
-
-a, a > span {
+.content h1 {
+  font-size: 24px;
   color: #383838; }
 
 .hidden {
@@ -376,11 +377,24 @@ html, body {
 .main {
   width: 100%;
   margin: 0 auto;
-  font-family: "Helvetica Neue", Helvetica, arial, sans-serif;
+  font-family: arial, sans-serif;
   font-size: 14px; }
 
+.sidebar {
+  display: block;
+  width: 200px;
+  min-height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  background: #383838;
+  color: #eeeeee;
+  z-index: 2000; }
+
 .content {
-  margin: auto; }
+  margin: auto;
+  padding-left: 200px; }
 
 .tooltip {
   position: relative;
@@ -410,19 +424,80 @@ html, body {
 
 .header {
   background: white;
-  margin: 0 auto;
-  padding: 18px 5%;
-  position: relative; }
-  .header .login-area {
-    position: absolute;
-    right: 5%;
-    top: 18px; }
+  margin: 0 auto 20px 200px;
+  padding: 12px 2%;
+  box-shadow: 0 2px 2px 0 #dddddd; }
+  .header .header-inner {
+    display: table;
+    width: 100%; }
+  .header .header-right {
+    display: table-cell;
+    width: 49%;
+    text-align: right; }
+  .header .header-left {
+    display: table-cell;
+    width: 50%;
+    text-align: left; }
 
-.solving {
-  border: 2px solid #bbddbb;
+.search-bar input, .search-bar button {
+  vertical-align: middle; }
+
+.sidebar .user-actions {
+  color: white; }
+
+.logo-container {
+  background: url("img/archlogo.png") center center no-repeat;
+  height: 54px; }
+
+.sidebar-item {
+  display: block;
+  padding: 14px;
+  color: white;
+  text-transform: capitalize;
+  letter-spacing: .1em; }
+  .sidebar-item:hover {
+    background: #0088cc; }
+
+.search-filter {
+  position: relative; }
+  .search-filter .filter-form {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 200px;
+    width: 400px;
+    background: inherit;
+    padding-bottom: 10px;
+    letter-spacing: 0; }
+    .search-filter .filter-form .right-align {
+      padding: 0 10px;
+      text-align: right; }
+  .search-filter label {
+    display: inline-block;
+    padding: 0 10px;
+    line-height: 1.8em;
+    width: 176px; }
+    .search-filter label input {
+      vertical-align: middle; }
+  .search-filter button {
+    display: inline-block;
+    vertical-align: middle; }
+  .search-filter:hover .filter-form {
+    display: block; }
+
+.sidebar-footer {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  padding: 10px 10px 50px 10px;
+  width: 180px; }
+
+p.solving {
+  border: 2px solid #226622;
   text-align: center;
-  background: #cceecc;
-  padding: 2px 4px; }
+  background: #22aa22;
+  padding: 2px 4px;
+  color: white; }
 
 .tag {
   margin: 0 4px;
@@ -432,14 +507,16 @@ html, body {
   position: relative;
   top: -5px; }
   .tag.solved {
-    border: 1px solid #bbddbb;
-    background: #cceecc; }
+    border: 1px solid #226622;
+    background: #22aa22;
+    color: white; }
   .tag.closed {
-    border: 1px solid #ddbbbb;
-    background: #eecccc; }
+    border: 1px solid #cc2222;
+    background: #ff2222;
+    color: white; }
 
 .topic-list {
-  width: 90%;
+  width: 96%;
   margin: auto; }
   .topic-list .topic {
     position: relative;
@@ -456,8 +533,8 @@ html, body {
     display: table-cell;
     vertical-align: top;
     position: relative;
-    padding: 6px 8px 2px 8px;
-    line-height: 1.2em;
+    padding: 8px 10px 4px 10px;
+    line-height: 1.5em;
     overflow: hidden;
     text-overflow: ellipsis; }
     .topic-list .topic-main a {
@@ -476,30 +553,8 @@ html, body {
       .topic-list .topic-main .topic-meta span {
         color: #566579; }
 
-.search-bar {
-  display: table-cell;
-  background: inherit; }
-  .search-bar input {
-    border: 1px solid #dddddd;
-    padding: 2px 4px;
-    outline: none; }
-
-.search-filter {
-  display: table-cell;
-  text-align: right;
-  padding: 8px 0; }
-  .search-filter label {
-    display: inline-block;
-    margin-right: 16px;
-    line-height: 1.8em; }
-    .search-filter label input {
-      vertical-align: middle; }
-  .search-filter button {
-    display: inline-block;
-    vertical-align: middle; }
-
 .topic-title {
-  width: 90%;
+  width: 96%;
   margin: 0 auto; }
   .topic-title h1 {
     display: inline-block;
@@ -509,7 +564,7 @@ html, body {
     display: inline-block; }
 
 .posts-list {
-  width: 90%;
+  width: 96%;
   margin: auto; }
   .posts-list .col {
     padding: 8px 0;
@@ -559,22 +614,12 @@ html, body {
         top: 20px; }
       .posts-list .col .post:hover .post-options {
         display: block; }
-    .posts-list .col .post-options {
-      display: none;
-      position: absolute;
-      top: 4px;
-      right: 0; }
-      .posts-list .col .post-options a {
-        padding: 0 8px;
-        border-left: 1px solid #dddddd; }
-        .posts-list .col .post-options a:first-child {
-          border-left: none; }
     .posts-list .col .meta {
       color: #566579;
       line-height: 2em; }
 
 .new-post {
-  width: 90%;
+  width: 96%;
   margin: 8px auto; }
   .new-post .col {
     vertical-align: top;
@@ -623,6 +668,79 @@ html, body {
       right: -14px;
       top: 20px;
       transition: 0.3s linear border-color; }
+
+.options-bar {
+  position: absolute;
+  top: 0;
+  right: 0px;
+  width: 0px;
+  background: white;
+  border-bottom: 1px solid #dddddd;
+  -moz-border-radius-topright: 6px;
+  -webkit-border-top-right-radius: 6px;
+  border-top-right-radius: 6px;
+  -moz-border-radius-bottomleft: 6px;
+  -webkit-border-bottom-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+  transition: width 0.2s linear;
+  /*
+    .post-history {
+      display: block;
+      font-size: $fontSizeSmall;
+      + ul {
+        li {
+          font-size: $fontSizeSmall;
+        }
+      }
+    }
+  */ }
+  .options-bar:hover {
+    width: 70%;
+    border-left: 1px solid #dddddd;
+    box-shadow: -2px 2px 5px 0px #dddddd; }
+    .options-bar:hover .options-icon {
+      left: 0;
+      color: white; }
+    .options-bar:hover .options-content {
+      width: 90%; }
+  .options-bar .options-icon {
+    position: absolute;
+    top: 0;
+    left: -28px;
+    width: 16px;
+    height: 16px;
+    background: transparent;
+    -moz-border-radius-bottomleft: 6px;
+    -webkit-border-bottom-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+    -moz-border-radius-topright: 6px;
+    -webkit-border-top-right-radius: 6px;
+    border-top-right-radius: 6px;
+    font-size: 16px;
+    padding: 6px;
+    line-height: 1em;
+    transition: left 0.2s linear; }
+  .options-bar .options-content {
+    width: 0;
+    overflow: hidden;
+    transition: width 0.2s linear; }
+  .options-bar .title {
+    display: inline-block;
+    padding: 4px 10px 4px 35px;
+    vertical-align: top;
+    background: #383838;
+    color: white; }
+  .options-bar .options {
+    min-width: 500px; }
+  .options-bar .option {
+    display: inline-block;
+    margin: 4px 0 0 8px;
+    vertical-align: top;
+    padding: 10px 4px 14px 0; }
+    .options-bar .option:hover {
+      color: #0088cc; }
+    .options-bar .option.disabled:hover {
+      color: inherit; }
 
 .search-results {
   width: 90%;

@@ -1,8 +1,9 @@
-.solving {
+p.solving {
   border: 2px solid $colorLightGreen;
   text-align: center;
   background: $colorLighterGreen;
   padding: 2px 4px;
+  color: $colorWhite;
 }
 
 .tag {
@@ -19,10 +20,12 @@
   &.solved {
     border: $tagBorderWidth solid $colorLightGreen;
     background: $colorLighterGreen;
+    color: $colorWhite;
   }
 
   &.closed {
     border: $tagBorderWidth solid $colorLightRed;
     background: $colorLighterRed;
+    color: $colorWhite;
   }
 }

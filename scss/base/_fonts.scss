@@ -1,26 +1,34 @@
-$fontFamilyMain: "Helvetica Neue", Helvetica, arial, sans-serif;
+$fontFamilyMain: arial, sans-serif;
 $fontSizeBase: 14px;
 $fontSizeSmall: 11px;
 $fontSizeTiny: 10px;
 $fontSizeBig: 18px;
 $fontSizeHuge: 24px;
 
-p, div, em {
-  color: $textPrimary;
+a, a:visited, a:hover, a:active, a:link {
+  text-decoration: none;
+}
 
-  &.small {
-    font-size: $fontSizeSmall;
+.content {
+  p, div, em {
+    color: $textPrimary;
+
+    &.small {
+      font-size: $fontSizeSmall;
+    }
+    &.tiny {
+      font-size: $fontSizeTiny;
+    }
   }
-  &.tiny {
-    font-size: $fontSizeTiny;
+  a, a > span {
+    color: $textHighlight;
+  }
+
+  h1 {
+    font-size: $fontSizeHuge;
+    color: $colorDarkerGrey
   }
 }
 
-h1 {
-  font-size: $fontSizeHuge;
-  color: $colorDarkerGrey
-}
 
-a, a > span {
-  color: $textHighlight;
-}
+
