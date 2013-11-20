@@ -14,7 +14,7 @@ DEFAULT_ENCODING = 'iso-8859-1'
 def handle_client(cache_lock, cache, client):
     try:
         _handle_client(cache_lock, cache, client)
-    except Exception as exc:
+    except Exception:
         traceback.print_exc(file=sys.stdout)
         client.send(b'INTERNAL_ERROR\r\n')
     finally:
