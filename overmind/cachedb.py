@@ -1,7 +1,7 @@
-import socket
 import pickle
-import yaml
+import socket
 import threading
+import yaml
 
 
 class CachedbError(Exception): pass
