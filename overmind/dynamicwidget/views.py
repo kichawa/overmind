@@ -1,6 +1,8 @@
 import collections
 import json
+import time
 
+from django.conf import settings
 from django.http import HttpResponse
 from django.views.decorators.cache import never_cache
 from django.views.decorators.gzip import gzip_page
@@ -26,6 +28,10 @@ def widgets(request):
     # for every widget handler, call it with all related wids at once
     for handler, args in matching_handlers.items():
         result.update(handler(request, args))
+
+    # because when running locally it's always fast, allow to symulate delay
+    if settings.DEBUG and getattr(settings, 'DYNAMIC_WIDGET_DEBUG_SLEEP', 0):
+        time.sleep(settings.DYNAMIC_WIDGET_DEBUG_SLEEP)
 
     content = json.dumps(result)
     return HttpResponse(content, content_type='application/json')
