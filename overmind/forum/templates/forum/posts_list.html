@@ -35,8 +35,9 @@
                         <div class="options-bar" dw-hover="post-attributes:{{ post.id }}">
                             <div class="options-icon"><i class="fa fa-cog fa-lg"></i></div>
                         </div>
-                        <span class="flag new" dw-load="post-is-new:{{ post.id }}"></span>
                         <span class="meta small"><a href="{% url "forum:user-details" post.author.pk %}">{{ post.author.username }}</a>, {{ post.created }}</span>
+                        <span class="flag new" dw-load="post-is-new:{{ post.id }}"></span>
+
                         <p>{{ post.content|markup:"markdown" }}</p>
                     </div>
                 </div>
