@@ -42,7 +42,7 @@ def topic_is_new(request, widgets):
         latest = last_seen.seen_topics.get(
                 str(topic_id), request.user.forum_last_seen.last_seen_all)
         topic = topics.get(topic_id)
-        is_new = topic.content_updated.replace(microsecond=0) > latest
+        is_new = topic.updated.replace(microsecond=0) > latest
         ctx = {'is_new': is_new, 'topic': topic}
         html = render_to_string('forum/widgets/topic_is_new.html', ctx)
         res[widget['wid']] = {'html': html, 'isnew': is_new}
@@ -120,12 +120,17 @@ def post_is_new(request, widgets):
         html = render_to_string('forum/widgets/post_is_new.html', ctx)
         res[widget['wid']] = {'html': html, 'isnew': is_new}
 
+
+    last_seen_changed = False
     # make sure, we have all topics marked as "seen" with appropriate, fresh
     # date from the newest post we ask for
     for tid, newest_post_dt in newest.items():
         if newest_post_dt > topics[tid]:
             last_seen.seen_topics[str(tid)] = newest_post_dt
-            last_seen.save()
+            last_seen_changed = True
+
+    if last_seen_changed:
+        last_seen.save()
 
     return res
 
