@@ -6,9 +6,9 @@
     <title>{% block title %}Forum 4.0{% endblock %}</title>
     <script type="text/javascript">window.DYNAMIC_WIDGETS_URL = '{% url "dynamicwidget:widgets" %}';</script>
     {% block css %}
+        <link rel="stylesheet" href="{% static "forum/css/pure-buttons.css" %}" type="text/css">
         <link rel="stylesheet" href="{% static "forum/css/styles.css" %}" type="text/css">
-        <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
-        <link rel="stylesheet" href="http://yui.yahooapis.com/combo?pure/0.3.0/forms-min.css&pure/0.3.0/buttons-min.css">
+        <link rel="stylesheet" href="{% static "forum/css/font-awesome.css" %}" type="text/css">
     {% endblock %}
 </head>
 <body>
