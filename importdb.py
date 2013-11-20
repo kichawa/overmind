@@ -28,7 +28,9 @@ TAGS = [
 
 _bbcode_to_markdown = (
     (re.compile(r'\[b\]((?:.|\n)+?)\[\/b\]'), r"**\1**"),
+    (re.compile(r'#'), r"\#"),
     (re.compile(r'\[u\]((?:.|\n)+?)\[\/u\]'), r"*\1*"),
+    (re.compile(r'\[i\]((?:.|\n)+?)\[\/i\]'), r"*\1*"),
     (re.compile(r'\[s\]((?:.|\n)+?)\[\/s\]'), r"~~\1~~"),
     (re.compile(r'\[color\=.+?\]((?:.|\n)+?)\[\/color\]'), r"\1"),
     (re.compile(r'(\n)\[\*\]'), r"\1* "),
@@ -144,7 +146,7 @@ def copy_posts(pg_connection, sqlt_connection):
     pg_c = pg_connection.cursor()
     pg_c.execute('''
     SELECT
-        id, topic_id, user_id, body, created, user_ip
+        id, topic_id, user_id, body, created, user_ip, markup
     FROM
         djangobb_forum_post
     ''')
@@ -152,13 +154,17 @@ def copy_posts(pg_connection, sqlt_connection):
     sqlt_c = sqlt_connection.cursor()
     for row in pg_c:
         row = list(row)
-        row[3] = bbcode_to_markdown(row[3], row[0])
+        markup = row.pop()
+        if markup == 'bbcode':
+            row[3] = bbcode_to_markdown(row[3], row[0])
         row.append(False)
         sqlt_c.execute('''
             INSERT INTO forum_post(id, topic_id, author_id, content, created,
                                    updated, ip, is_deleted, is_solving)
             VALUES ($1, $2, $3, $4, $5, $5, $6, $7, 0)
         ''', row)
+        sqlt_connection.commit()
+        input("Press Enter to continue...")
     pg_c.close()
 
 
