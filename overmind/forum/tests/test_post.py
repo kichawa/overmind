@@ -121,3 +121,20 @@ class PostMarkAsSolvingTest(TransactionTestCase):
         toggle_solve_post(4)
         toggle_solve_post(5)
         assert_posts_order([2, 3, 4])
+
+
+class PostDeleteTest(TransactionTestCase):
+    fixtures = ['forum/tests/small_size_forum.yaml']
+
+    def setUp(self):
+        u = get_user_model().objects.get(id=2)
+        u.set_password('a')
+        u.save()
+        self.client = Client()
+        self.assertTrue(self.client.login(username=u.username, password='a'))
+
+    def post_toggle_delete(self, topic_id, post_id):
+        url = reverse("forum:post-toggle-delete", args=(topic_id, post_id))
+        return self.client.get(url)
+
+    def test_deleting_post_is_updating_topic(self):

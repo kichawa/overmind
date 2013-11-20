@@ -1,9 +1,52 @@
 {% extends "forum/base.html" %}
 
-{% load avatar %}
+{% load avatar markup %}
 
 
 {% block forum_content %}
-    <h1>{{ user.get_full_name }} - {{ user.username }}</h1>
-    <p>{% avatar_tag user.email 256 %}</p>
+    <div style="width:200px;float:left;">
+        <h1>
+            {{ user.username }}
+            {% if user.get_full_name %}
+                <small>{{ user.get_full_name }}</small>
+            {% endif %}
+        </h1>
+        <p>{% avatar_tag user.email 190 %}</p>
+    </div>
+
+    <div style="width:300px;float:left;">
+        {% if latest_topics %}
+            <h1>topics ({{ posts_count }})</h1>
+            {% for topic in latest_topics %}
+                <p>
+                    <a href="{{ topic.get_absolute_url }}">{{ topic.subject }}</a>,
+                    {{ topic.response_count }} responses.
+                    {% if topic.is_solved %}
+                        solved
+                    {% endif %}
+                    {% if topic.is_closed %}
+                        closed
+                    {% endif %}
+                </p>
+            {% endfor %}
+        {% else %}
+            This user created no topics.
+        {% endif %}
+    </div>
+
+    <div style="width:300px;float:left;">
+        {% if latest_posts %}
+            <h1>posts ({{ topics_count }})</h1>
+            {% for post in latest_posts %}
+                <p>
+                    <a href="{{ post.get_absolute_url }}">
+                        <i class="fa fa-comments"></i>
+                    </a>
+                    {{ post.content|markup:"markdown"|truncatewords_html:10 }}
+                </p>
+            {% endfor %}
+        {% else %}
+            This user did not took part in any conversation.
+        {% endif %}
+    </div>
 {% endblock %}

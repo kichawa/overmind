@@ -226,7 +226,15 @@ def mark_all_topics_read(request):
 
 def user_details(request, user_pk):
     user = get_object_or_404(get_user_model(), pk=user_pk)
-    ctx = {'user': user}
+    topics = Topic.objects.filter(is_deleted=False, author=user)
+    posts = Post.objects.filter(is_deleted=False, author=user)
+    ctx = {
+        'user': user,
+        'topics_count': topics.count(),
+        'posts_count': posts.count(),
+        'latest_topics': topics[:10],
+        'latest_posts': posts[:8],
+    }
     return render(request, 'forum/user_details.html', ctx)
 
 
@@ -296,8 +304,12 @@ def post_toggle_delete(request, topic_pk, post_pk):
     now = datetime.datetime.now().replace(tzinfo=utc)
     post.is_deleted = not post.is_deleted
     post.save()
-    post.topic.updated = now
-    post.topic.save()
+
+    topic = post.topic
+    topic.content_updated = now
+    topic.response_count = topic.posts.filter(is_deleted=False).count()
+    topic.save()
+
     cache.expire_groups((
         'topic:all',
         'topic:{}'.format(post.topic.pk),
