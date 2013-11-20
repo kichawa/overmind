@@ -27,7 +27,9 @@
         {% for post in posts %}
             <div class="row" id="post-{{ post.id }}">
                 <div class="col">
-                    {% avatar_tag post.author.email 76 %}
+                    <a href="{% url "forum:user-details" user_pk=user.id %}">
+                        {% avatar_tag post.author.email 76 %}
+                    </a>
                     {% if post.is_solving %}<p class="solving"><i class="fa fa-check fa-fw"></i>solving</p>{% endif %}
                 </div>
                 <div class="col">
