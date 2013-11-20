@@ -97,3 +97,27 @@ class PostMarkAsSolvingTest(TransactionTestCase):
         self.assertTrue(topic_is_solved())
         toggle_solve_post(3)
         self.assertFalse(topic_is_solved())
+
+    def test_solving_does_not_change_post_order(self):
+        topic_id = 2
+
+        def toggle_solve_post(post_id):
+            url = reverse("forum:post-toggle-is-solving", args=(topic_id, post_id))
+            resp = self.client.get(url)
+            self.assertEqual(resp.status_code, 302)
+
+        def assert_posts_order(expected_order):
+            url = reverse("forum:posts-list", args=(topic_id, ))
+            resp = self.client.get(url)
+            posts = resp.context['posts'].object_list
+            post_ids = [p.id for p in posts]
+            self.assertEqual(list(expected_order), list(post_ids))
+
+        assert_posts_order([2, 3, 4])
+        toggle_solve_post(3)
+        assert_posts_order([2, 3, 4])
+        toggle_solve_post(3)
+        assert_posts_order([2, 3, 4])
+        toggle_solve_post(4)
+        toggle_solve_post(5)
+        assert_posts_order([2, 3, 4])
