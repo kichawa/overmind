@@ -1,10 +1,11 @@
+import logging
+
 from django.conf import settings
 
 import cachedb
 
 
-# cache only those response objects that response_code is in following set
-CACHABLE_RESPONSE_CODE = {200, 301, 404}
+log = logging.getLogger(__name__)
 
 
 if getattr(settings, 'HTTP_CACHE', False):
@@ -16,15 +17,22 @@ else:
     cache = None
 
 
-
 def expire_group(name):
     if not getattr(settings, 'HTTP_CACHE', False):
         return
-    cache.delete_group(name)
+    try:
+        cache.delete_group(name)
+    except Exception as err:
+        log.critical("cache connection error, cannot expire group: %s (%s)",
+                     name, err)
 
 
 def expire_groups(names):
     if not getattr(settings, 'HTTP_CACHE', False):
         return
     for name in names:
-        cache.delete_group(name)
+        try:
+            cache.delete_group(name)
+        except Exception as err:
+            log.critical("cache connection error, cannot expire group: %s (%s)",
+                         name, err)
