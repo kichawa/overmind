@@ -14,7 +14,9 @@
 <body>
     <div class="main">
         <div class="sidebar">
-            <div class="logo-container"></div>
+            <div class="logo-container">
+                <a href="{% url "forum:topics-list" %}"><img src="{% static "forum/img/archlogo.png" %}"></a>
+            </div>
             {% block sidebar_actions %}
             <div class="user-actions">
                 {% if tags %}
