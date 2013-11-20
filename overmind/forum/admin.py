@@ -29,6 +29,7 @@ class PostHistoryAdmin(admin.TabularInline):
 
 class PostAdmin(admin.ModelAdmin):
     inlines = (PostHistoryAdmin, )
+    readonly_fields = ('created', 'updated')
     raw_id_fields = ('author', 'topic')
     search_fields = ('topic__subject', 'topic__id')
     list_filter = ('is_deleted', 'created')
