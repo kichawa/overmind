@@ -16,7 +16,7 @@
 
     <div style="width:300px;float:left;">
         {% if latest_topics %}
-            <h1>topics ({{ posts_count }})</h1>
+            <h1>topics ({{ topics_count }})</h1>
             {% for topic in latest_topics %}
                 <p>
                     <a href="{{ topic.get_absolute_url }}">{{ topic.subject }}</a>,
@@ -36,7 +36,7 @@
 
     <div style="width:300px;float:left;">
         {% if latest_posts %}
-            <h1>posts ({{ topics_count }})</h1>
+            <h1>posts ({{ posts_count }})</h1>
             {% for post in latest_posts %}
                 <p>
                     <a href="{{ post.get_absolute_url }}">
