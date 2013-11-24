@@ -28,7 +28,6 @@ TAGS = [
 
 _bbcode_to_markdown = (
     (re.compile(r'\[b\]((?:.|\n)+?)\[\/b\]'), r"**\1**"),
-    (re.compile(r'#'), r"\#"),
     (re.compile(r'\[u\]((?:.|\n)+?)\[\/u\]'), r"*\1*"),
     (re.compile(r'\[i\]((?:.|\n)+?)\[\/i\]'), r"*\1*"),
     (re.compile(r'\[s\]((?:.|\n)+?)\[\/s\]'), r"~~\1~~"),
@@ -37,23 +36,30 @@ _bbcode_to_markdown = (
     (re.compile(r'\[\/*list\]'), r''),
     (re.compile(r'\[img\]((?:.|\n)+?)\[\/img\]'), r'![](\1)'),
     (re.compile(r'\[url=(.+?)\]((?:.|\n)+?)\[\/url\]'), r'[\2](\1)'),
+    (re.compile(r'#'), r"\#"),
     # TODO - [quote]
-)
+    )
 
 
 def code_converter(text):
-    codes = re.findall(r'\[code\]((?:.|\n)+?)\[\/code\]', text)
+    codes = re.finditer(r'\[code\]((?:.|\n)+?)\[\/code\]', text)
     changes = []
-    for code in codes:
-        new_lines = code.split("\n")
-        string = "\n"
-        for new_line in new_lines:
-            string += "    {}".format(new_line)
-        string += "\n"
-        changes.append((code, string))
-
-    for change in changes:
-        text = text.replace(change[0], change[1])
+    i = 0
+    a = 0 
+    for res in codes:
+        texta = res.string[res.start():res.end()]
+        new_lines = texta.split("\n")
+        stringa = "\n"
+        for www in new_lines:
+            stringa += "    {}".format(www)
+            i += 4
+        stringa += "\n\n"
+        i += 3
+        changes.append(((res.start() + a, res.end() + a), stringa))
+        a += i
+        i = 0
+    for c, string in changes:
+        text = text[0:c[0]] + string + text[c[1]:]
     text = re.sub(r'\[code\]((?:.|\n)+?)\[\/code\]', r"\1", text)
     return text
 
@@ -71,6 +77,7 @@ def quote_converter(text):
 
     for change in changes:
         text = text.replace(change[0], change[1])
+    print(text)
     text = re.sub(r'\[quote(.*?)\]((.*?|\n)+?)\[\/quote\]', r"\2", text)
     return text
 
@@ -163,8 +170,6 @@ def copy_posts(pg_connection, sqlt_connection):
                                    updated, ip, is_deleted, is_solving)
             VALUES ($1, $2, $3, $4, $5, $5, $6, $7, 0)
         ''', row)
-        sqlt_connection.commit()
-        input("Press Enter to continue...")
     pg_c.close()
 
 
